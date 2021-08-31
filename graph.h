@@ -36,6 +36,8 @@ namespace AboutGraphs
 
         ~Graph();
 
+        static Graph *const EMPTY_GRAPH;
+
         static Graph *from_string(string &s);
 
         void show_predecessor_adjacency_list();

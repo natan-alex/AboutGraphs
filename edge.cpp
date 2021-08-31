@@ -8,6 +8,9 @@ using namespace std;
 
 namespace AboutGraphs
 {
+
+    Edge *const Edge::EMPTY_EDGE = new Edge();
+
     const regex Edge::PATTERN_TO_VALIDATE_AN_EDGE = regex("[(|{]\\s*\\w+\\s*,(\\s*\\w+\\s*,)?\\s*\\w+\\s*[)|}]");
 
     bool Edge::is_edge_directed()
@@ -44,7 +47,7 @@ namespace AboutGraphs
     {
         if (regex_search(edge_representation, PATTERN_TO_VALIDATE_AN_EDGE) == false)
         {
-            return NULL;
+            return EMPTY_EDGE;
         }
 
         Edge *edge = new Edge();
@@ -52,7 +55,7 @@ namespace AboutGraphs
 
         if (!edge->is_edge_enclosed_correctly())
         {
-            return NULL;
+            return EMPTY_EDGE;
         }
 
         edge->fill_properties_of_the_edge();

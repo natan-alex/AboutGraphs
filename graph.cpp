@@ -13,6 +13,9 @@ using namespace std;
 
 namespace AboutGraphs
 {
+
+    Graph *const Graph::EMPTY_GRAPH = new Graph();
+
     Graph::~Graph()
     {
         for (Edge *edge : edges)
@@ -29,7 +32,7 @@ namespace AboutGraphs
 
     Graph *Graph::from_string(string &s)
     {
-        Graph *result = NULL;
+        Graph *result = Graph::EMPTY_GRAPH;
         regex pattern_to_validate_a_complete_graph("^\\s*\\{\\s*([(|{]\\s*\\w+\\s*,(\\s*\\w+\\s*,)?\\s*\\w+\\s*[)|}]\\s*,\\s*)*[(|{]\\s*\\w+\\s*,(\\s*\\w+\\s*,)?\\s*\\w+\\s*[)|}]\\s*\\}\\s*$");
 
         if (regex_search(s, pattern_to_validate_a_complete_graph) == true)
@@ -61,7 +64,7 @@ namespace AboutGraphs
             match_str = matches.str();
             current_edge = Edge::from_string(match_str);
 
-            if (current_edge != NULL)
+            if (current_edge != Edge::EMPTY_EDGE)
             {
                 edges.push_back(current_edge);
                 if (current_edge->is_edge_pondered())
@@ -71,7 +74,7 @@ namespace AboutGraphs
             }
             else
                 cout << "The edge '" << match_str << "' in graph '" << string_representation << "' is not valid, so it will not be considered.\n";
-
+ 
             iterator++;
         }
     }
