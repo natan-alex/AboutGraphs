@@ -169,7 +169,7 @@ namespace AboutGraphs
         fill_adjacency_matrix();
         fill_incidency_matrix();
         fill_successor_adjacency_vectors();
-        // fill_predecessor_adjacency_vectors();
+        fill_predecessor_adjacency_vectors();
     }
 
     void Graph::fill_successor_adjacency_list()
@@ -229,10 +229,12 @@ namespace AboutGraphs
     void Graph::show_adjacency_list(list<list<string>> adjacency_list)
     {
         string vertice;
+
         for (auto list_iterator = adjacency_list.begin(); list_iterator != adjacency_list.end(); list_iterator++)
         {
             vertice = (*list_iterator).front();
             (*list_iterator).pop_front();
+
             cout << vertice << " --> ";
 
             for (auto item = (*list_iterator).begin(); item != (*list_iterator).end(); item++)
@@ -241,6 +243,7 @@ namespace AboutGraphs
             }
 
             (*list_iterator).push_front(vertice);
+
             cout << endl;
         }
     }
@@ -397,19 +400,9 @@ namespace AboutGraphs
         size_t number_of_edges = edges.size();
         representations.successor_adjacency_vector_start = new string[number_of_edges];
         representations.successor_adjacency_vector_end = new string[number_of_edges];
+
         fill_adjacency_vectors(representations.successor_adjacency_vector_start, representations.successor_adjacency_vector_end);
-        for (size_t i = 0; i < number_of_edges; i++)
-        {
-            cout << "suc adj vec start[" << i << "]: " << representations.successor_adjacency_vector_start[i] << endl;
-            cout << "suc adj vec end[" << i << "]: " << representations.successor_adjacency_vector_end[i] << endl;
-        }
         order_adjacency_vectors(representations.successor_adjacency_vector_start, representations.successor_adjacency_vector_end, number_of_edges);
-        cout << endl;
-        for (size_t i = 0; i < number_of_edges; i++)
-        {
-            cout << "suc adj vec start[" << i << "]: " << representations.successor_adjacency_vector_start[i] << endl;
-            cout << "suc adj vec end[" << i << "]: " << representations.successor_adjacency_vector_end[i] << endl;
-        }
     }
 
     void Graph::fill_predecessor_adjacency_vectors()
@@ -417,6 +410,7 @@ namespace AboutGraphs
         size_t number_of_edges = edges.size();
         representations.predecessor_adjacency_vector_start = new string[number_of_edges];
         representations.predecessor_adjacency_vector_end = new string[number_of_edges];
+
         fill_adjacency_vectors(representations.predecessor_adjacency_vector_start, representations.predecessor_adjacency_vector_end);
         order_adjacency_vectors(representations.predecessor_adjacency_vector_start, representations.predecessor_adjacency_vector_end, number_of_edges);
     }
@@ -436,24 +430,24 @@ namespace AboutGraphs
 
     void Graph::order_adjacency_vectors(string which_to_sort[], string other_vector[], size_t size)
     {
-        string temporary, temporary2;
+        string current_item_of_which_to_sort_vector, current_item_of_other_vector;
         int j;
 
         for (size_t i = 1; i < size; i++)
         {
-            temporary = which_to_sort[i];
-            temporary2 = other_vector[i];
+            current_item_of_which_to_sort_vector = which_to_sort[i];
+            current_item_of_other_vector = other_vector[i];
             j = i - 1;
 
-            while (j >= 0 && which_to_sort[j] > temporary)
+            while (j >= 0 && which_to_sort[j] > current_item_of_which_to_sort_vector)
             {
                 which_to_sort[j + 1] = which_to_sort[j];
                 other_vector[j + 1] = other_vector[j];
                 j--;
             }
 
-            which_to_sort[j + 1] = temporary;
-            other_vector[j + 1] = temporary2;
+            which_to_sort[j + 1] = current_item_of_which_to_sort_vector;
+            other_vector[j + 1] = current_item_of_other_vector;
         }
     }
 
