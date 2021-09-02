@@ -66,6 +66,7 @@ namespace AboutGraphs
         void fill_incidency_matrix();
         void fill_successor_adjacency_vectors();
         void fill_predecessor_adjacency_vectors();
+        void fill_adjacency_vectors(int start_vector[], int end_vector[]);
         void order_adjacency_vectors(int which_to_sort[], int other_vector[], size_t size);
 
         void check_if_the_graph_is_directed_based_on_the_statistics();
