@@ -66,7 +66,6 @@ namespace AboutGraphs
         void fill_incidency_matrix();
         void fill_successor_adjacency_vectors();
         void fill_predecessor_adjacency_vectors();
-        void fill_adjacency_vectors(string start_vector[], string end_vector[]);
         void order_adjacency_vectors(string which_to_sort[], string other_vector[], size_t size);
 
         void check_if_the_graph_is_directed_based_on_the_statistics();
@@ -76,6 +75,8 @@ namespace AboutGraphs
 
         void show_adjacency_list(list<list<string>> adjacency_list);
         int find_the_index_of_the_vertice(string &vertice);
+
+        void show_adjacency_vectors(string start_vector[], string end_vector[]);
     };
 }
 

@@ -398,34 +398,37 @@ namespace AboutGraphs
     void Graph::fill_successor_adjacency_vectors()
     {
         size_t number_of_edges = edges.size();
+        int current_index = 0;
+
         representations.successor_adjacency_vector_start = new string[number_of_edges];
         representations.successor_adjacency_vector_end = new string[number_of_edges];
 
-        fill_adjacency_vectors(representations.successor_adjacency_vector_start, representations.successor_adjacency_vector_end);
+        for (list<Edge *>::iterator edge = edges.begin(); edge != edges.end(); edge++)
+        {
+            representations.successor_adjacency_vector_start[current_index] = (*edge)->get_first_vertice();
+            representations.successor_adjacency_vector_end[current_index] = (*edge)->get_second_vertice();
+            current_index++;
+        }
+
         order_adjacency_vectors(representations.successor_adjacency_vector_start, representations.successor_adjacency_vector_end, number_of_edges);
     }
 
     void Graph::fill_predecessor_adjacency_vectors()
     {
         size_t number_of_edges = edges.size();
+        int current_index = 0;
+
         representations.predecessor_adjacency_vector_start = new string[number_of_edges];
         representations.predecessor_adjacency_vector_end = new string[number_of_edges];
 
-        fill_adjacency_vectors(representations.predecessor_adjacency_vector_start, representations.predecessor_adjacency_vector_end);
-        order_adjacency_vectors(representations.predecessor_adjacency_vector_start, representations.predecessor_adjacency_vector_end, number_of_edges);
-    }
-
-    void Graph::fill_adjacency_vectors(string start_vector[], string end_vector[])
-    {
-        size_t number_of_edges = edges.size();
-        int current_index = 0;
-
         for (list<Edge *>::iterator edge = edges.begin(); edge != edges.end(); edge++)
         {
-            start_vector[current_index] = (*edge)->get_first_vertice();
-            end_vector[current_index] = (*edge)->get_second_vertice();
+            representations.predecessor_adjacency_vector_end[current_index] = (*edge)->get_first_vertice();
+            representations.predecessor_adjacency_vector_start[current_index] = (*edge)->get_second_vertice();
             current_index++;
         }
+
+        order_adjacency_vectors(representations.predecessor_adjacency_vector_start, representations.predecessor_adjacency_vector_end, number_of_edges);
     }
 
     void Graph::order_adjacency_vectors(string which_to_sort[], string other_vector[], size_t size)
@@ -453,10 +456,31 @@ namespace AboutGraphs
 
     void Graph::show_successor_adjacency_vectors()
     {
+        show_adjacency_vectors(representations.successor_adjacency_vector_start, representations.successor_adjacency_vector_end);
     }
 
     void Graph::show_predecessor_adjacency_vectors()
     {
+        show_adjacency_vectors(representations.predecessor_adjacency_vector_start, representations.predecessor_adjacency_vector_end);
+    }
+
+    void Graph::show_adjacency_vectors(string start_vector[], string end_vector[]) 
+    {
+        cout << "[ ";
+
+        for (size_t i = 0; i < edges.size(); i++) {
+            cout << start_vector[i] << " ";
+        }
+
+        cout << "]\n";
+
+        cout << "[ ";
+
+        for (size_t i = 0; i < edges.size(); i++) {
+            cout << end_vector[i] << " ";
+        }
+
+        cout << "]\n";
     }
 
 }
@@ -468,20 +492,28 @@ int main()
     string s = "{  (hi, hello), ( say, hellooo ), (fooo, baaar), (baaars, fooos) }";
     AboutGraphs::Graph *g1 = AboutGraphs::Graph::from_string(s);
     // g1->show_successor_adjacency_list();
+    // cout << endl;
+    // g1->show_adjacency_matrix();
+    // cout << endl;
+    // g1->show_incidency_matrix();
+    // cout << endl;
+    g1->show_predecessor_adjacency_vectors();
     cout << endl;
-    g1->show_adjacency_matrix();
-    cout << endl;
-    g1->show_incidency_matrix();
+    g1->show_successor_adjacency_vectors();
     cout << endl;
     cout << endl;
 
     s = "{  (hey, ola, 10), ( diga, oi, 5 ), ( falaaa, oi, 3)}";
     g1 = AboutGraphs::Graph::from_string(s);
     // g1->show_successor_adjacency_list();
+    // cout << endl;
+    // g1->show_adjacency_matrix();
+    // cout << endl;
+    // g1->show_incidency_matrix();
+    // cout << endl;
+    g1->show_predecessor_adjacency_vectors();
     cout << endl;
-    g1->show_adjacency_matrix();
-    cout << endl;
-    g1->show_incidency_matrix();
+    g1->show_successor_adjacency_vectors();
     cout << endl;
     cout << endl;
 
