@@ -28,10 +28,10 @@ namespace AboutGraphs
             int **incidency_matrix;
             list<list<string>> successor_adjacency_list;
             list<list<string>> predecessor_adjacency_list;
-            string *successor_adjacency_vector_start;
-            string *successor_adjacency_vector_end;
-            string *predecessor_adjacency_vector_start;
-            string *predecessor_adjacency_vector_end;
+            int *successor_adjacency_vector_start;
+            int *successor_adjacency_vector_end;
+            int *predecessor_adjacency_vector_start;
+            int *predecessor_adjacency_vector_end;
         };
 
         ~Graph();
@@ -66,7 +66,7 @@ namespace AboutGraphs
         void fill_incidency_matrix();
         void fill_successor_adjacency_vectors();
         void fill_predecessor_adjacency_vectors();
-        void order_adjacency_vectors(string which_to_sort[], string other_vector[], size_t size);
+        void order_adjacency_vectors(int which_to_sort[], int other_vector[], size_t size);
 
         void check_if_the_graph_is_directed_based_on_the_statistics();
         void check_if_the_graph_is_pondered_based_on_the_statistics();
@@ -76,7 +76,7 @@ namespace AboutGraphs
         void show_adjacency_list(list<list<string>> adjacency_list);
         int find_the_index_of_the_vertice(string &vertice);
 
-        void show_adjacency_vectors(string start_vector[], string end_vector[]);
+        void show_adjacency_vectors(int start_vector[], int end_vector[]);
     };
 }
 

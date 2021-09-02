@@ -107,12 +107,10 @@ namespace AboutGraphs
             }
 
             check_if_there_are_directed_and_undirected_edges_at_the_same_time();
-
             check_if_there_are_pondered_and_unpondered_edges_at_the_same_time();
         }
 
         check_if_the_graph_is_directed_based_on_the_statistics();
-
         check_if_the_graph_is_pondered_based_on_the_statistics();
     }
 
@@ -122,7 +120,7 @@ namespace AboutGraphs
         {
             string error_message = "A graph can not have directed an undirected edges at the same time, so the graph '";
             error_message.append(string_representation);
-            error_message.append("' is not valid.");
+            error_message.append("' is isvalid.");
             throw invalid_argument(error_message);
         }
     }
@@ -133,7 +131,7 @@ namespace AboutGraphs
         {
             string error_message = "A graph can not have pondered an unpondered edges at the same time, so the graph '";
             error_message.append(string_representation);
-            error_message.append("' is not valid.");
+            error_message.append("' is invalid.");
             throw invalid_argument(error_message);
         }
     }
@@ -285,6 +283,7 @@ namespace AboutGraphs
             {
                 return index;
             }
+
             index++;
         }
 
@@ -400,13 +399,13 @@ namespace AboutGraphs
         size_t number_of_edges = edges.size();
         int current_index = 0;
 
-        representations.successor_adjacency_vector_start = new string[number_of_edges];
-        representations.successor_adjacency_vector_end = new string[number_of_edges];
+        representations.successor_adjacency_vector_start = new int[number_of_edges];
+        representations.successor_adjacency_vector_end = new int[number_of_edges];
 
         for (list<Edge *>::iterator edge = edges.begin(); edge != edges.end(); edge++)
         {
-            representations.successor_adjacency_vector_start[current_index] = (*edge)->get_first_vertice();
-            representations.successor_adjacency_vector_end[current_index] = (*edge)->get_second_vertice();
+            representations.successor_adjacency_vector_start[current_index] = find_the_index_of_the_vertice((*edge)->get_first_vertice());
+            representations.successor_adjacency_vector_end[current_index] = find_the_index_of_the_vertice((*edge)->get_second_vertice());
             current_index++;
         }
 
@@ -418,22 +417,22 @@ namespace AboutGraphs
         size_t number_of_edges = edges.size();
         int current_index = 0;
 
-        representations.predecessor_adjacency_vector_start = new string[number_of_edges];
-        representations.predecessor_adjacency_vector_end = new string[number_of_edges];
+        representations.predecessor_adjacency_vector_start = new int[number_of_edges];
+        representations.predecessor_adjacency_vector_end = new int[number_of_edges];
 
         for (list<Edge *>::iterator edge = edges.begin(); edge != edges.end(); edge++)
         {
-            representations.predecessor_adjacency_vector_end[current_index] = (*edge)->get_first_vertice();
-            representations.predecessor_adjacency_vector_start[current_index] = (*edge)->get_second_vertice();
+            representations.predecessor_adjacency_vector_end[current_index] = find_the_index_of_the_vertice((*edge)->get_first_vertice());
+            representations.predecessor_adjacency_vector_start[current_index] = find_the_index_of_the_vertice((*edge)->get_second_vertice());
             current_index++;
         }
 
         order_adjacency_vectors(representations.predecessor_adjacency_vector_start, representations.predecessor_adjacency_vector_end, number_of_edges);
     }
 
-    void Graph::order_adjacency_vectors(string which_to_sort[], string other_vector[], size_t size)
+    void Graph::order_adjacency_vectors(int which_to_sort[], int other_vector[], size_t size)
     {
-        string current_item_of_which_to_sort_vector, current_item_of_other_vector;
+        int current_item_of_which_to_sort_vector, current_item_of_other_vector;
         int j;
 
         for (size_t i = 1; i < size; i++)
@@ -464,7 +463,7 @@ namespace AboutGraphs
         show_adjacency_vectors(representations.predecessor_adjacency_vector_start, representations.predecessor_adjacency_vector_end);
     }
 
-    void Graph::show_adjacency_vectors(string start_vector[], string end_vector[]) 
+    void Graph::show_adjacency_vectors(int start_vector[], int end_vector[]) 
     {
         cout << "[ ";
 
