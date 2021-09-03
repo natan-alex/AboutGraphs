@@ -166,6 +166,7 @@ namespace AboutGraphs
         fill_predecessor_adjacency_list();
         fill_adjacency_matrix();
         fill_incidency_matrix();
+        fill_adjacency_vectors();
         fill_successor_adjacency_vectors();
         fill_predecessor_adjacency_vectors();
     }
@@ -396,33 +397,33 @@ namespace AboutGraphs
 
     void Graph::fill_successor_adjacency_vectors()
     {
-        size_t number_of_edges = edges.size();
-        representations.successor_adjacency_vector_start = new int[number_of_edges];
-        representations.successor_adjacency_vector_end = new int[number_of_edges];
-
-        fill_adjacency_vectors(representations.successor_adjacency_vector_start, representations.successor_adjacency_vector_end);
         order_adjacency_vectors(representations.successor_adjacency_vector_start, representations.successor_adjacency_vector_end, edges.size());
     }
 
     void Graph::fill_predecessor_adjacency_vectors()
     {
-        size_t number_of_edges = edges.size();
-        representations.predecessor_adjacency_vector_start = new int[number_of_edges];
-        representations.predecessor_adjacency_vector_end = new int[number_of_edges];
-
-        fill_adjacency_vectors(representations.predecessor_adjacency_vector_start, representations.predecessor_adjacency_vector_end);
         order_adjacency_vectors(representations.predecessor_adjacency_vector_end, representations.predecessor_adjacency_vector_start, edges.size());
     }
 
-    void Graph::fill_adjacency_vectors(int start_vector[], int end_vector[])
+    void Graph::fill_adjacency_vectors()
     {
         size_t number_of_edges = edges.size();
         int current_index = 0;
+        int index_of_first_vertice, index_of_second_vertice;
+
+        representations.predecessor_adjacency_vector_start = new int[number_of_edges];
+        representations.predecessor_adjacency_vector_end = new int[number_of_edges];
+        representations.successor_adjacency_vector_start = new int[number_of_edges];
+        representations.successor_adjacency_vector_end = new int[number_of_edges];
 
         for (list<Edge *>::iterator edge = edges.begin(); edge != edges.end(); edge++)
         {
-            start_vector[current_index] = find_the_index_of_the_vertice((*edge)->get_first_vertice());
-            end_vector[current_index] = find_the_index_of_the_vertice((*edge)->get_second_vertice());
+            index_of_first_vertice = find_the_index_of_the_vertice((*edge)->get_first_vertice());
+            index_of_second_vertice = find_the_index_of_the_vertice((*edge)->get_second_vertice());
+            representations.predecessor_adjacency_vector_start[current_index] = index_of_first_vertice;
+            representations.successor_adjacency_vector_start[current_index] = index_of_first_vertice;
+            representations.predecessor_adjacency_vector_end[current_index] = index_of_second_vertice;
+            representations.successor_adjacency_vector_end[current_index] = index_of_second_vertice;
             current_index++;
         }
     }
