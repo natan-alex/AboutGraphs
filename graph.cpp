@@ -386,7 +386,7 @@ namespace AboutGraphs
                 if ((*edge_iterator)->is_edge_pondered())
                     cout << " | " << (*edge_iterator)->get_edge_value();
 
-                cout << "\t\t";
+                cout << "\t";
                 edge_iterator++;
             }
 
