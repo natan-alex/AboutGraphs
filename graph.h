@@ -28,10 +28,10 @@ namespace AboutGraphs
             int **incidency_matrix;
             list<list<string>> successor_adjacency_list;
             list<list<string>> predecessor_adjacency_list;
-            int *successor_adjacency_vector_start;
-            int *successor_adjacency_vector_end;
-            int *predecessor_adjacency_vector_start;
-            int *predecessor_adjacency_vector_end;
+            int *successor_adjacency_array_start;
+            int *successor_adjacency_array_end;
+            int *predecessor_adjacency_array_start;
+            int *predecessor_adjacency_array_end;
         };
 
         ~Graph();
@@ -44,8 +44,8 @@ namespace AboutGraphs
         void show_successor_adjacency_list();
         void show_adjacency_matrix();
         void show_incidency_matrix();
-        void show_predecessor_adjacency_vectors();
-        void show_successor_adjacency_vectors();
+        void show_predecessor_adjacency_arrays();
+        void show_successor_adjacency_arrays();
 
     private:
         string string_representation;
@@ -64,10 +64,10 @@ namespace AboutGraphs
         void fill_predecessor_adjacency_list();
         void fill_adjacency_matrix();
         void fill_incidency_matrix();
-        void fill_successor_adjacency_vectors();
-        void fill_predecessor_adjacency_vectors();
-        void fill_adjacency_vectors();
-        void order_adjacency_vectors(int which_to_sort[], int other_vector[], size_t size);
+        void reorder_successor_adjacency_arrays();
+        void reorder_predecessor_adjacency_arrays();
+        void fill_adjacency_arrays_increasing_their_indices_by_one();
+        void order_adjacency_arrays(int which_to_sort[], int other_array[], size_t size);
 
         void check_if_the_graph_is_directed_based_on_the_statistics();
         void check_if_the_graph_is_pondered_based_on_the_statistics();
@@ -77,7 +77,9 @@ namespace AboutGraphs
         void show_adjacency_list(list<list<string>> adjacency_list);
         int find_the_index_of_the_vertice(string &vertice);
 
-        void show_adjacency_vectors(int start_vector[], int end_vector[]);
+        int *get_reordered_sorted_adjacency_array(int sorted_array[]);
+        void show_adjacency_arrays(int sorted_array[], int other_array[]);
+        void show_vertices_set();
     };
 }
 

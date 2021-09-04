@@ -166,9 +166,9 @@ namespace AboutGraphs
         fill_predecessor_adjacency_list();
         fill_adjacency_matrix();
         fill_incidency_matrix();
-        fill_adjacency_vectors();
-        fill_successor_adjacency_vectors();
-        fill_predecessor_adjacency_vectors();
+        fill_adjacency_arrays_increasing_their_indices_by_one();
+        reorder_successor_adjacency_arrays();
+        reorder_predecessor_adjacency_arrays();
     }
 
     void Graph::fill_successor_adjacency_list()
@@ -395,122 +395,180 @@ namespace AboutGraphs
         }
     }
 
-    void Graph::fill_successor_adjacency_vectors()
-    {
-        order_adjacency_vectors(representations.successor_adjacency_vector_start, representations.successor_adjacency_vector_end, edges.size());
-    }
-
-    void Graph::fill_predecessor_adjacency_vectors()
-    {
-        order_adjacency_vectors(representations.predecessor_adjacency_vector_end, representations.predecessor_adjacency_vector_start, edges.size());
-    }
-
-    void Graph::fill_adjacency_vectors()
+    void Graph::fill_adjacency_arrays_increasing_their_indices_by_one()
     {
         size_t number_of_edges = edges.size();
         int current_index = 0;
         int index_of_first_vertice, index_of_second_vertice;
 
-        representations.predecessor_adjacency_vector_start = new int[number_of_edges];
-        representations.predecessor_adjacency_vector_end = new int[number_of_edges];
-        representations.successor_adjacency_vector_start = new int[number_of_edges];
-        representations.successor_adjacency_vector_end = new int[number_of_edges];
+        representations.predecessor_adjacency_array_start = new int[number_of_edges];
+        representations.predecessor_adjacency_array_end = new int[number_of_edges];
+        representations.successor_adjacency_array_start = new int[number_of_edges];
+        representations.successor_adjacency_array_end = new int[number_of_edges];
 
         for (list<Edge *>::iterator edge = edges.begin(); edge != edges.end(); edge++)
         {
             index_of_first_vertice = find_the_index_of_the_vertice((*edge)->get_first_vertice());
             index_of_second_vertice = find_the_index_of_the_vertice((*edge)->get_second_vertice());
-            representations.predecessor_adjacency_vector_start[current_index] = index_of_first_vertice;
-            representations.successor_adjacency_vector_start[current_index] = index_of_first_vertice;
-            representations.predecessor_adjacency_vector_end[current_index] = index_of_second_vertice;
-            representations.successor_adjacency_vector_end[current_index] = index_of_second_vertice;
+            representations.predecessor_adjacency_array_start[current_index] = index_of_first_vertice + 1;
+            representations.successor_adjacency_array_start[current_index] = index_of_first_vertice + 1;
+            representations.predecessor_adjacency_array_end[current_index] = index_of_second_vertice + 1;
+            representations.successor_adjacency_array_end[current_index] = index_of_second_vertice + 1;
             current_index++;
         }
     }
 
-    void Graph::order_adjacency_vectors(int which_to_sort[], int other_vector[], size_t size)
+    void Graph::reorder_successor_adjacency_arrays()
     {
-        int current_item_of_which_to_sort_vector, current_item_of_other_vector;
+        order_adjacency_arrays(representations.successor_adjacency_array_start, representations.successor_adjacency_array_end, edges.size());
+        representations.successor_adjacency_array_start = get_reordered_sorted_adjacency_array(representations.successor_adjacency_array_start);
+    }
+
+    void Graph::reorder_predecessor_adjacency_arrays()
+    {
+        order_adjacency_arrays(representations.predecessor_adjacency_array_end, representations.predecessor_adjacency_array_start, edges.size());
+        representations.predecessor_adjacency_array_end = get_reordered_sorted_adjacency_array(representations.predecessor_adjacency_array_end);
+    }
+
+    void Graph::order_adjacency_arrays(int which_to_sort[], int other_array[], size_t size)
+    {
+        int current_item_of_which_to_sort_array, current_item_of_other_array;
         int j;
 
         for (size_t i = 1; i < size; i++)
         {
-            current_item_of_which_to_sort_vector = which_to_sort[i];
-            current_item_of_other_vector = other_vector[i];
+            current_item_of_which_to_sort_array = which_to_sort[i];
+            current_item_of_other_array = other_array[i];
             j = i - 1;
 
-            while (j >= 0 && which_to_sort[j] > current_item_of_which_to_sort_vector)
+            while (j >= 0 && which_to_sort[j] > current_item_of_which_to_sort_array)
             {
                 which_to_sort[j + 1] = which_to_sort[j];
-                other_vector[j + 1] = other_vector[j];
+                other_array[j + 1] = other_array[j];
                 j--;
             }
 
-            which_to_sort[j + 1] = current_item_of_which_to_sort_vector;
-            other_vector[j + 1] = current_item_of_other_vector;
+            which_to_sort[j + 1] = current_item_of_which_to_sort_array;
+            other_array[j + 1] = current_item_of_other_array;
         }
     }
 
-    void Graph::show_successor_adjacency_vectors()
+    int * Graph::get_reordered_sorted_adjacency_array(int sorted_array[])
     {
-        show_adjacency_vectors(representations.successor_adjacency_vector_start, representations.successor_adjacency_vector_end);
+        size_t number_of_edges = edges.size();
+        size_t number_of_vertices = vertices.size();
+        int current_value_of_sorted_array, index_from_where_to_read_from_sorted_array = number_of_edges - 1;
+        int *new_array_containing_the_indices_of_the_vertices = new int[number_of_vertices + 1];
+        int index_where_to_insert_in_the_new_array = number_of_vertices - 1;
+        bool was_index_where_to_insert_in_new_array_found_on_sorted_array;
+
+        new_array_containing_the_indices_of_the_vertices[number_of_vertices] = number_of_edges + 1;
+
+        while (index_where_to_insert_in_the_new_array >= 0)
+        {
+            current_value_of_sorted_array = sorted_array[index_from_where_to_read_from_sorted_array];
+
+            while (sorted_array[index_from_where_to_read_from_sorted_array - 1] == current_value_of_sorted_array)
+                index_from_where_to_read_from_sorted_array--;
+
+            was_index_where_to_insert_in_new_array_found_on_sorted_array= false;
+            for (size_t i = 0; i < number_of_edges; i++)
+                if (sorted_array[i] == index_where_to_insert_in_the_new_array + 1)
+                {
+                    was_index_where_to_insert_in_new_array_found_on_sorted_array = true;
+                    i = number_of_edges;
+                }
+
+            if (was_index_where_to_insert_in_new_array_found_on_sorted_array)
+                new_array_containing_the_indices_of_the_vertices[index_where_to_insert_in_the_new_array] = index_from_where_to_read_from_sorted_array-- + 1;
+            else
+                new_array_containing_the_indices_of_the_vertices[index_where_to_insert_in_the_new_array] = new_array_containing_the_indices_of_the_vertices[index_where_to_insert_in_the_new_array + 1];
+
+            index_where_to_insert_in_the_new_array--;
+        }
+
+        return new_array_containing_the_indices_of_the_vertices;
     }
 
-    void Graph::show_predecessor_adjacency_vectors()
+    void Graph::show_successor_adjacency_arrays()
     {
-        show_adjacency_vectors(representations.predecessor_adjacency_vector_start, representations.predecessor_adjacency_vector_end);
+        show_adjacency_arrays(representations.successor_adjacency_array_start, representations.successor_adjacency_array_end);
     }
 
-    void Graph::show_adjacency_vectors(int start_vector[], int end_vector[]) 
+    void Graph::show_predecessor_adjacency_arrays()
     {
-        cout << "[ ";
+        show_adjacency_arrays(representations.predecessor_adjacency_array_end, representations.predecessor_adjacency_array_start);
+    }
 
-        for (size_t i = 0; i < edges.size(); i++) {
-            cout << start_vector[i] << " ";
+    void Graph::show_adjacency_arrays(int sorted_array[], int other_array[]) 
+    {
+        show_vertices_set();
+
+        cout << "Start array indices: [ ";
+
+        for (size_t i = 0; i < vertices.size() + 1; i++) {
+            cout << sorted_array[i] << " ";
         }
 
         cout << "]\n";
 
-        cout << "[ ";
+        cout << "End array indices: [ ";
 
         for (size_t i = 0; i < edges.size(); i++) {
-            cout << end_vector[i] << " ";
+            cout << other_array[i] << " ";
         }
 
         cout << "]\n";
     }
 
+    void Graph::show_vertices_set() {
+        cout << "Vertice set: { ";
+        set<string>::iterator vertices_iterator = vertices.begin();
+
+        for (size_t i = 0; i < vertices.size() - 1; i++)
+        {
+            cout << (*vertices_iterator) << ", ";
+            vertices_iterator++;
+        }
+
+        cout << (*vertices_iterator) << " }\n";
+    }
 }
 
 int main()
 {
     auto start = std::chrono::high_resolution_clock::now();
 
-    string s = "{  (hi, hello), ( say, hellooo ), (fooo, baaar), (baaars, fooos) }";
+    // string s = "{  (hi, hello), ( say, hellooo ), (fooo, baaar), (baaars, fooos) }";
+    string s = "{(1,3),(1,5),(2,3),(2,6),(3,4),(4,5),(4,6)}";
     AboutGraphs::Graph *g1 = AboutGraphs::Graph::from_string(s);
     // g1->show_successor_adjacency_list();
     // cout << endl;
+    // g1->show_predecessor_adjacency_list();
+    // cout << endl;
     // g1->show_adjacency_matrix();
     // cout << endl;
     // g1->show_incidency_matrix();
     // cout << endl;
-    g1->show_predecessor_adjacency_vectors();
+    g1->show_predecessor_adjacency_arrays();
     cout << endl;
-    g1->show_successor_adjacency_vectors();
+    g1->show_successor_adjacency_arrays();
     cout << endl;
     cout << endl;
 
-    s = "{  (hey, ola, 10), ( diga, oi, 5 ), ( falaaa, oi, 3)}";
+    s = "{(1,3),(2,1),(2,3),(3,4),(4,2),(4,5),(5,3)}";
     g1 = AboutGraphs::Graph::from_string(s);
     // g1->show_successor_adjacency_list();
+    // cout << endl;
+    // g1->show_predecessor_adjacency_list();
     // cout << endl;
     // g1->show_adjacency_matrix();
     // cout << endl;
     // g1->show_incidency_matrix();
     // cout << endl;
-    g1->show_predecessor_adjacency_vectors();
+    g1->show_predecessor_adjacency_arrays();
     cout << endl;
-    g1->show_successor_adjacency_vectors();
+    g1->show_successor_adjacency_arrays();
     cout << endl;
     cout << endl;
 
