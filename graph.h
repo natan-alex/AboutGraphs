@@ -46,6 +46,7 @@ namespace AboutGraphs
         void show_incidency_matrix();
         void show_predecessor_adjacency_arrays();
         void show_successor_adjacency_arrays();
+        void show_all_representations();
 
     private:
         string string_representation;

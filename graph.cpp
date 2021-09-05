@@ -3,6 +3,7 @@
 #include <regex>
 #include <list>
 #include <set>
+#include <fstream>
 
 #include <chrono>
 
@@ -533,50 +534,51 @@ namespace AboutGraphs
 
         cout << (*vertices_iterator) << " }\n";
     }
+
+    void Graph::show_all_representations() 
+    {
+        cout << "\n  REPRESENTATIONS FOR GRAPH: " << string_representation << endl;
+        cout << "\n\tADJACENCY MATRIX\n";
+        show_adjacency_matrix();
+
+        cout << "\n\tINCIDENCY MATRIX\n";
+        show_incidency_matrix();
+
+        cout << "\n\tPREDECESSOR ADJACENCY LIST\n";
+        show_predecessor_adjacency_list();
+
+        cout << "\n\tSUCCESSOR ADJACENCY LIST\n";
+        show_successor_adjacency_list();
+
+        cout << "\n\tPREDECESSOR ADJACENCY ARRAYS\n";
+        show_predecessor_adjacency_arrays();
+
+        cout << "\n\tSUCCESSOR ADJACENCY ARRAYS\n";
+        show_successor_adjacency_arrays();
+        cout << endl;
+    }
 }
 
 int main()
 {
     auto start = std::chrono::high_resolution_clock::now();
 
-    // string s = "{  (hi, hello), ( say, hellooo ), (fooo, baaar), (baaars, fooos) }";
-    string s = "{(1,3),(1,5),(2,3),(2,6),(3,4),(4,5),(4,6)}";
-    AboutGraphs::Graph *g1 = AboutGraphs::Graph::from_string(s);
-    // g1->show_successor_adjacency_list();
-    // cout << endl;
-    // g1->show_predecessor_adjacency_list();
-    // cout << endl;
-    // g1->show_adjacency_matrix();
-    // cout << endl;
-    // g1->show_incidency_matrix();
-    // cout << endl;
-    g1->show_predecessor_adjacency_arrays();
-    cout << endl;
-    g1->show_successor_adjacency_arrays();
-    cout << endl;
-    cout << endl;
+    std::ifstream file("graphs.txt");
+    string file_line;
+    AboutGraphs::Graph * graph;
 
-    s = "{(1,3),(2,1),(2,3),(3,4),(4,2),(4,5),(5,3)}";
-    g1 = AboutGraphs::Graph::from_string(s);
-    // g1->show_successor_adjacency_list();
-    // cout << endl;
-    // g1->show_predecessor_adjacency_list();
-    // cout << endl;
-    // g1->show_adjacency_matrix();
-    // cout << endl;
-    // g1->show_incidency_matrix();
-    // cout << endl;
-    g1->show_predecessor_adjacency_arrays();
-    cout << endl;
-    g1->show_successor_adjacency_arrays();
-    cout << endl;
-    cout << endl;
+    while (std::getline(file, file_line))
+    {
+        graph = AboutGraphs::Graph::from_string(file_line);
+        graph->show_all_representations();
+    }
+
+    delete graph;
+    file.close();
 
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duration = end - start;
-    cout << "duration: " << duration.count() * 1000 << "ms\n";
-
-    delete g1;
+    cout << "Duration: " << duration.count() * 1000 << "ms\n";
 
     return EXIT_SUCCESS;
 }
