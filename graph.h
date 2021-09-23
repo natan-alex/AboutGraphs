@@ -34,6 +34,12 @@ namespace AboutGraphs
             int *predecessor_adjacency_array_end;
         };
 
+        struct DeepSearchStructures
+        {
+            int *discovery_times;
+            int *end_times;
+        };
+
         ~Graph();
 
         static Graph *const EMPTY_GRAPH;
@@ -48,6 +54,8 @@ namespace AboutGraphs
         void show_successor_adjacency_arrays();
         void show_all_representations();
 
+        void make_deep_search_and_compute_times_in_arrays();
+
     private:
         string string_representation;
         list<Edge *> edges;
@@ -57,6 +65,7 @@ namespace AboutGraphs
         bool is_graph_directed;
         GraphStatistics statistics;
         GraphRepresentations representations;
+        DeepSearchStructures deepSearchStructures;
 
         void fill_edge_list_and_vertice_set();
         void fill_graph_properties();
@@ -81,6 +90,9 @@ namespace AboutGraphs
         int *get_reordered_sorted_adjacency_array(int sorted_array[]);
         void show_adjacency_arrays(int sorted_array[], int other_array[]);
         void show_vertices_set();
+
+        int index_of_vertice_in_successor_adjacency_list(string &vertice);
+        list<list<string>>::iterator get_vertice_on_index_of_successor_adjacency_list(int index);
     };
 }
 

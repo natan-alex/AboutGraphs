@@ -3,6 +3,7 @@
 #include <regex>
 #include <list>
 #include <set>
+#include <stack>
 #include <fstream>
 
 #include <chrono>
@@ -557,7 +558,72 @@ namespace AboutGraphs
         show_successor_adjacency_arrays();
         cout << endl;
     }
+
+    void Graph::make_deep_search_and_compute_times_in_arrays()
+    {
+        stack<string> discovered_vertices;
+        list<list<string>>::iterator current_list = representations.successor_adjacency_list.begin();
+        string current_vertice = (*current_list).front();
+        int number_of_vertices = vertices.size();
+        int index_of_current_list;
+
+        deepSearchStructures.discovery_times = new int[number_of_vertices];
+        deepSearchStructures.end_times = new int[number_of_vertices];
+
+        for (int i = 0; i < number_of_vertices; i++)
+        {
+            deepSearchStructures.discovery_times[i] = -1;
+            deepSearchStructures.end_times[i] = -1;
+        }
+
+        show_successor_adjacency_list();
+        cout << endl;
+
+        for (int time_counter = 1; time_counter <= 2 * number_of_vertices; time_counter++)
+        {
+            index_of_current_list = index_of_vertice_in_successor_adjacency_list( current_list );
+
+            if (deepSearchStructures.discovery_times[index_of_current_list] == -1)
+            {
+                deepSearchStructures.discovery_times[index_of_current_list] = time_counter;
+                discovered_vertices.push(current_vertice);
+                current_vertice = get_vertice_on_index_of_successor_adjacency_list(index_of_current_list);
+            }
+
+            cout << deepSearchStructures.discovery_times[index_of_current_list] << " ";
+        }
+    }
+
+    int Graph::index_of_vertice_in_successor_adjacency_list(string &vertice)
+    {
+        int index = 0;
+
+        for (list<string> list : representations.successor_adjacency_list)
+        {
+            if (list.front() == vertice)
+            {
+                return index;
+            }
+
+            index++;
+        }
+
+        return -1;
+    }
+
+    list<list<string>>::iterator Graph::get_vertice_on_index_of_successor_adjacency_list(int index)
+    {
+        list<list<string>>::iterator successor_adjacency_list_iterator = representations.successor_adjacency_list.begin();
+
+        for (int current_index = 0; current_index < index; current_index++)
+        {
+            successor_adjacency_list_iterator.operator++;
+        }
+
+        return successor_adjacency_list_iterator;
+    }
 }
+
 
 int main()
 {
@@ -570,8 +636,10 @@ int main()
     while (std::getline(file, file_line))
     {
         graph = AboutGraphs::Graph::from_string(file_line);
-        graph->show_all_representations();
+        // graph->show_all_representations();
     }
+
+    graph->make_deep_search_and_compute_times_in_arrays();
 
     delete graph;
     file.close();
