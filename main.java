@@ -1,11 +1,12 @@
 import java.util.Scanner;
 
-public class mainn{
+public class Main {
 
     public static Scanner in = new Scanner(System.in);
     public static int quantNos;
     public static int quantArestas;
     public static int[] no;
+
     public static void main(String args[]) {
         String entry = in.nextLine();
         Arestas[] arestas = readEntry(entry);
