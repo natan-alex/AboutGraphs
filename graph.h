@@ -53,6 +53,7 @@ namespace AboutGraphs
         void show_predecessor_adjacency_arrays();
         void show_successor_adjacency_arrays();
         void show_all_representations();
+        void show_deep_search_structures();
 
         void make_deep_search_and_compute_times_in_arrays();
 
@@ -91,8 +92,9 @@ namespace AboutGraphs
         void show_adjacency_arrays(int sorted_array[], int other_array[]);
         void show_vertices_set();
 
-        int index_of_vertice_in_successor_adjacency_list(string &vertice);
-        list<list<string>>::iterator get_vertice_on_index_of_successor_adjacency_list(int index);
+        void initialize_deep_search_structures();
+        int index_of_list_in_successor_adjacency_list(string &list_head);
+        list<list<string>>::iterator get_list_on_index_in_successor_adjacency_list(int index);
     };
 }
 

@@ -76,7 +76,7 @@ namespace AboutGraphs
             }
             else
                 cout << "The edge '" << match_str << "' in graph '" << string_representation << "' is not valid, so it will not be considered.\n";
- 
+
             iterator++;
         }
     }
@@ -455,7 +455,7 @@ namespace AboutGraphs
         }
     }
 
-    int * Graph::get_reordered_sorted_adjacency_array(int sorted_array[])
+    int *Graph::get_reordered_sorted_adjacency_array(int sorted_array[])
     {
         size_t number_of_edges = edges.size();
         size_t number_of_vertices = vertices.size();
@@ -473,7 +473,7 @@ namespace AboutGraphs
             while (sorted_array[index_from_where_to_read_from_sorted_array - 1] == current_value_of_sorted_array)
                 index_from_where_to_read_from_sorted_array--;
 
-            was_index_where_to_insert_in_new_array_found_on_sorted_array= false;
+            was_index_where_to_insert_in_new_array_found_on_sorted_array = false;
             for (size_t i = 0; i < number_of_edges; i++)
                 if (sorted_array[i] == index_where_to_insert_in_the_new_array + 1)
                 {
@@ -502,13 +502,14 @@ namespace AboutGraphs
         show_adjacency_arrays(representations.predecessor_adjacency_array_end, representations.predecessor_adjacency_array_start);
     }
 
-    void Graph::show_adjacency_arrays(int sorted_array[], int other_array[]) 
+    void Graph::show_adjacency_arrays(int sorted_array[], int other_array[])
     {
         show_vertices_set();
 
         cout << "Start array indices: [ ";
 
-        for (size_t i = 0; i < vertices.size() + 1; i++) {
+        for (size_t i = 0; i < vertices.size() + 1; i++)
+        {
             cout << sorted_array[i] << " ";
         }
 
@@ -516,14 +517,16 @@ namespace AboutGraphs
 
         cout << "End array indices: [ ";
 
-        for (size_t i = 0; i < edges.size(); i++) {
+        for (size_t i = 0; i < edges.size(); i++)
+        {
             cout << other_array[i] << " ";
         }
 
         cout << "]\n";
     }
 
-    void Graph::show_vertices_set() {
+    void Graph::show_vertices_set()
+    {
         cout << "Vertice set: { ";
         set<string>::iterator vertices_iterator = vertices.begin();
 
@@ -536,7 +539,7 @@ namespace AboutGraphs
         cout << (*vertices_iterator) << " }\n";
     }
 
-    void Graph::show_all_representations() 
+    void Graph::show_all_representations()
     {
         cout << "\n  REPRESENTATIONS FOR GRAPH: " << string_representation << endl;
         cout << "\n\tADJACENCY MATRIX\n";
@@ -561,12 +564,55 @@ namespace AboutGraphs
 
     void Graph::make_deep_search_and_compute_times_in_arrays()
     {
-        stack<string> discovered_vertices;
+        stack<list<string>::iterator> discovered_vertices;
+        stack<list<list<string>>::iterator> discovered_lists;
         list<list<string>>::iterator current_list = representations.successor_adjacency_list.begin();
-        string current_vertice = (*current_list).front();
-        int number_of_vertices = vertices.size();
-        int index_of_current_list;
+        int index_of_current_list = 0;
+        list<string>::iterator current_vertice = (*current_list).begin();
 
+        initialize_deep_search_structures();
+
+        for (size_t time_counter = 1; time_counter <= 2 * vertices.size(); time_counter++)
+        {
+            cout << "current_vertice: " << *current_vertice << endl;
+            cout << "index_of_current_list:" << index_of_current_list << endl;
+            cout << "current list head: " << (*current_list).front() << endl;
+
+            if (deepSearchStructures.discovery_times[index_of_current_list] == -1)
+            {
+                deepSearchStructures.discovery_times[index_of_current_list] == time_counter;
+                discovered_vertices.push(current_vertice);
+                discovered_lists.push(current_list);
+            }
+            else
+            {
+                discovered_vertices.pop();
+                current_vertice = discovered_vertices.top();
+                index_of_current_list = index_of_list_in_successor_adjacency_list(*current_vertice);
+                current_list = get_list_on_index_in_successor_adjacency_list(index_of_current_list);
+            }
+
+            if (current_vertice == (*current_list).end())
+            {
+                cout << "end\n";
+                deepSearchStructures.end_times[index_of_current_list] = time_counter;
+                discovered_vertices.pop();
+                current_vertice = discovered_vertices.top();
+                index_of_current_list = index_of_list_in_successor_adjacency_list(*current_vertice);
+                current_list = get_list_on_index_in_successor_adjacency_list(index_of_current_list);
+            }
+            else
+            {
+                current_vertice++;
+                index_of_current_list = index_of_list_in_successor_adjacency_list(*current_vertice);
+                current_list = get_list_on_index_in_successor_adjacency_list(index_of_current_list);
+            }
+        }
+    }
+
+    void Graph::initialize_deep_search_structures()
+    {
+        int number_of_vertices = vertices.size();
         deepSearchStructures.discovery_times = new int[number_of_vertices];
         deepSearchStructures.end_times = new int[number_of_vertices];
 
@@ -575,32 +621,15 @@ namespace AboutGraphs
             deepSearchStructures.discovery_times[i] = -1;
             deepSearchStructures.end_times[i] = -1;
         }
-
-        show_successor_adjacency_list();
-        cout << endl;
-
-        for (int time_counter = 1; time_counter <= 2 * number_of_vertices; time_counter++)
-        {
-            index_of_current_list = index_of_vertice_in_successor_adjacency_list( current_list );
-
-            if (deepSearchStructures.discovery_times[index_of_current_list] == -1)
-            {
-                deepSearchStructures.discovery_times[index_of_current_list] = time_counter;
-                discovered_vertices.push(current_vertice);
-                current_vertice = get_vertice_on_index_of_successor_adjacency_list(index_of_current_list);
-            }
-
-            cout << deepSearchStructures.discovery_times[index_of_current_list] << " ";
-        }
     }
 
-    int Graph::index_of_vertice_in_successor_adjacency_list(string &vertice)
+    int Graph::index_of_list_in_successor_adjacency_list(string &list_head)
     {
         int index = 0;
 
         for (list<string> list : representations.successor_adjacency_list)
         {
-            if (list.front() == vertice)
+            if (list.front() == list_head)
             {
                 return index;
             }
@@ -611,19 +640,35 @@ namespace AboutGraphs
         return -1;
     }
 
-    list<list<string>>::iterator Graph::get_vertice_on_index_of_successor_adjacency_list(int index)
+    list<list<string>>::iterator Graph::get_list_on_index_in_successor_adjacency_list(int index)
     {
         list<list<string>>::iterator successor_adjacency_list_iterator = representations.successor_adjacency_list.begin();
 
         for (int current_index = 0; current_index < index; current_index++)
         {
-            successor_adjacency_list_iterator.operator++;
+            successor_adjacency_list_iterator++;
         }
 
         return successor_adjacency_list_iterator;
     }
-}
 
+    void Graph::show_deep_search_structures()
+    {
+        cout << "\n[ ";
+        for (size_t time = 0; time < vertices.size(); time++)
+        {
+            cout << deepSearchStructures.discovery_times[time] << " ";
+        }
+        cout << "]";
+
+        cout << "\n[ ";
+        for (size_t time = 0; time < vertices.size(); time++)
+        {
+            cout << deepSearchStructures.end_times[time] << " ";
+        }
+        cout << "]\n";
+    }
+}
 
 int main()
 {
@@ -631,7 +676,7 @@ int main()
 
     std::ifstream file("graphs.txt");
     string file_line;
-    AboutGraphs::Graph * graph;
+    AboutGraphs::Graph *graph;
 
     while (std::getline(file, file_line))
     {
@@ -639,7 +684,9 @@ int main()
         // graph->show_all_representations();
     }
 
+    graph->show_successor_adjacency_list();
     graph->make_deep_search_and_compute_times_in_arrays();
+    graph->show_deep_search_structures();
 
     delete graph;
     file.close();
