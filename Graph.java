@@ -155,8 +155,8 @@ public class Graph {
         fill_adjacency_matrix();
         fill_incidency_matrix();
         fill_adjacency_arrays_increasing_their_indices_by_one();
-        // reorder_successor_adjacency_arrays();
-        // reorder_predecessor_adjacency_arrays();
+        reorder_successor_adjacency_arrays();
+        reorder_predecessor_adjacency_arrays();
     }
 
     void fill_successor_adjacency_list() {
@@ -209,6 +209,8 @@ public class Graph {
             for (String item : list) {
                 System.out.print(item + " ; ");
             }
+
+            System.out.println();
         }
     }
 
@@ -398,24 +400,25 @@ public class Graph {
         int current_value_of_sorted_array, index_from_where_to_read = number_of_edges - 1;
         int[] reordered_array = new int[number_of_vertices + 1];
         int index_where_to_insert = number_of_vertices - 1;
-        boolean has_index_in_sorted_array;
+        boolean has_index_where_insert_in_sorted_array;
 
         reordered_array[number_of_vertices] = number_of_edges + 1;
 
         while (index_where_to_insert >= 0) {
             current_value_of_sorted_array = sorted_array[index_from_where_to_read];
 
-            while (sorted_array[index_from_where_to_read - 1] == current_value_of_sorted_array)
+            while (index_from_where_to_read > 0
+                    && sorted_array[index_from_where_to_read - 1] == current_value_of_sorted_array)
                 index_from_where_to_read--;
 
-            has_index_in_sorted_array = false;
+            has_index_where_insert_in_sorted_array = false;
             for (int i = 0; i < number_of_edges; i++)
                 if (sorted_array[i] == index_where_to_insert + 1) {
-                    has_index_in_sorted_array = true;
+                    has_index_where_insert_in_sorted_array = true;
                     i = number_of_edges;
                 }
 
-            if (has_index_in_sorted_array)
+            if (has_index_where_insert_in_sorted_array)
                 reordered_array[index_where_to_insert] = index_from_where_to_read-- + 1;
             else
                 reordered_array[index_where_to_insert] = reordered_array[index_where_to_insert + 1];
@@ -451,17 +454,18 @@ public class Graph {
         for (int i = 0; i < edges.size(); i++)
             System.out.print(other_array[i] + " ");
 
-        System.out.println();
+        System.out.println("]");
     }
 
     void show_vertices_set() {
         System.out.print("Vertice set: {");
-        String[] verticesArray = (String[]) vertices.toArray();
+        String[] verticesArray = new String[vertices.size()];
+        vertices.toArray(verticesArray);
 
         for (int i = 0; i < verticesArray.length - 1; i++)
             System.out.print(verticesArray[i] + ", ");
 
-        System.out.println(verticesArray[verticesArray.length] + " }");
+        System.out.println(verticesArray[verticesArray.length - 1] + " }");
     }
 
     void show_all_representations() {
@@ -538,8 +542,7 @@ public class Graph {
 
         while ((file_line = bufferedReader.readLine()) != null) {
             graph = Graph.fromString(file_line);
-            graph.show_incidency_matrix();
-            // graph.show_adjacency_matrix();
+            graph.show_all_representations();
         }
 
         // graph.show_successor_adjacency_list();

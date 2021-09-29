@@ -62,7 +62,8 @@ public class Edge {
     }
 
     private void fill_properties_of_the_edge() {
-        String[] parts_of_string_representation = string_representation.split(",");
+        String[] parts_of_string_representation = string_representation.substring(1, string_representation.length() - 1)
+                .split(",");
 
         if (parts_of_string_representation.length == 3) {
             is_pondered = true;
