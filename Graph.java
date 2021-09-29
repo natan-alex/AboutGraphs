@@ -42,6 +42,8 @@ public class Graph {
     private GraphStatistics statistics;
     private GraphRepresentations representations;
     private DeepSearchStructures deepSearchStructures;
+    private int numberOfVertices;
+    private int numberOfEdges;
 
     public static final Graph EMPTY_GRAPH = new Graph();
 
@@ -86,6 +88,9 @@ public class Graph {
                 System.out.println("The edge '" + matcher.group() + "' in graph '" + stringRepresentation
                         + "' is not valid, so it will not be considered.\n");
         }
+
+        numberOfEdges = edges.size();
+        numberOfVertices = vertices.size();
     }
 
     private void fillGraphProperties() throws IllegalArgumentException {
@@ -218,24 +223,22 @@ public class Graph {
     }
 
     void fillAdjacencyMatrix() {
-        int numberOfVertices = vertices.size();
         representations.adjacencyMatrix = new int[numberOfVertices][numberOfVertices];
-        Iterator<String> verticeIterator = vertices.iterator();
-        String currentVertice;
         int indexOfSecondVertice;
+        int currentLine = 0;
 
-        for (int i = 0; i < numberOfVertices; i++) {
-            currentVertice = verticeIterator.next();
-
+        for (String vertice : vertices) {
             for (int j = 0; j < numberOfVertices; j++)
-                representations.adjacencyMatrix[i][j] = 0;
+                representations.adjacencyMatrix[currentLine][j] = 0;
 
             for (Edge edge : edges) {
-                if (currentVertice.compareTo(edge.getFirstVertice()) == 0) {
+                if (vertice.compareTo(edge.getFirstVertice()) == 0) {
                     indexOfSecondVertice = findTheIndexOfTheVertice(edge.getSecondVertice());
-                    representations.adjacencyMatrix[i][indexOfSecondVertice] = 1;
+                    representations.adjacencyMatrix[currentLine][indexOfSecondVertice] = 1;
                 }
             }
+
+            currentLine++;
         }
     }
 
@@ -254,7 +257,6 @@ public class Graph {
     }
 
     void showAdjacencyMatrix() {
-        int numberOfVertices = vertices.size();
         Iterator<String> verticeIterator = vertices.iterator();
 
         System.out.print("\t");
@@ -276,39 +278,33 @@ public class Graph {
     }
 
     void fillIncidencyMatrix() {
-        int numberOfVertices = vertices.size();
-        int numberOfEdges = edges.size();
         int indexOfSecondVertice;
-        Iterator<String> verticeIterator = vertices.iterator();
-        Iterator<Edge> edgeIterator;
-        String currentVertice;
-        Edge currentEdge;
+        int currentColumn = 0, currentLine = 0;
 
         representations.incidencyMatrix = new int[numberOfVertices][numberOfEdges];
 
-        for (int i = 0; i < numberOfVertices; i++) {
-            edgeIterator = edges.iterator();
-            currentVertice = verticeIterator.next();
+        for (String vertice : vertices) {
+            currentColumn = 0;
 
-            for (int j = 0; j < numberOfEdges; j++) {
-                currentEdge = edgeIterator.next();
-
-                if (currentVertice.compareTo(currentEdge.getFirstVertice()) == 0) {
-                    indexOfSecondVertice = findTheIndexOfTheVertice(currentEdge.getSecondVertice());
-                    representations.incidencyMatrix[i][j] = 1;
-                    representations.incidencyMatrix[indexOfSecondVertice][j] = -1;
-                } else if (representations.incidencyMatrix[i][j] != -1) {
-                    representations.incidencyMatrix[i][j] = 0;
+            for (Edge edge : edges) {
+                if (vertice.compareTo(edge.getFirstVertice()) == 0) {
+                    indexOfSecondVertice = findTheIndexOfTheVertice(edge.getSecondVertice());
+                    representations.incidencyMatrix[currentLine][currentColumn] = 1;
+                    representations.incidencyMatrix[indexOfSecondVertice][currentColumn] = -1;
+                } else if (representations.incidencyMatrix[currentLine][currentColumn] != -1) {
+                    representations.incidencyMatrix[currentLine][currentColumn] = 0;
                 }
+
+                currentColumn++;
             }
+
+            currentLine++;
         }
     }
 
     void showIncidencyMatrix() {
-        Iterator<String> verticeIterator = vertices.iterator();
-        Iterator<Edge> edgeIterator;
+        int currentLine = 0, currentColumn = 0;
         int currentItem;
-        Edge currentEdge;
 
         System.out.print("\t");
 
@@ -317,13 +313,12 @@ public class Graph {
 
         System.out.println();
 
-        for (int i = 0; i < vertices.size(); i++) {
-            System.out.print(verticeIterator.next() + "\t");
-            edgeIterator = edges.iterator();
+        for (String vertice : vertices) {
+            currentColumn = 0;
+            System.out.print(vertice + "\t");
 
-            for (int j = 0; j < edges.size(); j++) {
-                currentItem = representations.incidencyMatrix[i][j];
-                currentEdge = edgeIterator.next();
+            for (Edge edge : edges) {
+                currentItem = representations.incidencyMatrix[currentLine][currentColumn];
 
                 if (currentItem == 1)
                     System.out.print("+");
@@ -332,18 +327,19 @@ public class Graph {
 
                 System.out.print(currentItem);
 
-                if (currentEdge.isPondered())
-                    System.out.print(" | " + currentEdge.getValue());
+                if (edge.isPondered())
+                    System.out.print(" | " + edge.getValue());
 
                 System.out.print("\t");
+                currentColumn++;
             }
 
+            currentLine++;
             System.out.println();
         }
     }
 
     private void fillAdjacencyArraysIncreasingTheirIndicesByOne() {
-        int numberOfEdges = edges.size();
         int currentIndex = 0;
         int indexOfFirstVertice, indexOfSecondVertice;
 
@@ -397,8 +393,6 @@ public class Graph {
     }
 
     private int[] getReorderedSortedAdjacencyArray(int[] sortedArray) {
-        int numberOfEdges = edges.size();
-        int numberOfVertices = vertices.size();
         int currentValueOfSortedArray, indexFromWhereToRead = numberOfEdges - 1;
         int[] reorderedArray = new int[numberOfVertices + 1];
         int indexWhereToInsert = numberOfVertices - 1;
@@ -444,14 +438,14 @@ public class Graph {
 
         System.out.print("Start array indices: [ ");
 
-        for (int i = 0; i < vertices.size() + 1; i++)
+        for (int i = 0; i < numberOfVertices; i++)
             System.out.print(sortedArray[i] + " ");
 
         System.out.println("]");
 
         System.out.print("End array indices: [ ");
 
-        for (int i = 0; i < edges.size(); i++)
+        for (int i = 0; i < numberOfEdges; i++)
             System.out.print(otherArray[i] + " ");
 
         System.out.println("]");
@@ -459,7 +453,7 @@ public class Graph {
 
     void showVerticesSet() {
         System.out.print("Vertice set: {");
-        String[] verticesArray = new String[vertices.size()];
+        String[] verticesArray = new String[numberOfVertices];
         vertices.toArray(verticesArray);
 
         for (int i = 0; i < verticesArray.length - 1; i++)
@@ -500,14 +494,13 @@ public class Graph {
 
         initializeDeepSearchStructures();
 
-        for (int timeCounter = 1; timeCounter <= 2 * vertices.size(); timeCounter++) {
+        for (int timeCounter = 1; timeCounter <= 2 * numberOfVertices; timeCounter++) {
 
         }
     }
 
     void initializeDeepSearchStructures() {
         deepSearchStructures = new DeepSearchStructures();
-        int numberOfVertices = vertices.size();
         deepSearchStructures.discoveryTimes = new int[numberOfVertices];
         deepSearchStructures.endTimes = new int[numberOfVertices];
 
@@ -520,14 +513,14 @@ public class Graph {
     public void showDeepSearchStructures() {
         System.out.println("\n[ ");
 
-        for (int time = 0; time < vertices.size(); time++)
+        for (int time = 0; time < numberOfVertices; time++)
             System.out.print(deepSearchStructures.discoveryTimes[time] + " ");
 
         System.out.println("]");
 
         System.out.println("\n[ ");
 
-        for (int time = 0; time < vertices.size(); time++)
+        for (int time = 0; time < numberOfVertices; time++)
             System.out.print(deepSearchStructures.endTimes[time] + " ");
 
         System.out.println("]");
