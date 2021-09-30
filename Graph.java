@@ -1,5 +1,6 @@
 import java.util.regex.*;
 import java.util.List;
+import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
@@ -44,6 +45,7 @@ public class Graph {
     private DeepSearchStructures deepSearchStructures;
     private int numberOfVertices;
     private int numberOfEdges;
+    private static boolean isEmpty;
 
     public static final Graph EMPTY_GRAPH = new Graph();
 
@@ -54,11 +56,14 @@ public class Graph {
         Matcher matcher = patternToValidateACompleteGraph.matcher(s);
 
         if (matcher.matches()) {
+            isEmpty = false;
             result = new Graph();
             result.stringRepresentation = s;
             result.fillEdgeListAndVerticeSet();
             result.fillGraphProperties();
             result.fillRepresentations();
+        } else {
+            isEmpty = true;
         }
 
         return result;
@@ -121,7 +126,7 @@ public class Graph {
         checkIfTheGraphIsPonderedBasedOnTheStatistics();
     }
 
-    void checkIfThereAreDirectedAndUndirectedEdgesAtTheSameTime() throws IllegalArgumentException {
+    private void checkIfThereAreDirectedAndUndirectedEdgesAtTheSameTime() throws IllegalArgumentException {
         if (statistics.numberOfDirectedEdges != 0 && statistics.numberOfUndirectedEdges != 0) {
             throw new IllegalArgumentException(
                     "A graph can not have directed an undirected edges at the same time, so the graph '"
@@ -129,7 +134,7 @@ public class Graph {
         }
     }
 
-    void checkIfThereArePonderedAndUnponderedEdgesAtTheSameTime() throws IllegalArgumentException {
+    private void checkIfThereArePonderedAndUnponderedEdgesAtTheSameTime() throws IllegalArgumentException {
         if (statistics.numberOfPonderedEdges != 0 && statistics.numberOfUnponderedEdges != 0) {
             throw new IllegalArgumentException(
                     "A graph can not have pondered an unpondered edges at the same time, so the graph '"
@@ -137,7 +142,7 @@ public class Graph {
         }
     }
 
-    void checkIfTheGraphIsDirectedBasedOnTheStatistics() {
+    private void checkIfTheGraphIsDirectedBasedOnTheStatistics() {
         if (statistics.numberOfUndirectedEdges == 0) {
             isDirected = true;
         } else if (statistics.numberOfDirectedEdges == 0) {
@@ -145,7 +150,7 @@ public class Graph {
         }
     }
 
-    void checkIfTheGraphIsPonderedBasedOnTheStatistics() {
+    private void checkIfTheGraphIsPonderedBasedOnTheStatistics() {
         if (statistics.numberOfUnponderedEdges == 0) {
             isPondered = true;
         } else if (statistics.numberOfPonderedEdges == 0) {
@@ -153,7 +158,7 @@ public class Graph {
         }
     }
 
-    void fillRepresentations() {
+    private void fillRepresentations() {
         representations = new GraphRepresentations();
         fillSuccessorAdjacencyList();
         fillPredecessorAdjacencyList();
@@ -164,7 +169,7 @@ public class Graph {
         reorderPredecessorAdjacencyArrays();
     }
 
-    void fillSuccessorAdjacencyList() {
+    private void fillSuccessorAdjacencyList() {
         representations.successorAdjacencyList = new ArrayList<>();
         List<String> itemsList;
 
@@ -181,7 +186,7 @@ public class Graph {
         }
     }
 
-    void fillPredecessorAdjacencyList() {
+    private void fillPredecessorAdjacencyList() {
         representations.predecessorAdjacencyList = new ArrayList<>();
         List<String> itemsList;
 
@@ -199,15 +204,21 @@ public class Graph {
         }
     }
 
-    void showPredecessorAdjacencyList() {
+    public void showPredecessorAdjacencyList() throws IllegalAccessException {
+        if (isEmpty)
+            throw new IllegalAccessException("Can not show any graph representation for empty graph.");
+
         showAdjacencyList(representations.predecessorAdjacencyList);
     }
 
-    void showSuccessorAdjacencyList() {
+    public void showSuccessorAdjacencyList() throws IllegalAccessException {
+        if (isEmpty)
+            throw new IllegalAccessException("Can not show any graph representation for empty graph.");
+
         showAdjacencyList(representations.successorAdjacencyList);
     }
 
-    void showAdjacencyList(List<List<String>> adjacencyList) {
+    private void showAdjacencyList(List<List<String>> adjacencyList) {
         Iterator<String> listIterator;
 
         for (List<String> list : adjacencyList) {
@@ -222,7 +233,7 @@ public class Graph {
         }
     }
 
-    void fillAdjacencyMatrix() {
+    private void fillAdjacencyMatrix() {
         representations.adjacencyMatrix = new int[numberOfVertices][numberOfVertices];
         int indexOfSecondVertice;
         int currentLine = 0;
@@ -242,7 +253,7 @@ public class Graph {
         }
     }
 
-    int findTheIndexOfTheVertice(String verticeToFind) {
+    private int findTheIndexOfTheVertice(String verticeToFind) {
         int index = 0;
 
         for (String vertice : vertices) {
@@ -256,7 +267,10 @@ public class Graph {
         return -1;
     }
 
-    void showAdjacencyMatrix() {
+    public void showAdjacencyMatrix() throws IllegalAccessException {
+        if (isEmpty)
+            throw new IllegalAccessException("Can not show any graph representation for empty graph.");
+
         Iterator<String> verticeIterator = vertices.iterator();
 
         System.out.print("\t");
@@ -277,7 +291,7 @@ public class Graph {
         }
     }
 
-    void fillIncidencyMatrix() {
+    private void fillIncidencyMatrix() {
         int indexOfSecondVertice;
         int currentColumn = 0, currentLine = 0;
 
@@ -302,7 +316,10 @@ public class Graph {
         }
     }
 
-    void showIncidencyMatrix() {
+    public void showIncidencyMatrix() throws IllegalAccessException {
+        if (isEmpty)
+            throw new IllegalAccessException("Can not show any graph representation for empty graph.");
+
         int currentLine = 0, currentColumn = 0;
         int currentItem;
 
@@ -424,16 +441,16 @@ public class Graph {
         return reorderedArray;
     }
 
-    void showSuccessorAdjacencyArrays() {
+    public void showSuccessorAdjacencyArrays() {
         showAdjacencyArrays(representations.successorAdjacencyArrayStart, representations.successorAdjacencyArrayEnd);
     }
 
-    void showPredecessorAdjacencyArrays() {
+    public void showPredecessorAdjacencyArrays() {
         showAdjacencyArrays(representations.predecessorAdjacencyArrayEnd,
                 representations.predecessorAdjacencyArrayStart);
     }
 
-    void showAdjacencyArrays(int sortedArray[], int otherArray[]) {
+    private void showAdjacencyArrays(int sortedArray[], int otherArray[]) {
         showVerticesSet();
 
         System.out.print("Start array indices: [ ");
@@ -451,7 +468,7 @@ public class Graph {
         System.out.println("]");
     }
 
-    void showVerticesSet() {
+    public void showVerticesSet() {
         System.out.print("Vertice set: {");
         String[] verticesArray = new String[numberOfVertices];
         vertices.toArray(verticesArray);
@@ -462,7 +479,10 @@ public class Graph {
         System.out.println(verticesArray[verticesArray.length - 1] + " }");
     }
 
-    void showAllRepresentations() {
+    public void showAllRepresentations() throws IllegalAccessException {
+        if (isEmpty)
+            throw new IllegalAccessException("Can not show any graph representation for empty graph.");
+
         System.out.println("\n  REPRESENTATIONS FOR GRAPH: " + stringRepresentation);
         System.out.println("\n\tADJACENCY MATRIX\n");
         showAdjacencyMatrix();
@@ -499,7 +519,7 @@ public class Graph {
         }
     }
 
-    void initializeDeepSearchStructures() {
+    private void initializeDeepSearchStructures() {
         deepSearchStructures = new DeepSearchStructures();
         deepSearchStructures.discoveryTimes = new int[numberOfVertices];
         deepSearchStructures.endTimes = new int[numberOfVertices];
@@ -510,7 +530,10 @@ public class Graph {
         }
     }
 
-    public void showDeepSearchStructures() {
+    public void showDeepSearchStructures() throws IllegalAccessException {
+        if (isEmpty)
+            throw new IllegalAccessException("Can not show any graph representation for empty graph.");
+
         System.out.println("\n[ ");
 
         for (int time = 0; time < numberOfVertices; time++)
@@ -528,21 +551,26 @@ public class Graph {
 
     public static void main(String[] args) throws Exception {
         double start = System.currentTimeMillis();
+        Scanner scanner = new Scanner(System.in);
 
-        BufferedReader bufferedReader = new BufferedReader(new FileReader("graphs.txt"));
-        String fileLine;
-        Graph graph;
+        // BufferedReader bufferedReader = new BufferedReader(new
+        // FileReader("graphs.txt"));
+        // String fileLine;
+        Graph graph = Graph.fromString(scanner.nextLine());
 
-        while ((fileLine = bufferedReader.readLine()) != null) {
-            graph = Graph.fromString(fileLine);
-            graph.showAllRepresentations();
-        }
+        graph.showAllRepresentations();
+
+        // while ((fileLine = bufferedReader.readLine()) != null) {
+        // graph = Graph.fromString(fileLine);
+        // graph.showAllRepresentations();
+        // }
 
         // graph.showSuccessorAdjacencyList();
         // graph.makeDeepSearchAndComputeTimesInArrays();
         // graph.showDeepSearchStructures();
 
-        bufferedReader.close();
+        // bufferedReader.close();
+        scanner.close();
         double end = System.currentTimeMillis();
 
         System.out.println("Duration: " + (end - start) + "ms\n");
