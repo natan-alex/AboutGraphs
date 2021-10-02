@@ -2,6 +2,7 @@ import java.util.regex.*;
 import java.util.List;
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.HashSet;
 import java.io.BufferedReader;
@@ -64,6 +65,7 @@ public class Graph {
             result.fillRepresentations();
         } else {
             isEmpty = true;
+            throw new IllegalArgumentException("Invalid graph representation -> " + s);
         }
 
         return result;
@@ -75,10 +77,8 @@ public class Graph {
         vertices = new HashSet<String>();
         Edge currentEdge;
         Matcher matcher = Edge.PATTERN_TO_VALIDATE_AN_EDGE.matcher(stringRepresentation.trim());
-        System.out.println("string representation: " + stringRepresentation);
 
         while (matcher.find()) {
-            System.out.println("match: " + matcher.group().toString());
             currentEdge = Edge.fromString(matcher.group());
 
             if (currentEdge != Edge.EMPTY_EDGE) {
@@ -551,26 +551,33 @@ public class Graph {
 
     public static void main(String[] args) throws Exception {
         double start = System.currentTimeMillis();
-        Scanner scanner = new Scanner(System.in);
+        // Scanner scanner = new Scanner(System.in);
 
-        // BufferedReader bufferedReader = new BufferedReader(new
-        // FileReader("graphs.txt"));
-        // String fileLine;
-        Graph graph = Graph.fromString(scanner.nextLine());
+        BufferedReader bufferedReader = new BufferedReader(new FileReader("graphs.txt"));
+        String fileLine;
+        Graph graph;
+        // graph = Graph.fromString(scanner.nextLine());
 
-        graph.showAllRepresentations();
-
-        // while ((fileLine = bufferedReader.readLine()) != null) {
-        // graph = Graph.fromString(fileLine);
         // graph.showAllRepresentations();
-        // }
+
+        while ((fileLine = bufferedReader.readLine()) != null) {
+            graph = Graph.fromString(fileLine);
+            System.out.println();
+            System.out.println("\n\tPREDECESSOR ADJACENCY ARRAYS\n");
+            graph.showPredecessorAdjacencyArrays();
+
+            System.out.println("\n\tSUCCESSOR ADJACENCY ARRAYS\n");
+            graph.showSuccessorAdjacencyArrays();
+            System.out.println();
+            // graph.showAllRepresentations();
+        }
 
         // graph.showSuccessorAdjacencyList();
         // graph.makeDeepSearchAndComputeTimesInArrays();
         // graph.showDeepSearchStructures();
 
-        // bufferedReader.close();
-        scanner.close();
+        bufferedReader.close();
+        // scanner.close();
         double end = System.currentTimeMillis();
 
         System.out.println("Duration: " + (end - start) + "ms\n");
