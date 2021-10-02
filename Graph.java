@@ -378,14 +378,16 @@ public class Graph {
 
     private void reorderSuccessorAdjacencyArrays() {
         orderAdjacencyArrays(representations.successorAdjacencyArrayStart, representations.successorAdjacencyArrayEnd);
-        representations.successorAdjacencyArrayStart = getReorderedSuccessorAdjacencyArrayStart();
+        representations.successorAdjacencyArrayStart = reorderAndReturnTheSortedAdjacencyArray(
+                representations.successorAdjacencyArrayStart);
     }
 
     private void reorderPredecessorAdjacencyArrays() {
         orderAdjacencyArrays(representations.predecessorAdjacencyArrayEnd,
                 representations.predecessorAdjacencyArrayStart);
 
-        representations.predecessorAdjacencyArrayEnd = getReorderedPredecessorAdjacencyArrayEnd();
+        representations.predecessorAdjacencyArrayEnd = reorderAndReturnTheSortedAdjacencyArray(
+                representations.predecessorAdjacencyArrayEnd);
     }
 
     private void orderAdjacencyArrays(int[] whichToSort, int[] otherArray) {
@@ -408,76 +410,34 @@ public class Graph {
         }
     }
 
-    private int[] getReorderedPredecessorAdjacencyArrayEnd() {
-        int currentValueOfSortedArray, indexWhereToReadAnItem = 0;
+    private int[] reorderAndReturnTheSortedAdjacencyArray(int[] sortedArray) {
         int[] reorderedArray = new int[numberOfVertices + 1];
-        boolean hasIndexWhereInsertOnSortedArray;
+        int indexOfWhereInsert, indexOfFirstOcurrenceOfAVerticeIndex = 0;
 
         reorderedArray[numberOfVertices] = numberOfEdges;
         reorderedArray[0] = 0;
 
         for (int whereInsertInReorderedArray = 1; whereInsertInReorderedArray < numberOfVertices; whereInsertInReorderedArray++) {
-            currentValueOfSortedArray = representations.predecessorAdjacencyArrayEnd[indexWhereToReadAnItem];
+            indexOfWhereInsert = firstIndexOfItemInArray(whereInsertInReorderedArray, sortedArray);
 
-            hasIndexWhereInsertOnSortedArray = containsItemInIntArray(whereInsertInReorderedArray,
-                    representations.predecessorAdjacencyArrayEnd);
-
-            while (indexWhereToReadAnItem < representations.predecessorAdjacencyArrayEnd.length - 1
-                    && representations.predecessorAdjacencyArrayEnd[indexWhereToReadAnItem
-                            + 1] == currentValueOfSortedArray) {
-                indexWhereToReadAnItem++;
+            if (indexOfWhereInsert != -1) {
+                indexOfFirstOcurrenceOfAVerticeIndex = indexOfWhereInsert;
             }
 
-            if (hasIndexWhereInsertOnSortedArray) {
-                reorderedArray[whereInsertInReorderedArray] = indexWhereToReadAnItem + 1;
-                indexWhereToReadAnItem++;
-            } else {
-                reorderedArray[whereInsertInReorderedArray] = reorderedArray[whereInsertInReorderedArray - 1];
-            }
+            reorderedArray[whereInsertInReorderedArray] = indexOfFirstOcurrenceOfAVerticeIndex;
         }
 
         return reorderedArray;
     }
 
-    private int[] getReorderedSuccessorAdjacencyArrayStart() {
-        int currentValueOfSortedArray, indexWhereToReadAnItem = numberOfEdges - 1;
-        int[] reorderedArray = new int[numberOfVertices + 1];
-        boolean hasIndexWhereInsertOnSortedArray;
-
-        reorderedArray[numberOfVertices] = numberOfEdges;
-        reorderedArray[0] = 0;
-
-        for (int whereInsertInReorderedArray = numberOfVertices
-                - 1; whereInsertInReorderedArray > 0; whereInsertInReorderedArray--) {
-            currentValueOfSortedArray = representations.successorAdjacencyArrayStart[indexWhereToReadAnItem];
-
-            while (indexWhereToReadAnItem > 0 && representations.successorAdjacencyArrayStart[indexWhereToReadAnItem
-                    - 1] == currentValueOfSortedArray) {
-                indexWhereToReadAnItem--;
-            }
-
-            hasIndexWhereInsertOnSortedArray = containsItemInIntArray(whereInsertInReorderedArray,
-                    representations.successorAdjacencyArrayStart);
-
-            if (hasIndexWhereInsertOnSortedArray) {
-                reorderedArray[whereInsertInReorderedArray] = indexWhereToReadAnItem;
-                indexWhereToReadAnItem--;
-            } else {
-                reorderedArray[whereInsertInReorderedArray] = reorderedArray[whereInsertInReorderedArray + 1];
-            }
-        }
-
-        return reorderedArray;
-    }
-
-    private boolean containsItemInIntArray(int item, int[] array) {
+    private int firstIndexOfItemInArray(int item, int[] array) {
         for (int i = 0; i < array.length; i++) {
             if (array[i] == item) {
-                return true;
+                return i;
             }
         }
 
-        return false;
+        return -1;
     }
 
     public void showSuccessorAdjacencyArrays() {
