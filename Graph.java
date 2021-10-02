@@ -164,7 +164,7 @@ public class Graph {
         fillPredecessorAdjacencyList();
         fillAdjacencyMatrix();
         fillIncidencyMatrix();
-        fillAdjacencyArraysIncreasingTheirIndicesByOne();
+        fillAdjacencyArrays();
         reorderSuccessorAdjacencyArrays();
         reorderPredecessorAdjacencyArrays();
     }
@@ -356,7 +356,7 @@ public class Graph {
         }
     }
 
-    private void fillAdjacencyArraysIncreasingTheirIndicesByOne() {
+    private void fillAdjacencyArrays() {
         int currentIndex = 0;
         int indexOfFirstVertice, indexOfSecondVertice;
 
@@ -368,25 +368,24 @@ public class Graph {
         for (Edge edge : edges) {
             indexOfFirstVertice = findTheIndexOfTheVertice(edge.getFirstVertice());
             indexOfSecondVertice = findTheIndexOfTheVertice(edge.getSecondVertice());
-            representations.predecessorAdjacencyArrayStart[currentIndex] = indexOfFirstVertice + 1;
-            representations.successorAdjacencyArrayStart[currentIndex] = indexOfFirstVertice + 1;
-            representations.predecessorAdjacencyArrayEnd[currentIndex] = indexOfSecondVertice + 1;
-            representations.successorAdjacencyArrayEnd[currentIndex] = indexOfSecondVertice + 1;
+            representations.predecessorAdjacencyArrayStart[currentIndex] = indexOfFirstVertice;
+            representations.successorAdjacencyArrayStart[currentIndex] = indexOfFirstVertice;
+            representations.predecessorAdjacencyArrayEnd[currentIndex] = indexOfSecondVertice;
+            representations.successorAdjacencyArrayEnd[currentIndex] = indexOfSecondVertice;
             currentIndex++;
         }
     }
 
     private void reorderSuccessorAdjacencyArrays() {
         orderAdjacencyArrays(representations.successorAdjacencyArrayStart, representations.successorAdjacencyArrayEnd);
-        representations.successorAdjacencyArrayStart = getReorderedSortedAdjacencyArray(
-                representations.successorAdjacencyArrayStart);
+        representations.successorAdjacencyArrayStart = getReorderedSuccessorAdjacencyArrayStart();
     }
 
     private void reorderPredecessorAdjacencyArrays() {
         orderAdjacencyArrays(representations.predecessorAdjacencyArrayEnd,
                 representations.predecessorAdjacencyArrayStart);
-        representations.predecessorAdjacencyArrayEnd = getReorderedSortedAdjacencyArray(
-                representations.predecessorAdjacencyArrayEnd);
+
+        representations.predecessorAdjacencyArrayEnd = getReorderedPredecessorAdjacencyArrayEnd();
     }
 
     private void orderAdjacencyArrays(int[] whichToSort, int[] otherArray) {
@@ -409,67 +408,108 @@ public class Graph {
         }
     }
 
-    private int[] getReorderedSortedAdjacencyArray(int[] sortedArray) {
-        int currentValueOfSortedArray, indexFromWhereToRead = numberOfEdges - 1;
+    private int[] getReorderedPredecessorAdjacencyArrayEnd() {
+        int currentValueOfSortedArray, indexWhereToReadAnItem = 0;
         int[] reorderedArray = new int[numberOfVertices + 1];
-        int indexWhereToInsert = numberOfVertices - 1;
-        boolean hasIndexWhereInsertInSortedArray;
+        boolean hasIndexWhereInsertOnSortedArray;
 
-        reorderedArray[numberOfVertices] = numberOfEdges + 1;
+        reorderedArray[numberOfVertices] = numberOfEdges;
+        reorderedArray[0] = 0;
 
-        while (indexWhereToInsert >= 0) {
-            currentValueOfSortedArray = sortedArray[indexFromWhereToRead];
+        for (int whereInsertInReorderedArray = 1; whereInsertInReorderedArray < numberOfVertices; whereInsertInReorderedArray++) {
+            currentValueOfSortedArray = representations.predecessorAdjacencyArrayEnd[indexWhereToReadAnItem];
 
-            while (indexFromWhereToRead > 0 && sortedArray[indexFromWhereToRead - 1] == currentValueOfSortedArray)
-                indexFromWhereToRead--;
+            hasIndexWhereInsertOnSortedArray = containsItemInIntArray(whereInsertInReorderedArray,
+                    representations.predecessorAdjacencyArrayEnd);
 
-            hasIndexWhereInsertInSortedArray = false;
-            for (int i = 0; i < numberOfEdges; i++)
-                if (sortedArray[i] == indexWhereToInsert + 1) {
-                    hasIndexWhereInsertInSortedArray = true;
-                    i = numberOfEdges;
-                }
+            while (indexWhereToReadAnItem < representations.predecessorAdjacencyArrayEnd.length - 1
+                    && representations.predecessorAdjacencyArrayEnd[indexWhereToReadAnItem
+                            + 1] == currentValueOfSortedArray) {
+                indexWhereToReadAnItem++;
+            }
 
-            if (hasIndexWhereInsertInSortedArray)
-                reorderedArray[indexWhereToInsert] = indexFromWhereToRead-- + 1;
-            else
-                reorderedArray[indexWhereToInsert] = reorderedArray[indexWhereToInsert + 1];
-
-            indexWhereToInsert--;
+            if (hasIndexWhereInsertOnSortedArray) {
+                reorderedArray[whereInsertInReorderedArray] = indexWhereToReadAnItem + 1;
+                indexWhereToReadAnItem++;
+            } else {
+                reorderedArray[whereInsertInReorderedArray] = reorderedArray[whereInsertInReorderedArray - 1];
+            }
         }
 
         return reorderedArray;
     }
 
+    private int[] getReorderedSuccessorAdjacencyArrayStart() {
+        int currentValueOfSortedArray, indexWhereToReadAnItem = numberOfEdges - 1;
+        int[] reorderedArray = new int[numberOfVertices + 1];
+        boolean hasIndexWhereInsertOnSortedArray;
+
+        reorderedArray[numberOfVertices] = numberOfEdges;
+        reorderedArray[0] = 0;
+
+        for (int whereInsertInReorderedArray = numberOfVertices
+                - 1; whereInsertInReorderedArray > 0; whereInsertInReorderedArray--) {
+            currentValueOfSortedArray = representations.successorAdjacencyArrayStart[indexWhereToReadAnItem];
+
+            while (indexWhereToReadAnItem > 0 && representations.successorAdjacencyArrayStart[indexWhereToReadAnItem
+                    - 1] == currentValueOfSortedArray) {
+                indexWhereToReadAnItem--;
+            }
+
+            hasIndexWhereInsertOnSortedArray = containsItemInIntArray(whereInsertInReorderedArray,
+                    representations.successorAdjacencyArrayStart);
+
+            if (hasIndexWhereInsertOnSortedArray) {
+                reorderedArray[whereInsertInReorderedArray] = indexWhereToReadAnItem;
+                indexWhereToReadAnItem--;
+            } else {
+                reorderedArray[whereInsertInReorderedArray] = reorderedArray[whereInsertInReorderedArray + 1];
+            }
+        }
+
+        return reorderedArray;
+    }
+
+    private boolean containsItemInIntArray(int item, int[] array) {
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] == item) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public void showSuccessorAdjacencyArrays() {
-        showAdjacencyArrays(representations.successorAdjacencyArrayStart, representations.successorAdjacencyArrayEnd);
+        showAdjacencyArraysIncreasingTheirValuesByOne(representations.successorAdjacencyArrayStart,
+                representations.successorAdjacencyArrayEnd);
     }
 
     public void showPredecessorAdjacencyArrays() {
-        showAdjacencyArrays(representations.predecessorAdjacencyArrayEnd,
-                representations.predecessorAdjacencyArrayStart);
+        showAdjacencyArraysIncreasingTheirValuesByOne(representations.predecessorAdjacencyArrayStart,
+                representations.predecessorAdjacencyArrayEnd);
     }
 
-    private void showAdjacencyArrays(int sortedArray[], int otherArray[]) {
+    private void showAdjacencyArraysIncreasingTheirValuesByOne(int firstArray[], int secondArray[]) {
         showVerticesSet();
 
         System.out.print("Start array indices: [ ");
 
-        for (int i = 0; i < numberOfVertices; i++)
-            System.out.print(sortedArray[i] + " ");
+        for (int index : firstArray)
+            System.out.print((index + 1) + " ");
 
         System.out.println("]");
 
         System.out.print("End array indices: [ ");
 
-        for (int i = 0; i < numberOfEdges; i++)
-            System.out.print(otherArray[i] + " ");
+        for (int index : secondArray)
+            System.out.print((index + 1) + " ");
 
         System.out.println("]");
     }
 
     public void showVerticesSet() {
-        System.out.print("Vertice set: {");
+        System.out.print("Vertice set: { ");
         String[] verticesArray = new String[numberOfVertices];
         vertices.toArray(verticesArray);
 
