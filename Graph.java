@@ -378,16 +378,13 @@ public class Graph {
 
     private void reorderSuccessorAdjacencyArrays() {
         orderAdjacencyArrays(representations.successorAdjacencyArrayStart, representations.successorAdjacencyArrayEnd);
-        representations.successorAdjacencyArrayStart = reorderAndReturnTheSortedAdjacencyArray(
-                representations.successorAdjacencyArrayStart);
+        representations.successorAdjacencyArrayStart = reorderAndReturnSuccessorAdjacencyArray();
     }
 
     private void reorderPredecessorAdjacencyArrays() {
         orderAdjacencyArrays(representations.predecessorAdjacencyArrayEnd,
                 representations.predecessorAdjacencyArrayStart);
-
-        representations.predecessorAdjacencyArrayEnd = reorderAndReturnTheSortedAdjacencyArray(
-                representations.predecessorAdjacencyArrayEnd);
+        representations.predecessorAdjacencyArrayEnd = reorderAndReturnPredecessorAdjacencyArray();
     }
 
     private void orderAdjacencyArrays(int[] whichToSort, int[] otherArray) {
@@ -410,7 +407,7 @@ public class Graph {
         }
     }
 
-    private int[] reorderAndReturnTheSortedAdjacencyArray(int[] sortedArray) {
+    private int[] reorderAndReturnPredecessorAdjacencyArray() {
         int[] reorderedArray = new int[numberOfVertices + 1];
         int indexOfWhereInsert, indexOfFirstOcurrenceOfAVerticeIndex = 0;
 
@@ -418,7 +415,30 @@ public class Graph {
         reorderedArray[0] = 0;
 
         for (int whereInsertInReorderedArray = 1; whereInsertInReorderedArray < numberOfVertices; whereInsertInReorderedArray++) {
-            indexOfWhereInsert = firstIndexOfItemInArray(whereInsertInReorderedArray, sortedArray);
+            indexOfWhereInsert = firstIndexOfItemInArray(whereInsertInReorderedArray,
+                    representations.predecessorAdjacencyArrayEnd);
+
+            if (indexOfWhereInsert != -1) {
+                indexOfFirstOcurrenceOfAVerticeIndex = indexOfWhereInsert;
+            }
+
+            reorderedArray[whereInsertInReorderedArray] = indexOfFirstOcurrenceOfAVerticeIndex;
+        }
+
+        return reorderedArray;
+    }
+
+    private int[] reorderAndReturnSuccessorAdjacencyArray() {
+        int[] reorderedArray = new int[numberOfVertices + 1];
+        int indexOfWhereInsert, indexOfFirstOcurrenceOfAVerticeIndex = numberOfEdges;
+
+        reorderedArray[numberOfVertices] = numberOfEdges;
+        reorderedArray[0] = 0;
+
+        for (int whereInsertInReorderedArray = numberOfVertices
+                - 1; whereInsertInReorderedArray > 0; whereInsertInReorderedArray--) {
+            indexOfWhereInsert = firstIndexOfItemInArray(whereInsertInReorderedArray,
+                    representations.successorAdjacencyArrayStart);
 
             if (indexOfWhereInsert != -1) {
                 indexOfFirstOcurrenceOfAVerticeIndex = indexOfWhereInsert;
@@ -505,16 +525,40 @@ public class Graph {
     }
 
     public void makeDeepSearchAndComputeTimesInArrays() {
-        // Stack<List<String>> discoveredVertices;
-        // Stack<List<List<String>>> discoveredLists;
-        // Iterator<List<String>> currentList =
-        // representations.successorAdjacencyList.iterator();
-        // int indexOfCurrentList = 0;
-        // Iterator<String> currentVertice;
+        Stack<String> discoveredVertices = new Stack<>();
+        Stack<List<String>> discoveredLists = new Stack<>();
+        int indexOfVerticeOnTopOfDiscoveredVertices = 0;
+        List<String> listOnTopOfDiscoveredLists;
+        String verticeOnTopOfDiscoveredVertices;
 
         initializeDeepSearchStructures();
 
+        discoveredLists.push(representations.successorAdjacencyList.get(0));
+        discoveredVertices.push(representations.successorAdjacencyList.get(0).get(0));
+        listOnTopOfDiscoveredLists = discoveredLists.firstElement();
+        verticeOnTopOfDiscoveredVertices = discoveredVertices.firstElement();
+
         for (int timeCounter = 1; timeCounter <= 2 * numberOfVertices; timeCounter++) {
+            // System.out.println("indexOfVerticeOnTopOfDiscoveredVertices: " +
+            // indexOfVerticeOnTopOfDiscoveredVertices);
+            // System.out.println("discoveredLists: " + discoveredLists.toString());
+            // System.out.println("discoveredVertices: " + discoveredVertices.toString());
+            // System.out.println("successorAdjacencyList: " +
+            // representations.successorAdjacencyList.toString());
+            // System.out.println();
+
+            if (deepSearchStructures.discoveryTimes[indexOfVerticeOnTopOfDiscoveredVertices] == -1) {
+                deepSearchStructures.discoveryTimes[indexOfVerticeOnTopOfDiscoveredVertices] = timeCounter;
+                discoveredVertices.push(listOnTopOfDiscoveredLists.get(indexOfVerticeOnTopOfDiscoveredVertices + 1));
+                discoveredLists.push(getAdjacencyListWithThisHead(verticeOnTopOfDiscoveredVertices));
+                indexOfVerticeOnTopOfDiscoveredVertices = listOnTopOfDiscoveredLists
+                        .indexOf(discoveredVertices.firstElement());
+            }
+
+            listOnTopOfDiscoveredLists = discoveredLists.firstElement();
+            verticeOnTopOfDiscoveredVertices = discoveredVertices.firstElement();
+            indexOfVerticeOnTopOfDiscoveredVertices = listOnTopOfDiscoveredLists
+                    .indexOf(verticeOnTopOfDiscoveredVertices);
 
         }
     }
@@ -528,6 +572,16 @@ public class Graph {
             deepSearchStructures.discoveryTimes[i] = -1;
             deepSearchStructures.endTimes[i] = -1;
         }
+    }
+
+    private List<String> getAdjacencyListWithThisHead(String listHead) {
+        for (List<String> list : representations.successorAdjacencyList) {
+            if (list.get(0).compareTo(listHead) == 0) {
+                return list;
+            }
+        }
+
+        return null;
     }
 
     public void showDeepSearchStructures() throws IllegalAccessException {
@@ -570,10 +624,10 @@ public class Graph {
             graph.showSuccessorAdjacencyArrays();
             System.out.println();
             // graph.showAllRepresentations();
+            // graph.makeDeepSearchAndComputeTimesInArrays();
         }
 
         // graph.showSuccessorAdjacencyList();
-        // graph.makeDeepSearchAndComputeTimesInArrays();
         // graph.showDeepSearchStructures();
 
         bufferedReader.close();
