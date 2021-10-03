@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.lang.IllegalArgumentException;
 import java.util.Iterator;
 import java.util.Stack;
+import java.util.Optional;
 
 public class Graph {
     private class GraphStatistics {
@@ -46,26 +47,51 @@ public class Graph {
     private DeepSearchStructures deepSearchStructures;
     private int numberOfVertices;
     private int numberOfEdges;
-    private static boolean isEmpty;
 
-    public static final Graph EMPTY_GRAPH = new Graph();
+    private static Pattern PATTERN_TO_VALIDATE_A_DIRECTED_UNPONDERED_GRAPH = Pattern.compile(
+            "^\\s*\\{\\s*(?:\\{\\s*\\w+\\s*,\\s*\\w+\\s*\\}\\s*,\\s*)*\\{\\s*\\w+\\s*,\\s*\\w+\\s*\\}\\s*\\}\\s*$",
+            Pattern.MULTILINE);
+    private static Pattern PATTERN_TO_VALIDATE_AN_UNDIRECTED_UNPONDERED_GRAPH = Pattern.compile(
+            "^\\s*\\{\\s*(?:\\(\\s*\\w+\\s*,\\s*\\w+\\s*\\)\\s*,\\s*)*\\(\\s*\\w+\\s*,\\s*\\w+\\s*\\)\\s*\\}\\s*$",
+            Pattern.MULTILINE);
+    private static Pattern PATTERN_TO_VALIDATE_A_DIRECTED_PONDERED_GRAPH = Pattern.compile(
+            "^\\s*\\{\\s*(?:\\(\\s*\\w+\\s*,\\s*\\w+\\s*,\\s*(?:\\+|\\-)?\\d+\\s*\\)\\s*,\\s*)*\\(\\s*\\w+\\s*,\\s*\\w+\\s*,\\s*(?:\\+|\\-)?\\d+\\s*\\)\\s*\\}\\s*$",
+            Pattern.MULTILINE);
+    private static Pattern PATTERN_TO_VALIDATE_AN_UNDIRECTED_PONDERED_GRAPH = Pattern.compile(
+            "^\\s*\\{\\s*(?:\\{\\s*\\w+\\s*,\\s*\\w+\\s*,\\s*(?:\\+|\\-)?\\d+\\s*\\}\\s*,\\s*)*\\{\\s*\\w+\\s*,\\s*\\w+\\s*,\\s*(?:\\+|\\-)?\\d+\\s*\\}\\s*\\}\\s*$",
+            Pattern.MULTILINE);
 
-    public static Graph fromString(String s) throws IllegalArgumentException {
-        Graph result = EMPTY_GRAPH;
-        Pattern patternToValidateACompleteGraph = Pattern.compile(
-                "^\\s*\\{\\s*([(|{]\\s*\\w+\\s*,(\\s*\\w+\\s*,)?\\s*\\w+\\s*[)|}]\\s*,\\s*)*[(|{]\\s*\\w+\\s*,(\\s*\\w+\\s*,)?\\s*\\w+\\s*[)|}]\\s*\\}\\s*$");
-        Matcher matcher = patternToValidateACompleteGraph.matcher(s);
+    public static Optional<Graph> fromString(String s) {
+        Optional<Graph> result = Optional.empty();
+        Graph newGraph = new Graph();
+        boolean isGraphValid = true;
+        Matcher matcherForDirectedAndUnponderedPattern = PATTERN_TO_VALIDATE_A_DIRECTED_UNPONDERED_GRAPH.matcher(s);
+        Matcher matcherForDirectedAndPonderedPattern = PATTERN_TO_VALIDATE_A_DIRECTED_PONDERED_GRAPH.matcher(s);
+        Matcher matcherForUndirectedAndPonderedPattern = PATTERN_TO_VALIDATE_AN_UNDIRECTED_PONDERED_GRAPH.matcher(s);
+        Matcher matcherForUndirectedAndUnponderedPattern = PATTERN_TO_VALIDATE_AN_UNDIRECTED_UNPONDERED_GRAPH
+                .matcher(s);
 
-        if (matcher.matches()) {
-            isEmpty = false;
-            result = new Graph();
-            result.stringRepresentation = s;
-            result.fillEdgeListAndVerticeSet();
-            result.fillGraphProperties();
-            result.fillRepresentations();
+        if (matcherForDirectedAndUnponderedPattern.matches()) {
+            newGraph.isDirected = true;
+            newGraph.isPondered = false;
+        } else if (matcherForDirectedAndPonderedPattern.matches()) {
+            newGraph.isDirected = true;
+            newGraph.isPondered = true;
+        } else if (matcherForUndirectedAndPonderedPattern.matches()) {
+            newGraph.isDirected = false;
+            newGraph.isPondered = true;
+        } else if (matcherForUndirectedAndUnponderedPattern.matches()) {
+            newGraph.isDirected = false;
+            newGraph.isPondered = false;
         } else {
-            isEmpty = true;
-            throw new IllegalArgumentException("Invalid graph representation -> " + s);
+            isGraphValid = false;
+        }
+
+        if (isGraphValid) {
+            newGraph.stringRepresentation = s;
+            newGraph.fillEdgeListAndVerticeSet();
+            newGraph.fillRepresentations();
+            result = Optional.of(newGraph);
         }
 
         return result;
@@ -75,87 +101,27 @@ public class Graph {
         edges = new ArrayList<Edge>();
         edgeValues = new ArrayList<Integer>();
         vertices = new HashSet<String>();
-        Edge currentEdge;
+        Optional<Edge> fromStringResult;
+        Edge edgeResult;
         Matcher matcher = Edge.PATTERN_TO_VALIDATE_AN_EDGE.matcher(stringRepresentation.trim());
 
         while (matcher.find()) {
-            currentEdge = Edge.fromString(matcher.group());
+            fromStringResult = Edge.fromString(matcher.group());
 
-            if (currentEdge != Edge.EMPTY_EDGE) {
-                edges.add(currentEdge);
+            if (fromStringResult.isPresent()) {
+                edgeResult = fromStringResult.get();
+                edges.add(edgeResult);
 
-                if (currentEdge.isPondered())
-                    edgeValues.add(currentEdge.getValue());
+                if (edgeResult.isPondered())
+                    edgeValues.add(edgeResult.getValue());
 
-                vertices.add(currentEdge.getFirstVertice());
-                vertices.add(currentEdge.getSecondVertice());
-            } else
-                System.out.println("The edge '" + matcher.group() + "' in graph '" + stringRepresentation
-                        + "' is not valid, so it will not be considered.\n");
+                vertices.add(edgeResult.getFirstVertice());
+                vertices.add(edgeResult.getSecondVertice());
+            }
         }
 
         numberOfEdges = edges.size();
         numberOfVertices = vertices.size();
-    }
-
-    private void fillGraphProperties() throws IllegalArgumentException {
-        statistics = new GraphStatistics();
-        statistics.numberOfDirectedEdges = 0;
-        statistics.numberOfUndirectedEdges = 0;
-        statistics.numberOfPonderedEdges = 0;
-        statistics.numberOfUnponderedEdges = 0;
-
-        for (Edge edge : edges) {
-            if (edge.isDirected()) {
-                statistics.numberOfDirectedEdges++;
-            } else {
-                statistics.numberOfUndirectedEdges++;
-            }
-
-            if (edge.isPondered()) {
-                statistics.numberOfPonderedEdges++;
-            } else {
-                statistics.numberOfUnponderedEdges++;
-            }
-
-            checkIfThereAreDirectedAndUndirectedEdgesAtTheSameTime();
-            checkIfThereArePonderedAndUnponderedEdgesAtTheSameTime();
-        }
-
-        checkIfTheGraphIsDirectedBasedOnTheStatistics();
-        checkIfTheGraphIsPonderedBasedOnTheStatistics();
-    }
-
-    private void checkIfThereAreDirectedAndUndirectedEdgesAtTheSameTime() throws IllegalArgumentException {
-        if (statistics.numberOfDirectedEdges != 0 && statistics.numberOfUndirectedEdges != 0) {
-            throw new IllegalArgumentException(
-                    "A graph can not have directed an undirected edges at the same time, so the graph '"
-                            + stringRepresentation + "' is invalid.");
-        }
-    }
-
-    private void checkIfThereArePonderedAndUnponderedEdgesAtTheSameTime() throws IllegalArgumentException {
-        if (statistics.numberOfPonderedEdges != 0 && statistics.numberOfUnponderedEdges != 0) {
-            throw new IllegalArgumentException(
-                    "A graph can not have pondered an unpondered edges at the same time, so the graph '"
-                            + stringRepresentation + "' is invalid.");
-        }
-    }
-
-    private void checkIfTheGraphIsDirectedBasedOnTheStatistics() {
-        if (statistics.numberOfUndirectedEdges == 0) {
-            isDirected = true;
-        } else if (statistics.numberOfDirectedEdges == 0) {
-            isDirected = false;
-        }
-    }
-
-    private void checkIfTheGraphIsPonderedBasedOnTheStatistics() {
-        if (statistics.numberOfUnponderedEdges == 0) {
-            isPondered = true;
-        } else if (statistics.numberOfPonderedEdges == 0) {
-            isPondered = false;
-        }
     }
 
     private void fillRepresentations() {
@@ -204,17 +170,11 @@ public class Graph {
         }
     }
 
-    public void showPredecessorAdjacencyList() throws IllegalAccessException {
-        if (isEmpty)
-            throw new IllegalAccessException("Can not show any graph representation for empty graph.");
-
+    public void showPredecessorAdjacencyList() {
         showAdjacencyList(representations.predecessorAdjacencyList);
     }
 
-    public void showSuccessorAdjacencyList() throws IllegalAccessException {
-        if (isEmpty)
-            throw new IllegalAccessException("Can not show any graph representation for empty graph.");
-
+    public void showSuccessorAdjacencyList() {
         showAdjacencyList(representations.successorAdjacencyList);
     }
 
@@ -267,10 +227,7 @@ public class Graph {
         return -1;
     }
 
-    public void showAdjacencyMatrix() throws IllegalAccessException {
-        if (isEmpty)
-            throw new IllegalAccessException("Can not show any graph representation for empty graph.");
-
+    public void showAdjacencyMatrix() {
         Iterator<String> verticeIterator = vertices.iterator();
 
         System.out.print("\t");
@@ -316,10 +273,7 @@ public class Graph {
         }
     }
 
-    public void showIncidencyMatrix() throws IllegalAccessException {
-        if (isEmpty)
-            throw new IllegalAccessException("Can not show any graph representation for empty graph.");
-
+    public void showIncidencyMatrix() {
         int currentLine = 0, currentColumn = 0;
         int currentItem;
 
@@ -499,10 +453,7 @@ public class Graph {
         System.out.println(verticesArray[verticesArray.length - 1] + " }");
     }
 
-    public void showAllRepresentations() throws IllegalAccessException {
-        if (isEmpty)
-            throw new IllegalAccessException("Can not show any graph representation for empty graph.");
-
+    public void showAllRepresentations() {
         System.out.println("\n  REPRESENTATIONS FOR GRAPH: " + stringRepresentation);
         System.out.println("\n\tADJACENCY MATRIX\n");
         showAdjacencyMatrix();
@@ -584,10 +535,7 @@ public class Graph {
         return null;
     }
 
-    public void showDeepSearchStructures() throws IllegalAccessException {
-        if (isEmpty)
-            throw new IllegalAccessException("Can not show any graph representation for empty graph.");
-
+    public void showDeepSearchStructures() {
         System.out.println("\n[ ");
 
         for (int time = 0; time < numberOfVertices; time++)
@@ -605,32 +553,34 @@ public class Graph {
 
     public static void main(String[] args) throws Exception {
         double start = System.currentTimeMillis();
-        // Scanner scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
 
-        BufferedReader bufferedReader = new BufferedReader(new FileReader("graphs.txt"));
-        String fileLine;
-        Graph graph;
-        // graph = Graph.fromString(scanner.nextLine());
+        // BufferedReader bufferedReader = new BufferedReader(new
+        // FileReader("graphs.txt"));
+        // String fileLine;
+        Optional<Graph> graph = Optional.empty();
 
         // graph.showAllRepresentations();
 
-        while ((fileLine = bufferedReader.readLine()) != null) {
-            graph = Graph.fromString(fileLine);
-            System.out.println();
-            System.out.println("\n\tPREDECESSOR ADJACENCY ARRAYS\n");
-            graph.showPredecessorAdjacencyArrays();
+        // while ((fileLine = bufferedReader.readLine()) != null) {
+        // graph = Graph.fromString(fileLine);
+        graph = Graph.fromString(scanner.nextLine());
 
-            System.out.println("\n\tSUCCESSOR ADJACENCY ARRAYS\n");
-            graph.showSuccessorAdjacencyArrays();
-            System.out.println();
-            // graph.showAllRepresentations();
-            // graph.makeDeepSearchAndComputeTimesInArrays();
-        }
+        // System.out.println();
+        // System.out.println("\n\tPREDECESSOR ADJACENCY ARRAYS\n");
+        // graph.showPredecessorAdjacencyArrays();
+
+        // System.out.println("\n\tSUCCESSOR ADJACENCY ARRAYS\n");
+        // graph.showSuccessorAdjacencyArrays();
+        // System.out.println();
+        graph.ifPresent(g -> g.showAllRepresentations());
+
+        // graph.makeDeepSearchAndComputeTimesInArrays();
 
         // graph.showSuccessorAdjacencyList();
         // graph.showDeepSearchStructures();
 
-        bufferedReader.close();
+        // bufferedReader.close();
         // scanner.close();
         double end = System.currentTimeMillis();
 

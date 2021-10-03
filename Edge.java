@@ -1,3 +1,4 @@
+import java.util.Optional;
 import java.util.regex.*;
 
 public class Edge {
@@ -8,7 +9,6 @@ public class Edge {
     private boolean isDirected;
     private boolean isPondered;
 
-    public static final Edge EMPTY_EDGE = new Edge();
     public static final Pattern PATTERN_TO_VALIDATE_AN_EDGE = Pattern
             .compile("[(|{]\\s*\\w+\\s*,(\\s*\\w+\\s*,)?\\s*\\w+\\s*[)|}]");
 
@@ -36,22 +36,24 @@ public class Edge {
         return secondVertice;
     }
 
-    public static Edge fromString(String edgeRepresentation) {
+    public static Optional<Edge> fromString(String edgeRepresentation) {
         Matcher matcher = PATTERN_TO_VALIDATE_AN_EDGE.matcher(edgeRepresentation);
+        Optional<Edge> result = Optional.empty();
 
         if (!matcher.matches()) {
-            return EMPTY_EDGE;
+            return result;
         }
 
         Edge edge = new Edge();
         edge.stringRepresentation = edgeRepresentation.trim();
 
         if (!edge.isEdgeEnclosedCorrectly()) {
-            return EMPTY_EDGE;
+            return result;
         }
 
         edge.fillPropertiesOfTheEdge();
-        return edge;
+        result = Optional.of(edge);
+        return result;
     }
 
     private boolean isEdgeEnclosedCorrectly() {
