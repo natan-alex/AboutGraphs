@@ -332,13 +332,16 @@ public class Graph {
 
     private void reorderSuccessorAdjacencyArrays() {
         orderAdjacencyArrays(representations.successorAdjacencyArrayStart, representations.successorAdjacencyArrayEnd);
-        representations.successorAdjacencyArrayStart = reorderAndReturnSuccessorAdjacencyArray();
+        representations.successorAdjacencyArrayStart = reorderAndReturnTheSortedAdjacencyArray(
+                representations.successorAdjacencyArrayStart);
     }
 
     private void reorderPredecessorAdjacencyArrays() {
         orderAdjacencyArrays(representations.predecessorAdjacencyArrayEnd,
                 representations.predecessorAdjacencyArrayStart);
-        representations.predecessorAdjacencyArrayEnd = reorderAndReturnPredecessorAdjacencyArray();
+
+        representations.predecessorAdjacencyArrayEnd = reorderAndReturnTheSortedAdjacencyArray(
+                representations.predecessorAdjacencyArrayEnd);
     }
 
     private void orderAdjacencyArrays(int[] whichToSort, int[] otherArray) {
@@ -361,7 +364,7 @@ public class Graph {
         }
     }
 
-    private int[] reorderAndReturnPredecessorAdjacencyArray() {
+    private int[] reorderAndReturnTheSortedAdjacencyArray(int[] sortedArray) {
         int[] reorderedArray = new int[numberOfVertices + 1];
         int indexOfWhereInsert, indexOfFirstOcurrenceOfAVerticeIndex = 0;
 
@@ -369,30 +372,7 @@ public class Graph {
         reorderedArray[0] = 0;
 
         for (int whereInsertInReorderedArray = 1; whereInsertInReorderedArray < numberOfVertices; whereInsertInReorderedArray++) {
-            indexOfWhereInsert = firstIndexOfItemInArray(whereInsertInReorderedArray,
-                    representations.predecessorAdjacencyArrayEnd);
-
-            if (indexOfWhereInsert != -1) {
-                indexOfFirstOcurrenceOfAVerticeIndex = indexOfWhereInsert;
-            }
-
-            reorderedArray[whereInsertInReorderedArray] = indexOfFirstOcurrenceOfAVerticeIndex;
-        }
-
-        return reorderedArray;
-    }
-
-    private int[] reorderAndReturnSuccessorAdjacencyArray() {
-        int[] reorderedArray = new int[numberOfVertices + 1];
-        int indexOfWhereInsert, indexOfFirstOcurrenceOfAVerticeIndex = numberOfEdges;
-
-        reorderedArray[numberOfVertices] = numberOfEdges;
-        reorderedArray[0] = 0;
-
-        for (int whereInsertInReorderedArray = numberOfVertices
-                - 1; whereInsertInReorderedArray > 0; whereInsertInReorderedArray--) {
-            indexOfWhereInsert = firstIndexOfItemInArray(whereInsertInReorderedArray,
-                    representations.successorAdjacencyArrayStart);
+            indexOfWhereInsert = firstIndexOfItemInArray(whereInsertInReorderedArray, sortedArray);
 
             if (indexOfWhereInsert != -1) {
                 indexOfFirstOcurrenceOfAVerticeIndex = indexOfWhereInsert;
@@ -490,13 +470,11 @@ public class Graph {
         verticeOnTopOfDiscoveredVertices = discoveredVertices.firstElement();
 
         for (int timeCounter = 1; timeCounter <= 2 * numberOfVertices; timeCounter++) {
-            // System.out.println("indexOfVerticeOnTopOfDiscoveredVertices: " +
-            // indexOfVerticeOnTopOfDiscoveredVertices);
-            // System.out.println("discoveredLists: " + discoveredLists.toString());
-            // System.out.println("discoveredVertices: " + discoveredVertices.toString());
-            // System.out.println("successorAdjacencyList: " +
-            // representations.successorAdjacencyList.toString());
-            // System.out.println();
+            System.out.println("indexOfVerticeOnTopOfDiscoveredVertices: " + indexOfVerticeOnTopOfDiscoveredVertices);
+            System.out.println("discoveredLists: " + discoveredLists.toString());
+            System.out.println("discoveredVertices: " + discoveredVertices.toString());
+            System.out.println("successorAdjacencyList: " + representations.successorAdjacencyList.toString());
+            System.out.println();
 
             if (deepSearchStructures.discoveryTimes[indexOfVerticeOnTopOfDiscoveredVertices] == -1) {
                 deepSearchStructures.discoveryTimes[indexOfVerticeOnTopOfDiscoveredVertices] = timeCounter;
