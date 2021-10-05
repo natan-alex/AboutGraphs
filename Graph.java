@@ -332,39 +332,33 @@ public class Graph {
 
     private void reorderSuccessorAdjacencyArrays() {
         orderAdjacencyArrays(representations.successorAdjacencyArrayStart, representations.successorAdjacencyArrayEnd);
-        representations.successorAdjacencyArrayStart = reorderAndReturnTheSortedAdjacencyArray(
-                representations.successorAdjacencyArrayStart);
+        representations.successorAdjacencyArrayStart = reorderAndReturnSuccessorAdjacencyArray();
     }
 
     private void reorderPredecessorAdjacencyArrays() {
         orderAdjacencyArrays(representations.predecessorAdjacencyArrayEnd,
                 representations.predecessorAdjacencyArrayStart);
-
-        representations.predecessorAdjacencyArrayEnd = reorderAndReturnTheSortedAdjacencyArray(
-                representations.predecessorAdjacencyArrayEnd);
+        representations.predecessorAdjacencyArrayEnd = reorderAndReturnPredecessorAdjacencyArray();
     }
 
     private void orderAdjacencyArrays(int[] whichToSort, int[] otherArray) {
         int currentItemOfWhichToSortArray, currentItemOfOtherArray;
         int j;
-
         for (int i = 1; i < whichToSort.length; i++) {
             currentItemOfWhichToSortArray = whichToSort[i];
             currentItemOfOtherArray = otherArray[i];
             j = i - 1;
-
             while (j >= 0 && whichToSort[j] > currentItemOfWhichToSortArray) {
                 whichToSort[j + 1] = whichToSort[j];
                 otherArray[j + 1] = otherArray[j];
                 j--;
             }
-
             whichToSort[j + 1] = currentItemOfWhichToSortArray;
             otherArray[j + 1] = currentItemOfOtherArray;
         }
     }
 
-    private int[] reorderAndReturnTheSortedAdjacencyArray(int[] sortedArray) {
+    private int[] reorderAndReturnPredecessorAdjacencyArray() {
         int[] reorderedArray = new int[numberOfVertices + 1];
         int indexOfWhereInsert, indexOfFirstOcurrenceOfAVerticeIndex = 0;
 
@@ -372,12 +366,34 @@ public class Graph {
         reorderedArray[0] = 0;
 
         for (int whereInsertInReorderedArray = 1; whereInsertInReorderedArray < numberOfVertices; whereInsertInReorderedArray++) {
-            indexOfWhereInsert = firstIndexOfItemInArray(whereInsertInReorderedArray, sortedArray);
+            indexOfWhereInsert = firstIndexOfItemInArray(whereInsertInReorderedArray,
+                    representations.predecessorAdjacencyArrayEnd);
 
             if (indexOfWhereInsert != -1) {
                 indexOfFirstOcurrenceOfAVerticeIndex = indexOfWhereInsert;
             }
 
+            reorderedArray[whereInsertInReorderedArray] = indexOfFirstOcurrenceOfAVerticeIndex;
+        }
+
+        return reorderedArray;
+    }
+
+    private int[] reorderAndReturnSuccessorAdjacencyArray() {
+        int[] reorderedArray = new int[numberOfVertices + 1];
+        int indexOfWhereInsert, indexOfFirstOcurrenceOfAVerticeIndex = numberOfEdges;
+
+        reorderedArray[numberOfVertices] = numberOfEdges;
+        reorderedArray[0] = 0;
+
+        for (int whereInsertInReorderedArray = numberOfVertices
+                - 1; whereInsertInReorderedArray > 0; whereInsertInReorderedArray--) {
+            indexOfWhereInsert = firstIndexOfItemInArray(whereInsertInReorderedArray,
+                    representations.successorAdjacencyArrayStart);
+
+            if (indexOfWhereInsert != -1) {
+                indexOfFirstOcurrenceOfAVerticeIndex = indexOfWhereInsert;
+            }
             reorderedArray[whereInsertInReorderedArray] = indexOfFirstOcurrenceOfAVerticeIndex;
         }
 
@@ -533,16 +549,18 @@ public class Graph {
         double start = System.currentTimeMillis();
         Scanner scanner = new Scanner(System.in);
 
-        // BufferedReader bufferedReader = new BufferedReader(new
-        // FileReader("graphs.txt"));
-        // String fileLine;
+        BufferedReader bufferedReader = new BufferedReader(new
+        FileReader("graphs.txt"));
+        String fileLine;
         Optional<Graph> graph = Optional.empty();
 
         // graph.showAllRepresentations();
 
-        // while ((fileLine = bufferedReader.readLine()) != null) {
-        // graph = Graph.fromString(fileLine);
-        graph = Graph.fromString(scanner.nextLine());
+        while ((fileLine = bufferedReader.readLine()) != null) {
+        graph = Graph.fromString(fileLine);
+        // graph = Graph.fromString(scanner.nextLine());
+        graph.ifPresent(g -> g.showAllRepresentations());
+        }
 
         // System.out.println();
         // System.out.println("\n\tPREDECESSOR ADJACENCY ARRAYS\n");
@@ -551,15 +569,14 @@ public class Graph {
         // System.out.println("\n\tSUCCESSOR ADJACENCY ARRAYS\n");
         // graph.showSuccessorAdjacencyArrays();
         // System.out.println();
-        graph.ifPresent(g -> g.showAllRepresentations());
 
         // graph.makeDeepSearchAndComputeTimesInArrays();
 
         // graph.showSuccessorAdjacencyList();
         // graph.showDeepSearchStructures();
 
-        // bufferedReader.close();
-        // scanner.close();
+        bufferedReader.close();
+        scanner.close();
         double end = System.currentTimeMillis();
 
         System.out.println("Duration: " + (end - start) + "ms\n");
