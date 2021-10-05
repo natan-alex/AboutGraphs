@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <regex>
+#include <optional>
 
 using namespace std;
 
@@ -29,10 +30,9 @@ namespace AboutGraphs
         void do_inplace_right_trim(string &s);
 
     public:
-        static Edge *const EMPTY_EDGE;
         static const regex PATTERN_TO_VALIDATE_AN_EDGE;
 
-        static Edge *from_string(string &edge_representation);
+        static optional<Edge> from_string(const string &edge_representation);
 
         bool is_edge_pondered();
         bool is_edge_directed();

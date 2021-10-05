@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <regex>
+#include <optional>
 
 #include "edge.h"
 
@@ -8,9 +9,6 @@ using namespace std;
 
 namespace AboutGraphs
 {
-
-    Edge *const Edge::EMPTY_EDGE = new Edge();
-
     const regex Edge::PATTERN_TO_VALIDATE_AN_EDGE = regex("[(|{]\\s*\\w+\\s*,(\\s*\\w+\\s*,)?\\s*\\w+\\s*[)|}]");
 
     bool Edge::is_edge_directed()
@@ -43,23 +41,24 @@ namespace AboutGraphs
         return second_vertice;
     }
 
-    Edge *Edge::from_string(string &edge_representation)
+    optional<Edge> Edge::from_string(const string &edge_representation)
     {
         if (regex_search(edge_representation, PATTERN_TO_VALIDATE_AN_EDGE) == false)
         {
-            return EMPTY_EDGE;
+            return nullopt;
         }
 
-        Edge *edge = new Edge();
-        edge->string_representation = edge_representation;
+        Edge edge = Edge();
+        edge.string_representation = edge_representation;
 
-        if (!edge->is_edge_enclosed_correctly())
+        if (!edge.is_edge_enclosed_correctly())
         {
-            return EMPTY_EDGE;
+            return nullopt;
         }
 
-        edge->fill_properties_of_the_edge();
-        return edge;
+        edge.fill_properties_of_the_edge();
+
+        return optional<Edge>{edge};
     }
 
     bool Edge::is_edge_enclosed_correctly()
