@@ -463,39 +463,56 @@ public class Graph {
     }
 
     public void makeDeepSearchAndComputeTimesInArrays() {
-        Stack<String> discoveredVertices = new Stack<>();
-        Stack<List<String>> discoveredLists = new Stack<>();
-        int indexOfVerticeOnTopOfDiscoveredVertices = 0;
-        List<String> listOnTopOfDiscoveredLists;
-        String verticeOnTopOfDiscoveredVertices;
-
         initializeDeepSearchStructures();
+        showSuccessorAdjacencyList();
 
-        discoveredLists.push(representations.successorAdjacencyList.get(0));
-        discoveredVertices.push(representations.successorAdjacencyList.get(0).get(0));
-        listOnTopOfDiscoveredLists = discoveredLists.firstElement();
-        verticeOnTopOfDiscoveredVertices = discoveredVertices.firstElement();
+        Stack<Iterator<String>> discoveredVertices = new Stack<>();
+        Stack<String> listHeads = new Stack<>();
+        String currentVertice = representations.successorAdjacencyList.get(0).get(0);
+        int verticeIndexInVerticeSet = findTheIndexOfTheVertice(currentVertice);
 
-        for (int timeCounter = 1; timeCounter <= 2 * numberOfVertices; timeCounter++) {
-            System.out.println("indexOfVerticeOnTopOfDiscoveredVertices: " + indexOfVerticeOnTopOfDiscoveredVertices);
-            System.out.println("discoveredLists: " + discoveredLists.toString());
-            System.out.println("discoveredVertices: " + discoveredVertices.toString());
-            System.out.println("successorAdjacencyList: " + representations.successorAdjacencyList.toString());
-            System.out.println();
+        for (int timeNumber = 1; timeNumber <= 2 * numberOfVertices; timeNumber++) {
+            System.out.println("time number: " + timeNumber);
+            System.out.println("current vertice: " + currentVertice);
 
-            if (deepSearchStructures.discoveryTimes[indexOfVerticeOnTopOfDiscoveredVertices] == -1) {
-                deepSearchStructures.discoveryTimes[indexOfVerticeOnTopOfDiscoveredVertices] = timeCounter;
-                discoveredVertices.push(listOnTopOfDiscoveredLists.get(indexOfVerticeOnTopOfDiscoveredVertices + 1));
-                discoveredLists.push(getAdjacencyListWithThisHead(verticeOnTopOfDiscoveredVertices));
-                indexOfVerticeOnTopOfDiscoveredVertices = listOnTopOfDiscoveredLists
-                        .indexOf(discoveredVertices.firstElement());
+            if (deepSearchStructures.discoveryTimes[verticeIndexInVerticeSet] == -1) {
+                deepSearchStructures.discoveryTimes[verticeIndexInVerticeSet] = timeNumber;
+
+                discoveredVertices.push(getAdjacencyListWithThisHead(currentVertice).iterator());
+                listHeads.push(discoveredVertices.lastElement().next());
+                System.out.println("not discovered");
+                System.out.println("pushing: " + getAdjacencyListWithThisHead(currentVertice));
+            } else if (!discoveredVertices.lastElement().hasNext()) {
+                verticeIndexInVerticeSet = findTheIndexOfTheVertice(listHeads.lastElement());
+
+                if (deepSearchStructures.endTimes[verticeIndexInVerticeSet] == -1) {
+                    deepSearchStructures.endTimes[verticeIndexInVerticeSet] = timeNumber;
+                    System.out.println("ending time for vertice " + listHeads.lastElement());
+                }
+
+                if (!discoveredVertices.isEmpty()) {
+                    discoveredVertices.pop();
+                    listHeads.pop();
+                    System.out.println("popping last list");
+                }
             }
 
-            listOnTopOfDiscoveredLists = discoveredLists.firstElement();
-            verticeOnTopOfDiscoveredVertices = discoveredVertices.firstElement();
-            indexOfVerticeOnTopOfDiscoveredVertices = listOnTopOfDiscoveredLists
-                    .indexOf(verticeOnTopOfDiscoveredVertices);
+            if (discoveredVertices.isEmpty()) {
+                currentVertice = getNextNotDiscoveredVertice();
+                verticeIndexInVerticeSet = currentVertice == null ? -1 : findTheIndexOfTheVertice(currentVertice);
+                System.out.println("is empty, the vertice now is : " + currentVertice);
+            } else {
+                while (discoveredVertices.lastElement().hasNext()
+                        && deepSearchStructures.discoveryTimes[verticeIndexInVerticeSet] != -1) {
+                    currentVertice = discoveredVertices.lastElement().next();
+                    verticeIndexInVerticeSet = findTheIndexOfTheVertice(currentVertice);
+                }
+            }
 
+            System.out.println("discovery times: " + Arrays.toString(deepSearchStructures.discoveryTimes));
+            System.out.println("end times: " + Arrays.toString(deepSearchStructures.endTimes));
+            System.out.println("list heads: " + listHeads);
+            System.out.println();
         }
     }
 
@@ -511,10 +528,26 @@ public class Graph {
     }
 
     private List<String> getAdjacencyListWithThisHead(String listHead) {
+        if (listHead == null || listHead.isEmpty())
+            return null;
+
         for (List<String> list : representations.successorAdjacencyList) {
             if (list.get(0).compareTo(listHead) == 0) {
                 return list;
             }
+        }
+
+        return null;
+    }
+
+    private String getNextNotDiscoveredVertice() {
+        Iterator<String> verticeIterator = vertices.iterator();
+
+        for (int time : deepSearchStructures.discoveryTimes) {
+            if (time == -1) {
+                return verticeIterator.next();
+            }
+            verticeIterator.next();
         }
 
         return null;
@@ -540,33 +573,17 @@ public class Graph {
         double start = System.currentTimeMillis();
         Scanner scanner = new Scanner(System.in);
 
-        // BufferedReader bufferedReader = new BufferedReader(new
-        // FileReader("graphs.txt"));
-        // String fileLine;
+        BufferedReader bufferedReader = new BufferedReader(new FileReader("graphs.txt"));
+        String fileLine;
         Optional<Graph> graph = Optional.empty();
 
-        // graph.showAllRepresentations();
+        while ((fileLine = bufferedReader.readLine()) != null) {
+            graph = Graph.fromString(fileLine);
+            graph.ifPresent(g -> g.makeDeepSearchAndComputeTimesInArrays());
+        }
 
-        // while ((fileLine = bufferedReader.readLine()) != null) {
-        // graph = Graph.fromString(fileLine);
-        graph = Graph.fromString(scanner.nextLine());
-
-        // System.out.println();
-        // System.out.println("\n\tPREDECESSOR ADJACENCY ARRAYS\n");
-        // graph.showPredecessorAdjacencyArrays();
-
-        // System.out.println("\n\tSUCCESSOR ADJACENCY ARRAYS\n");
-        // graph.showSuccessorAdjacencyArrays();
-        // System.out.println();
-        graph.ifPresent(g -> g.showAllRepresentations());
-
-        // graph.makeDeepSearchAndComputeTimesInArrays();
-
-        // graph.showSuccessorAdjacencyList();
-        // graph.showDeepSearchStructures();
-
-        // bufferedReader.close();
-        // scanner.close();
+        bufferedReader.close();
+        scanner.close();
         double end = System.currentTimeMillis();
 
         System.out.println("Duration: " + (end - start) + "ms\n");
