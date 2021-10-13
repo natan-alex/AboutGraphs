@@ -323,39 +323,33 @@ public class Graph {
 
     private void reorderSuccessorAdjacencyArrays() {
         orderAdjacencyArrays(representations.successorAdjacencyArrayStart, representations.successorAdjacencyArrayEnd);
-        representations.successorAdjacencyArrayStart = reorderAndReturnTheSortedAdjacencyArray(
-                representations.successorAdjacencyArrayStart);
+        representations.successorAdjacencyArrayStart = reorderAndReturnSuccessorAdjacencyArray();
     }
 
     private void reorderPredecessorAdjacencyArrays() {
         orderAdjacencyArrays(representations.predecessorAdjacencyArrayEnd,
                 representations.predecessorAdjacencyArrayStart);
-
-        representations.predecessorAdjacencyArrayEnd = reorderAndReturnTheSortedAdjacencyArray(
-                representations.predecessorAdjacencyArrayEnd);
+        representations.predecessorAdjacencyArrayEnd = reorderAndReturnPredecessorAdjacencyArray();
     }
 
     private void orderAdjacencyArrays(int[] whichToSort, int[] otherArray) {
         int currentItemOfWhichToSortArray, currentItemOfOtherArray;
         int j;
-
         for (int i = 1; i < whichToSort.length; i++) {
             currentItemOfWhichToSortArray = whichToSort[i];
             currentItemOfOtherArray = otherArray[i];
             j = i - 1;
-
             while (j >= 0 && whichToSort[j] > currentItemOfWhichToSortArray) {
                 whichToSort[j + 1] = whichToSort[j];
                 otherArray[j + 1] = otherArray[j];
                 j--;
             }
-
             whichToSort[j + 1] = currentItemOfWhichToSortArray;
             otherArray[j + 1] = currentItemOfOtherArray;
         }
     }
 
-    private int[] reorderAndReturnTheSortedAdjacencyArray(int[] sortedArray) {
+    private int[] reorderAndReturnPredecessorAdjacencyArray() {
         int[] reorderedArray = new int[numberOfVertices + 1];
         int indexOfWhereInsert, indexOfFirstOcurrenceOfAVerticeIndex = 0;
 
@@ -363,12 +357,34 @@ public class Graph {
         reorderedArray[0] = 0;
 
         for (int whereInsertInReorderedArray = 1; whereInsertInReorderedArray < numberOfVertices; whereInsertInReorderedArray++) {
-            indexOfWhereInsert = firstIndexOfItemInArray(whereInsertInReorderedArray, sortedArray);
+            indexOfWhereInsert = firstIndexOfItemInArray(whereInsertInReorderedArray,
+                    representations.predecessorAdjacencyArrayEnd);
 
             if (indexOfWhereInsert != -1) {
                 indexOfFirstOcurrenceOfAVerticeIndex = indexOfWhereInsert;
             }
 
+            reorderedArray[whereInsertInReorderedArray] = indexOfFirstOcurrenceOfAVerticeIndex;
+        }
+
+        return reorderedArray;
+    }
+
+    private int[] reorderAndReturnSuccessorAdjacencyArray() {
+        int[] reorderedArray = new int[numberOfVertices + 1];
+        int indexOfWhereInsert, indexOfFirstOcurrenceOfAVerticeIndex = numberOfEdges;
+
+        reorderedArray[numberOfVertices] = numberOfEdges;
+        reorderedArray[0] = 0;
+
+        for (int whereInsertInReorderedArray = numberOfVertices
+                - 1; whereInsertInReorderedArray > 0; whereInsertInReorderedArray--) {
+            indexOfWhereInsert = firstIndexOfItemInArray(whereInsertInReorderedArray,
+                    representations.successorAdjacencyArrayStart);
+
+            if (indexOfWhereInsert != -1) {
+                indexOfFirstOcurrenceOfAVerticeIndex = indexOfWhereInsert;
+            }
             reorderedArray[whereInsertInReorderedArray] = indexOfFirstOcurrenceOfAVerticeIndex;
         }
 
