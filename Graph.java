@@ -7,19 +7,11 @@ import java.util.Set;
 import java.util.HashSet;
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.lang.IllegalArgumentException;
 import java.util.Iterator;
 import java.util.Stack;
 import java.util.Optional;
 
 public class Graph {
-    private class GraphStatistics {
-        public int numberOfPonderedEdges;
-        public int numberOfUnponderedEdges;
-        public int numberOfDirectedEdges;
-        public int numberOfUndirectedEdges;
-    }
-
     private class GraphRepresentations {
         public int[][] adjacencyMatrix;
         public int[][] incidencyMatrix;
@@ -42,7 +34,6 @@ public class Graph {
     private List<Integer> edgeValues;
     private boolean isPondered;
     private boolean isDirected;
-    private GraphStatistics statistics;
     private GraphRepresentations representations;
     private DeepSearchStructures deepSearchStructures;
     private int numberOfVertices;
