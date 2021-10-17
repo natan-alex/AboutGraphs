@@ -26,6 +26,21 @@ public class Graph {
     private class DeepSearchStructures {
         public int[] discoveryTimes;
         public int[] endTimes;
+        public EdgeClassifications[] edgeClassifications;
+    }
+
+    private enum EdgeClassifications {
+        TREE("Tree"), CROSSING("Crossing"), RETURN("Return"), ADVANCE("Advance");
+
+        String name;
+
+        private EdgeClassifications(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
     }
 
     private String stringRepresentation;
@@ -195,7 +210,7 @@ public class Graph {
 
             for (Edge edge : edges) {
                 if (vertice.compareTo(edge.getFirstVertice()) == 0) {
-                    indexOfSecondVertice = findTheIndexOfTheVertice(edge.getSecondVertice());
+                    indexOfSecondVertice = getTheIndexOfTheVertice(edge.getSecondVertice());
                     representations.adjacencyMatrix[currentLine][indexOfSecondVertice] = 1;
                 }
             }
@@ -204,11 +219,25 @@ public class Graph {
         }
     }
 
-    private int findTheIndexOfTheVertice(String verticeToFind) {
+    private int getTheIndexOfTheVertice(String vertice) {
         int index = 0;
 
-        for (String vertice : vertices) {
-            if (vertice.compareTo(verticeToFind) == 0) {
+        for (String v : vertices) {
+            if (v.compareTo(vertice) == 0) {
+                return index;
+            }
+
+            index++;
+        }
+
+        return -1;
+    }
+
+    private int getTheIndexOfTheEdge(Edge edge) {
+        int index = 0;
+
+        for (Edge e : edges) {
+            if (e.getStringRepresentation().compareTo(edge.getStringRepresentation()) == 0) {
                 return index;
             }
 
@@ -250,7 +279,7 @@ public class Graph {
 
             for (Edge edge : edges) {
                 if (vertice.compareTo(edge.getFirstVertice()) == 0) {
-                    indexOfSecondVertice = findTheIndexOfTheVertice(edge.getSecondVertice());
+                    indexOfSecondVertice = getTheIndexOfTheVertice(edge.getSecondVertice());
                     representations.incidencyMatrix[currentLine][currentColumn] = 1;
                     representations.incidencyMatrix[indexOfSecondVertice][currentColumn] = -1;
                 } else if (representations.incidencyMatrix[currentLine][currentColumn] != -1) {
@@ -311,8 +340,8 @@ public class Graph {
         representations.successorAdjacencyArrayEnd = new int[numberOfEdges];
 
         for (Edge edge : edges) {
-            indexOfFirstVertice = findTheIndexOfTheVertice(edge.getFirstVertice());
-            indexOfSecondVertice = findTheIndexOfTheVertice(edge.getSecondVertice());
+            indexOfFirstVertice = getTheIndexOfTheVertice(edge.getFirstVertice());
+            indexOfSecondVertice = getTheIndexOfTheVertice(edge.getSecondVertice());
             representations.predecessorAdjacencyArrayStart[currentIndex] = indexOfFirstVertice;
             representations.successorAdjacencyArrayStart[currentIndex] = indexOfFirstVertice;
             representations.predecessorAdjacencyArrayEnd[currentIndex] = indexOfSecondVertice;
@@ -462,57 +491,47 @@ public class Graph {
         System.out.println();
     }
 
-    public void makeDeepSearchAndComputeTimesInArrays() {
+    private void makeDeepSearchAndComputeTimesInArrays() {
         initializeDeepSearchStructures();
-        showSuccessorAdjacencyList();
-
+        String currentVertice = representations.successorAdjacencyList.get(0).get(0);
+        int verticeIndexInVerticeSet = getTheIndexOfTheVertice(currentVertice);
         Stack<Iterator<String>> discoveredVertices = new Stack<>();
         Stack<String> listHeads = new Stack<>();
-        String currentVertice = representations.successorAdjacencyList.get(0).get(0);
-        int verticeIndexInVerticeSet = findTheIndexOfTheVertice(currentVertice);
+        Edge edgeToBeClassified = null;
 
         for (int timeNumber = 1; timeNumber <= 2 * numberOfVertices; timeNumber++) {
-            System.out.println("time number: " + timeNumber);
-            System.out.println("current vertice: " + currentVertice);
-
             if (deepSearchStructures.discoveryTimes[verticeIndexInVerticeSet] == -1) {
                 deepSearchStructures.discoveryTimes[verticeIndexInVerticeSet] = timeNumber;
 
                 discoveredVertices.push(getAdjacencyListWithThisHead(currentVertice).iterator());
                 listHeads.push(discoveredVertices.lastElement().next());
-                System.out.println("not discovered");
-                System.out.println("pushing: " + getAdjacencyListWithThisHead(currentVertice));
             } else if (!discoveredVertices.lastElement().hasNext()) {
-                verticeIndexInVerticeSet = findTheIndexOfTheVertice(listHeads.lastElement());
+                verticeIndexInVerticeSet = getTheIndexOfTheVertice(listHeads.lastElement());
 
                 if (deepSearchStructures.endTimes[verticeIndexInVerticeSet] == -1) {
                     deepSearchStructures.endTimes[verticeIndexInVerticeSet] = timeNumber;
-                    System.out.println("ending time for vertice " + listHeads.lastElement());
                 }
 
                 if (!discoveredVertices.isEmpty()) {
                     discoveredVertices.pop();
                     listHeads.pop();
-                    System.out.println("popping last list");
                 }
             }
 
             if (discoveredVertices.isEmpty()) {
-                currentVertice = getNextNotDiscoveredVertice();
-                verticeIndexInVerticeSet = currentVertice == null ? -1 : findTheIndexOfTheVertice(currentVertice);
-                System.out.println("is empty, the vertice now is : " + currentVertice);
+                currentVertice = getNextNotDiscoveredVerticeBasedOnVerticeSet();
+                verticeIndexInVerticeSet = currentVertice == null ? -1 : getTheIndexOfTheVertice(currentVertice);
             } else {
                 while (discoveredVertices.lastElement().hasNext()
                         && deepSearchStructures.discoveryTimes[verticeIndexInVerticeSet] != -1) {
                     currentVertice = discoveredVertices.lastElement().next();
-                    verticeIndexInVerticeSet = findTheIndexOfTheVertice(currentVertice);
+                    verticeIndexInVerticeSet = getTheIndexOfTheVertice(currentVertice);
+                    edgeToBeClassified = getEdgeThatContainsThisVertices(listHeads.lastElement(), currentVertice);
+
+                    if (edgeToBeClassified != null)
+                        classifyTheEdge(edgeToBeClassified);
                 }
             }
-
-            System.out.println("discovery times: " + Arrays.toString(deepSearchStructures.discoveryTimes));
-            System.out.println("end times: " + Arrays.toString(deepSearchStructures.endTimes));
-            System.out.println("list heads: " + listHeads);
-            System.out.println();
         }
     }
 
@@ -520,6 +539,7 @@ public class Graph {
         deepSearchStructures = new DeepSearchStructures();
         deepSearchStructures.discoveryTimes = new int[numberOfVertices];
         deepSearchStructures.endTimes = new int[numberOfVertices];
+        deepSearchStructures.edgeClassifications = new EdgeClassifications[numberOfEdges];
 
         for (int i = 0; i < numberOfVertices; i++) {
             deepSearchStructures.discoveryTimes[i] = -1;
@@ -540,7 +560,37 @@ public class Graph {
         return null;
     }
 
-    private String getNextNotDiscoveredVertice() {
+    private Edge getEdgeThatContainsThisVertices(String firstVertice, String secondVertice) {
+        for (Edge edge : edges) {
+            if (edge.getFirstVertice().compareTo(firstVertice) == 0
+                    && edge.getSecondVertice().compareTo(secondVertice) == 0) {
+                return edge;
+            }
+        }
+
+        return null;
+    }
+
+    private void classifyTheEdge(Edge edge) {
+        int edgeIndex = getTheIndexOfTheEdge(edge);
+        int indexOfFirstVerticeInVerticeSet = getTheIndexOfTheVertice(edge.getFirstVertice());
+        int indexOfSecondVerticeInVerticeSet = getTheIndexOfTheVertice(edge.getSecondVertice());
+
+        if (deepSearchStructures.discoveryTimes[indexOfFirstVerticeInVerticeSet] != -1
+                && deepSearchStructures.discoveryTimes[indexOfSecondVerticeInVerticeSet] == -1) {
+            deepSearchStructures.edgeClassifications[edgeIndex] = EdgeClassifications.TREE;
+        } else if (deepSearchStructures.discoveryTimes[indexOfFirstVerticeInVerticeSet] < deepSearchStructures.discoveryTimes[indexOfSecondVerticeInVerticeSet]
+                && deepSearchStructures.endTimes[indexOfSecondVerticeInVerticeSet] != -1) {
+            deepSearchStructures.edgeClassifications[edgeIndex] = EdgeClassifications.ADVANCE;
+        } else if (deepSearchStructures.discoveryTimes[indexOfFirstVerticeInVerticeSet] > deepSearchStructures.endTimes[indexOfSecondVerticeInVerticeSet]) {
+            deepSearchStructures.edgeClassifications[edgeIndex] = EdgeClassifications.CROSSING;
+        } else if (deepSearchStructures.discoveryTimes[indexOfFirstVerticeInVerticeSet] > deepSearchStructures.discoveryTimes[indexOfSecondVerticeInVerticeSet]
+                && deepSearchStructures.endTimes[indexOfSecondVerticeInVerticeSet] == -1) {
+            deepSearchStructures.edgeClassifications[edgeIndex] = EdgeClassifications.RETURN;
+        }
+    }
+
+    private String getNextNotDiscoveredVerticeBasedOnVerticeSet() {
         Iterator<String> verticeIterator = vertices.iterator();
 
         for (int time : deepSearchStructures.discoveryTimes) {
@@ -554,19 +604,32 @@ public class Graph {
     }
 
     public void showDeepSearchStructures() {
-        System.out.println("\n[ ");
+        makeDeepSearchAndComputeTimesInArrays();
+        showVerticesSet();
 
-        for (int time = 0; time < numberOfVertices; time++)
-            System.out.print(deepSearchStructures.discoveryTimes[time] + " ");
+        System.out.print("Discovery times: [ ");
+
+        for (int discoveryTime : deepSearchStructures.discoveryTimes)
+            System.out.print(discoveryTime + " ");
+
+        System.out.println("]");
+
+        System.out.print("End times: [ ");
+
+        for (int endTime : deepSearchStructures.endTimes)
+            System.out.print(endTime + " ");
 
         System.out.println("]");
 
-        System.out.println("\n[ ");
+        System.out.println("Edge classifications: ");
+        Iterator<Edge> edgesIterator = edges.iterator();
 
-        for (int time = 0; time < numberOfVertices; time++)
-            System.out.print(deepSearchStructures.endTimes[time] + " ");
+        for (EdgeClassifications classification : deepSearchStructures.edgeClassifications) {
+            System.out
+                    .println("\t" + edgesIterator.next().getStringRepresentation() + " -> " + classification.getName());
+        }
 
-        System.out.println("]");
+        System.out.println();
     }
 
     public static void main(String[] args) throws Exception {
@@ -579,7 +642,9 @@ public class Graph {
 
         while ((fileLine = bufferedReader.readLine()) != null) {
             graph = Graph.fromString(fileLine);
-            graph.ifPresent(g -> g.makeDeepSearchAndComputeTimesInArrays());
+            graph.ifPresent(g -> {
+                g.showDeepSearchStructures();
+            });
         }
 
         bufferedReader.close();
