@@ -576,17 +576,26 @@ public class Graph {
         int indexOfFirstVerticeInVerticeSet = getTheIndexOfTheVertice(edge.getFirstVertice());
         int indexOfSecondVerticeInVerticeSet = getTheIndexOfTheVertice(edge.getSecondVertice());
 
-        if (deepSearchStructures.discoveryTimes[indexOfFirstVerticeInVerticeSet] != -1
-                && deepSearchStructures.discoveryTimes[indexOfSecondVerticeInVerticeSet] == -1) {
-            deepSearchStructures.edgeClassifications[edgeIndex] = EdgeClassifications.TREE;
-        } else if (deepSearchStructures.discoveryTimes[indexOfFirstVerticeInVerticeSet] < deepSearchStructures.discoveryTimes[indexOfSecondVerticeInVerticeSet]
-                && deepSearchStructures.endTimes[indexOfSecondVerticeInVerticeSet] != -1) {
-            deepSearchStructures.edgeClassifications[edgeIndex] = EdgeClassifications.ADVANCE;
-        } else if (deepSearchStructures.discoveryTimes[indexOfFirstVerticeInVerticeSet] > deepSearchStructures.endTimes[indexOfSecondVerticeInVerticeSet]) {
-            deepSearchStructures.edgeClassifications[edgeIndex] = EdgeClassifications.CROSSING;
-        } else if (deepSearchStructures.discoveryTimes[indexOfFirstVerticeInVerticeSet] > deepSearchStructures.discoveryTimes[indexOfSecondVerticeInVerticeSet]
-                && deepSearchStructures.endTimes[indexOfSecondVerticeInVerticeSet] == -1) {
-            deepSearchStructures.edgeClassifications[edgeIndex] = EdgeClassifications.RETURN;
+        if (edge.isDirected()) {
+            if (deepSearchStructures.discoveryTimes[indexOfFirstVerticeInVerticeSet] != -1
+                    && deepSearchStructures.discoveryTimes[indexOfSecondVerticeInVerticeSet] == -1) {
+                deepSearchStructures.edgeClassifications[edgeIndex] = EdgeClassifications.TREE;
+            } else if (deepSearchStructures.discoveryTimes[indexOfFirstVerticeInVerticeSet] < deepSearchStructures.discoveryTimes[indexOfSecondVerticeInVerticeSet]
+                    && deepSearchStructures.endTimes[indexOfSecondVerticeInVerticeSet] != -1) {
+                deepSearchStructures.edgeClassifications[edgeIndex] = EdgeClassifications.ADVANCE;
+            } else if (deepSearchStructures.discoveryTimes[indexOfFirstVerticeInVerticeSet] > deepSearchStructures.discoveryTimes[indexOfSecondVerticeInVerticeSet]
+                    && deepSearchStructures.endTimes[indexOfSecondVerticeInVerticeSet] == -1) {
+                deepSearchStructures.edgeClassifications[edgeIndex] = EdgeClassifications.RETURN;
+            } else {
+                deepSearchStructures.edgeClassifications[edgeIndex] = EdgeClassifications.CROSSING;
+            }
+        } else {
+            if (deepSearchStructures.discoveryTimes[indexOfFirstVerticeInVerticeSet] != -1
+                    && deepSearchStructures.discoveryTimes[indexOfSecondVerticeInVerticeSet] == -1) {
+                deepSearchStructures.edgeClassifications[edgeIndex] = EdgeClassifications.TREE;
+            } else {
+                deepSearchStructures.edgeClassifications[edgeIndex] = EdgeClassifications.RETURN;
+            }
         }
     }
 
