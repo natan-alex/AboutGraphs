@@ -641,6 +641,28 @@ public class Graph {
         System.out.println();
     }
 
+    public boolean containsCycle() {
+        for (EdgeClassifications classification : deepSearchStructures.edgeClassifications) {
+            if (classification == EdgeClassifications.RETURN) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public int getNumberOfCycles() {
+        int numberOfCycles = 0;
+
+        for (EdgeClassifications classification : deepSearchStructures.edgeClassifications) {
+            if (classification == EdgeClassifications.RETURN) {
+                numberOfCycles++;
+            }
+        }
+
+        return numberOfCycles;
+    }
+
     public static void main(String[] args) throws Exception {
         double start = System.currentTimeMillis();
         Scanner scanner = new Scanner(System.in);
@@ -653,6 +675,7 @@ public class Graph {
             graph = Graph.fromString(fileLine);
             graph.ifPresent(g -> {
                 g.showDeepSearchStructures();
+                System.out.println(g.getNumberOfCycles());
             });
         }
 
