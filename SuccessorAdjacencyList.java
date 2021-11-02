@@ -9,14 +9,13 @@ public class SuccessorAdjacencyList extends BaseAdjacencyList {
 
         for (Map.Entry<Vertice, Integer> entry : graph.vertices.entrySet()) {
             itemsList = new ArrayList<>();
-            itemsList.add(entry.getKey());
 
             for (Map.Entry<Edge, Integer> innerEntry : graph.edges.entrySet()) {
                 if (entry.getKey().name.compareTo(innerEntry.getKey().firstVertice.name) == 0)
                     itemsList.add(innerEntry.getKey().secondVertice);
             }
 
-            adjacencyList.add(itemsList);
+            adjacencyList.put(entry.getKey(), itemsList);
         }
     }
 }

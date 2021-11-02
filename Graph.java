@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 
 public class Graph {
     public final String stringRepresentation;
@@ -59,9 +61,9 @@ public class Graph {
         }
 
         stringRepresentation = graphRepresentation;
-        edges = new HashMap<>();
+        edges = new LinkedHashMap<>();
         edgeValues = new ArrayList<>();
-        vertices = new HashMap<>();
+        vertices = new LinkedHashMap<>();
         numberOfEdges = fillEdgeListAndReturnTheNumberOfEdges();
         numberOfVertices = fillVerticeSetAndReturnTheNumberOfVertices();
     }
@@ -102,19 +104,28 @@ public class Graph {
     }
 
     public void showVertices() {
-        System.out.println("Vertices:");
+        System.out.print("\nVertices: { ");
+        Vertice[] verticesArray = new Vertice[numberOfVertices];
+        vertices.keySet().toArray(verticesArray);
 
-        for (Map.Entry<Vertice, Integer> entry : vertices.entrySet()) {
-            System.out.print(entry.getKey().name + " | ");
+        for (int i = 0; i < verticesArray.length - 1; i++) {
+            System.out.print(verticesArray[i].name + ", ");
         }
+
+        System.out.println(verticesArray[verticesArray.length - 1].name + " }");
     }
 
     public void showEdges() {
-        System.out.println("Edges:");
+        System.out.print("\nEdges: { ");
 
-        for (Map.Entry<Edge, Integer> entry : edges.entrySet()) {
-            System.out.print(entry.getKey().stringRepresentation + " | ");
+        Edge[] edgesArray = new Edge[numberOfEdges];
+        edges.keySet().toArray(edgesArray);
+
+        for (int i = 0; i < edgesArray.length - 1; i++) {
+            System.out.print(edgesArray[i].stringRepresentation + ", ");
         }
+
+        System.out.println(edgesArray[edgesArray.length - 1].stringRepresentation + " }");
     }
 
     // public boolean containsCycle() {

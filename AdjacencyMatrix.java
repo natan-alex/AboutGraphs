@@ -4,10 +4,8 @@ public class AdjacencyMatrix extends BaseMatrix {
     private Graph relatedGraph;
 
     public AdjacencyMatrix(Graph graph) {
+        super(graph.numberOfVertices, graph.numberOfVertices);
         relatedGraph = graph;
-        numberOfLines = graph.numberOfVertices;
-        numberOfColumns = graph.numberOfVertices;
-        matrix = new int[numberOfLines][numberOfColumns];
 
         fillAdjacencyMatrix();
     }

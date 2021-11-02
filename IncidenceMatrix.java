@@ -4,24 +4,22 @@ public class IncidenceMatrix extends BaseMatrix {
     private Graph relatedGraph;
 
     public IncidenceMatrix(Graph graph) {
+        super(graph.numberOfVertices, graph.numberOfEdges);
         relatedGraph = graph;
-        this.numberOfLines = graph.numberOfVertices;
-        this.numberOfColumns = graph.numberOfEdges;
-        this.matrix = new int[numberOfLines][numberOfColumns];
 
-        fillIncidenceMatrixForGraph(graph);
+        fillIncidenceMatrix();
     }
 
-    private void fillIncidenceMatrixForGraph(Graph graph) {
+    private void fillIncidenceMatrix() {
         int indexOfSecondVertice;
         int currentColumn = 0, currentLine = 0;
 
-        for (Map.Entry<Vertice, Integer> entry : graph.vertices.entrySet()) {
+        for (Map.Entry<Vertice, Integer> entry : relatedGraph.vertices.entrySet()) {
             currentColumn = 0;
 
-            for (Map.Entry<Edge, Integer> innerEntry : graph.edges.entrySet()) {
+            for (Map.Entry<Edge, Integer> innerEntry : relatedGraph.edges.entrySet()) {
                 if (entry.getKey().name.compareTo(innerEntry.getKey().firstVertice.name) == 0) {
-                    indexOfSecondVertice = graph.vertices.get(innerEntry.getKey().secondVertice);
+                    indexOfSecondVertice = relatedGraph.vertices.get(innerEntry.getKey().secondVertice);
                     matrix[currentLine][currentColumn] = 1;
                     matrix[indexOfSecondVertice][currentColumn] = -1;
                 } else if (matrix[currentLine][currentColumn] != -1) {

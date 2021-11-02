@@ -11,19 +11,34 @@ public class Main {
         String fileLine;
         Graph graph = null;
         GraphRepresentations graphRepresentation = null;
-        DeepSearchStructures deepSearchStructures = null;
+        DeepSearch deepSearch = null;
+        BreadthSearch breadthSearch = null;
 
         while ((fileLine = bufferedReader.readLine()) != null) {
             graph = new Graph(fileLine);
-            // System.out.println();
-            // graph.showVertices();
-            // System.out.println();
             // graph.showEdges();
             graphRepresentation = new GraphRepresentations(graph);
-            graphRepresentation.showAllRepresentations();
-            deepSearchStructures = new DeepSearchStructures(graph, graphRepresentation.successorAdjacencyList);
-            deepSearchStructures.showTimes();
+            // graphRepresentation.showAllRepresentations();
+            System.out.println("\nGraph: " + graph.stringRepresentation);
+            graph.showVertices();
+            graphRepresentation.successorAdjacencyList.adjacencyList.forEach((v, l) -> {
+                System.out.print(v.name + " -> ");
+                l.forEach(v2 -> System.out.print(v2.name + " "));
+                System.out.println();
+            });
+            deepSearch = new DeepSearch(graph, graphRepresentation.successorAdjacencyList);
+            deepSearch.showTimes();
+            deepSearch.showEdgeClassifications();
+            breadthSearch = new BreadthSearch(graph, graphRepresentation.successorAdjacencyList);
+            breadthSearch.showTimes();
         }
+
+        // graph = new Graph(scanner.nextLine());
+        // graphRepresentation = new GraphRepresentations(graph);
+        // deepSearchStructures = new DeepSearch(graph,
+        // graphRepresentation.successorAdjacencyList);
+        // deepSearchStructures.showTimes();
+        // deepSearchStructures.showEdgeClassifications();
 
         bufferedReader.close();
         scanner.close();
