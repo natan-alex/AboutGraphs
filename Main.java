@@ -11,8 +11,8 @@ public class Main {
         String fileLine;
         Graph graph = null;
         GraphRepresentations graphRepresentations = null;
-        DeepSearch deepSearch = null;
-        BreadthSearch breadthSearch = null;
+        DeepFirstSearch deepSearch = null;
+        BreadthFirstSearch breadthSearch = null;
         GraphHeuristics graphHeuristics = null;
 
         while ((fileLine = bufferedReader.readLine()) != null) {
@@ -21,11 +21,11 @@ public class Main {
             System.out.println("\nGraph: " + graph.stringRepresentation);
             graph.showVertices();
             graphRepresentations.showSuccessorAdjacencyList();
-            deepSearch = new DeepSearch(graph, graphRepresentations.successorAdjacencyList);
+            deepSearch = new DeepFirstSearch(graph, graphRepresentations.successorAdjacencyList);
             deepSearch.showTimes();
             deepSearch.showEdgeClassifications();
             graphHeuristics = new GraphHeuristics(graph, "[a: 1]");
-            breadthSearch = new BreadthSearch(graph, graphRepresentations.successorAdjacencyList, graphHeuristics);
+            breadthSearch = new BreadthFirstSearch(graph, graphRepresentations.successorAdjacencyList);
             breadthSearch.showTimes();
         }
 
