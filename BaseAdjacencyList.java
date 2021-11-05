@@ -1,5 +1,4 @@
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -11,14 +10,11 @@ public class BaseAdjacencyList {
     }
 
     public void showAdjacencyList() {
-        Iterator<Vertice> listIterator;
-
         for (Map.Entry<Vertice, List<Vertice>> entry : adjacencyList.entrySet()) {
-            listIterator = entry.getValue().iterator();
-            System.out.print(listIterator.next().name + " -> ");
+            System.out.print(entry.getKey().name + " -> ");
 
-            while (listIterator.hasNext()) {
-                System.out.print(listIterator.next().name + " ; ");
+            for (Vertice vertice : entry.getValue()) {
+                System.out.print(vertice.name + " ; ");
             }
 
             System.out.println();
