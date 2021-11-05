@@ -58,4 +58,16 @@ public class DeepSearch extends BaseSearchStructure {
                 classifyTheEdge(edgeToBeClassified);
         }
     }
+
+    @Override
+    public void showTimes() {
+        System.out.println("\n\tDEEP SEARCH TIMES");
+        super.showTimes();
+    }
+
+    @Override
+    public void showEdgeClassifications() {
+        System.out.println("\n\tDEEP SEARCH EDGE CLASSIFICATIONS");
+        super.showEdgeClassifications();
+    }
 }

@@ -56,4 +56,10 @@ public class BreadthSearch extends BaseSearchStructure {
             }
         }
     }
+
+    @Override
+    public void showTimes() {
+        System.out.println("\n\tBREADTH SEARCH TIMES");
+        super.showTimes();
+    }
 }
