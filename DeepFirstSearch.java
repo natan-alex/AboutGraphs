@@ -1,7 +1,7 @@
 import java.util.Iterator;
 import java.util.Stack;
 
-public class DeepSearch extends BaseSearchStructure {
+public class DeepFirstSearch extends BaseSearchStructure {
     private final SuccessorAdjacencyList successorAdjacencyList;
     private final Stack<Iterator<Vertice>> discoveredVertices;
     private final Stack<Vertice> listHeads;
@@ -9,7 +9,7 @@ public class DeepSearch extends BaseSearchStructure {
     private Vertice currentVertice;
     private Edge edgeToBeClassified; 
 
-    public DeepSearch(Graph graph, SuccessorAdjacencyList graphSuccessorAdjacencyList) {
+    public DeepFirstSearch(Graph graph, SuccessorAdjacencyList graphSuccessorAdjacencyList) {
         super(graph);
         successorAdjacencyList = graphSuccessorAdjacencyList;
 

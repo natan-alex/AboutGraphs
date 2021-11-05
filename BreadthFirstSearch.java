@@ -1,35 +1,20 @@
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-public class BreadthSearch extends BaseSearchStructure {
+public class BreadthFirstSearch extends BaseSearchStructure {
     private final SuccessorAdjacencyList successorAdjacencyList;
     private final Queue<Vertice> discoveredVertices;
-    private final GraphHeuristics heuristics;
     private Vertice currentVertice;
     private int verticeIndexInVerticeSet;
 
-    protected BreadthSearch(Graph graph, SuccessorAdjacencyList graphSuccessorAdjacencyList) {
+    protected BreadthFirstSearch(Graph graph, SuccessorAdjacencyList graphSuccessorAdjacencyList) {
         super(graph);
         successorAdjacencyList = graphSuccessorAdjacencyList;
 
-        heuristics = null;
         discoveredVertices = new ArrayDeque<>(relatedGraph.numberOfVertices);
 
         makeBreadthSearchAndComputeTimesInArrays();
     }
-
-    protected BreadthSearch(Graph graph, SuccessorAdjacencyList graphSuccessorAdjacencyList,
-        GraphHeuristics graphHeuristics) {
-        super(graph);
-
-        successorAdjacencyList = graphSuccessorAdjacencyList;
-
-        discoveredVertices = new ArrayDeque<>(relatedGraph.numberOfVertices);
-        heuristics = graphHeuristics;
-
-        makeBreadthSearchAndComputeTimesInArrays();
-    }
-
 
     private void makeBreadthSearchAndComputeTimesInArrays() {
         for (int timeNumber = 1; timeNumber <= 2 * relatedGraph.numberOfVertices; timeNumber++) {
@@ -43,16 +28,20 @@ public class BreadthSearch extends BaseSearchStructure {
 
             if (discoveryTimes[verticeIndexInVerticeSet] == -1) {
                 discoveryTimes[verticeIndexInVerticeSet] = timeNumber;
-
-                for (Vertice vertice : successorAdjacencyList.adjacencyList.get(currentVertice)) {
-                    if (!discoveredVertices.contains(vertice) && discoveryTimes[relatedGraph.vertices.get(vertice)] == -1) {
-                        discoveredVertices.add(vertice);
-                    }
-                }
+                
+                addNecessaryItemsFromCurrentVerticeAdjacencyListToDiscoveredVertices();
 
                 discoveredVertices.add(currentVertice);
             } else if (endTimes[verticeIndexInVerticeSet] == -1) {
                 endTimes[verticeIndexInVerticeSet] = timeNumber;
+            }
+        }
+    }
+
+    private void addNecessaryItemsFromCurrentVerticeAdjacencyListToDiscoveredVertices() {
+        for (Vertice vertice : successorAdjacencyList.adjacencyList.get(currentVertice)) {
+            if (!discoveredVertices.contains(vertice) && discoveryTimes[relatedGraph.vertices.get(vertice)] == -1) {
+                discoveredVertices.add(vertice);
             }
         }
     }
