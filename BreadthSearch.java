@@ -1,96 +1,35 @@
 import java.util.ArrayDeque;
-<<<<<<< HEAD
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Optional;
 import java.util.Queue;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-=======
-import java.util.Queue;
->>>>>>> 7ced7c5b0340006493da260d8e5888b7b1d57211
 
 public class BreadthSearch extends BaseSearchStructure {
     private final SuccessorAdjacencyList successorAdjacencyList;
     private final Queue<Vertice> discoveredVertices;
+    private final GraphHeuristics heuristics;
     private Vertice currentVertice;
     private int verticeIndexInVerticeSet;
-    private Map<Vertice, Float> heuristics;
-
-    private static Pattern PATTERN_TO_VALIDATE_THE_HEURISTICS = Pattern.compile(
-            "^\\s*\\[\\s*(?:\\s*\\w+\\s*:\\s*\\d+(?:\\.\\d+)?\\s*,)*\\s*\\w+\\s*:\\s*\\d+(?:\\.\\d+)?\\s*\\]\\s*",
-            Pattern.MULTILINE);
 
     protected BreadthSearch(Graph graph, SuccessorAdjacencyList graphSuccessorAdjacencyList) {
         super(graph);
         successorAdjacencyList = graphSuccessorAdjacencyList;
 
-        discoveredVertices = new ArrayDeque<>();
-
-        makeBreadthSearchAndComputeTimesInArrays();
-    }
-
-    protected BreadthSearch(Graph graph, SuccessorAdjacencyList graphSuccessorAdjacencyList,
-        String heuristicsRepresentation) throws IllegalArgumentException {
-        super(graph);
-
-        heuristics = new LinkedHashMap<>(relatedGraph.numberOfVertices);
-        checkIfHeuristicsRepresentationIsValid(heuristicsRepresentation);
-
-        successorAdjacencyList = graphSuccessorAdjacencyList;
-
+        heuristics = null;
         discoveredVertices = new ArrayDeque<>(relatedGraph.numberOfVertices);
 
         makeBreadthSearchAndComputeTimesInArrays();
     }
 
-    private void checkIfHeuristicsRepresentationIsValid(String heuristicsRepresentation) throws IllegalArgumentException {
-        if (heuristicsRepresentation == null || heuristicsRepresentation.isEmpty())
-            return;
+    protected BreadthSearch(Graph graph, SuccessorAdjacencyList graphSuccessorAdjacencyList,
+        GraphHeuristics graphHeuristics) {
+        super(graph);
 
-        Matcher matcher = PATTERN_TO_VALIDATE_THE_HEURISTICS.matcher(heuristicsRepresentation);
+        successorAdjacencyList = graphSuccessorAdjacencyList;
 
-        if (!matcher.matches()) 
-            throw new IllegalArgumentException("The heuristic " + heuristicsRepresentation
-            + " is not a valid heuristic. A valid heuristic is something like [ a: 1, b: 2.3, c: 3.0 ]" 
-            + " where the vertice is on the left of the : and the heuristic value is on the rigth.");
+        discoveredVertices = new ArrayDeque<>(relatedGraph.numberOfVertices);
+        heuristics = graphHeuristics;
 
-        String[] partsOfHeuristics = heuristicsRepresentation.substring(1, heuristicsRepresentation.length() - 1)
-                .split(",");
-        
-        iterateOverPartsOfHeuristicAndFillCorrespondingAttribute(partsOfHeuristics);
+        makeBreadthSearchAndComputeTimesInArrays();
     }
 
-    private void iterateOverPartsOfHeuristicAndFillCorrespondingAttribute(String[] partsOfHeuristics) 
-        throws IllegalArgumentException {
-        String[] verticeNameAndHeuristicValue;
-        Optional<Vertice> verticeFound;
-        int currentVerticeIndex;
-
-        for (Vertice vertice : relatedGraph.vertices.keySet()) {
-            currentVerticeIndex = relatedGraph.vertices.get(vertice);
-            if (currentVerticeIndex >= partsOfHeuristics.length) {
-                heuristics.put(vertice, 0F);
-            } else {
-                verticeNameAndHeuristicValue = partsOfHeuristics[currentVerticeIndex].trim().split(":");
-                verticeNameAndHeuristicValue[0] = verticeNameAndHeuristicValue[0].trim();
-                verticeNameAndHeuristicValue[1] = verticeNameAndHeuristicValue[1].trim();
-                verticeFound = getTheVerticeWithThisName(verticeNameAndHeuristicValue[0]);
-
-                if (verticeFound.isEmpty()) {
-                    throw new IllegalArgumentException("The vertice " + verticeNameAndHeuristicValue[0]
-                            + " is not in the vertice set." + " The vertice set is: " + relatedGraph.vertices.keySet());
-                }
-
-                heuristics.put(verticeFound.get(), Float.parseFloat(verticeNameAndHeuristicValue[1]));
-            }
-        }
-    }
-
-    private Optional<Vertice> getTheVerticeWithThisName(String name) {
-        return relatedGraph.vertices.keySet().stream()
-                .filter(vertice -> vertice.name.compareTo(name) == 0).findFirst();
-    }
 
     private void makeBreadthSearchAndComputeTimesInArrays() {
         for (int timeNumber = 1; timeNumber <= 2 * relatedGraph.numberOfVertices; timeNumber++) {
