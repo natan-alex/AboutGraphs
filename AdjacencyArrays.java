@@ -15,9 +15,9 @@ public class AdjacencyArrays {
         edgeStartPoints = new int[graph.numberOfEdges];
         edgeEndPoints = new int[graph.numberOfEdges];
 
-        for (Map.Entry<Edge, Integer> entry : graph.edges.entrySet()) {
-            indexOfFirstVertice = graph.vertices.get(entry.getKey().firstVertice);
-            indexOfSecondVertice = graph.vertices.get(entry.getKey().secondVertice);
+        for (Map.Entry<Edge, Integer> entry : graph.edgesAndTheirIndices.entrySet()) {
+            indexOfFirstVertice = graph.verticesAndTheirIndices.get(entry.getKey().firstVertice);
+            indexOfSecondVertice = graph.verticesAndTheirIndices.get(entry.getKey().secondVertice);
 
             edgeStartPoints[currentIndex] = indexOfFirstVertice;
             edgeEndPoints[currentIndex] = indexOfSecondVertice;

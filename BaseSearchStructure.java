@@ -22,7 +22,7 @@ public class BaseSearchStructure {
         int timeIndex = 0;
         System.out.println("\nVertice -> Discovery time / End time");
 
-        for (Map.Entry<Vertice, Integer> entry : relatedGraph.vertices.entrySet()) {
+        for (Map.Entry<Vertice, Integer> entry : relatedGraph.verticesAndTheirIndices.entrySet()) {
             System.out.print("  " + entry.getKey().name);
             System.out.print(" -> " + discoveryTimes[timeIndex]);
             System.out.println(" / " + endTimes[timeIndex]);
@@ -34,14 +34,14 @@ public class BaseSearchStructure {
         System.out.println("\nEdge classifications:");
         int edgeIndex = 0;
 
-        for (Map.Entry<Edge, Integer> entry : relatedGraph.edges.entrySet()) {
+        for (Map.Entry<Edge, Integer> entry : relatedGraph.edgesAndTheirIndices.entrySet()) {
             System.out.println("  " + entry.getKey().stringRepresentation + " -> " + edgeClassifications[edgeIndex]);
             edgeIndex++;
         }
     }
 
     protected Vertice getNextNotDiscoveredVerticeBasedOnVerticeSet() {
-        for (Map.Entry<Vertice, Integer> entry : relatedGraph.vertices.entrySet()) {
+        for (Map.Entry<Vertice, Integer> entry : relatedGraph.verticesAndTheirIndices.entrySet()) {
             if (discoveryTimes[entry.getValue()] == -1) {
                 return entry.getKey();
             }
@@ -51,7 +51,7 @@ public class BaseSearchStructure {
     }
 
     protected Edge getEdgeThatContainsThisVertices(Vertice firstVertice, Vertice secondVertice) {
-        for (Map.Entry<Edge, Integer> entry : relatedGraph.edges.entrySet()) {
+        for (Map.Entry<Edge, Integer> entry : relatedGraph.edgesAndTheirIndices.entrySet()) {
             if (entry.getKey().firstVertice.name.compareTo(firstVertice.name) == 0
                     && entry.getKey().secondVertice.name.compareTo(secondVertice.name) == 0) {
                 return entry.getKey();
@@ -63,9 +63,9 @@ public class BaseSearchStructure {
 
 
     protected void classifyTheEdge(Edge edge) {
-        int edgeIndex = relatedGraph.edges.get(edge);
-        int indexOfFirstVerticeInVerticeSet = relatedGraph.vertices.get(edge.firstVertice);
-        int indexOfSecondVerticeInVerticeSet = relatedGraph.vertices.get(edge.secondVertice);
+        int edgeIndex = relatedGraph.edgesAndTheirIndices.get(edge);
+        int indexOfFirstVerticeInVerticeSet = relatedGraph.verticesAndTheirIndices.get(edge.firstVertice);
+        int indexOfSecondVerticeInVerticeSet = relatedGraph.verticesAndTheirIndices.get(edge.secondVertice);
 
         if (edge.isDirected) {
             if (discoveryTimes[indexOfFirstVerticeInVerticeSet] != -1

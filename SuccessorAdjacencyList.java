@@ -7,10 +7,10 @@ public class SuccessorAdjacencyList extends BaseAdjacencyList {
         super();
         List<Vertice> itemsList;
 
-        for (Map.Entry<Vertice, Integer> entry : graph.vertices.entrySet()) {
+        for (Map.Entry<Vertice, Integer> entry : graph.verticesAndTheirIndices.entrySet()) {
             itemsList = new ArrayList<>();
 
-            for (Map.Entry<Edge, Integer> innerEntry : graph.edges.entrySet()) {
+            for (Map.Entry<Edge, Integer> innerEntry : graph.edgesAndTheirIndices.entrySet()) {
                 if (entry.getKey().name.compareTo(innerEntry.getKey().firstVertice.name) == 0)
                     itemsList.add(innerEntry.getKey().secondVertice);
             }

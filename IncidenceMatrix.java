@@ -14,12 +14,12 @@ public class IncidenceMatrix extends BaseMatrix {
         int indexOfSecondVertice;
         int currentColumn = 0, currentLine = 0;
 
-        for (Map.Entry<Vertice, Integer> entry : relatedGraph.vertices.entrySet()) {
+        for (Map.Entry<Vertice, Integer> entry : relatedGraph.verticesAndTheirIndices.entrySet()) {
             currentColumn = 0;
 
-            for (Map.Entry<Edge, Integer> innerEntry : relatedGraph.edges.entrySet()) {
+            for (Map.Entry<Edge, Integer> innerEntry : relatedGraph.edgesAndTheirIndices.entrySet()) {
                 if (entry.getKey().name.compareTo(innerEntry.getKey().firstVertice.name) == 0) {
-                    indexOfSecondVertice = relatedGraph.vertices.get(innerEntry.getKey().secondVertice);
+                    indexOfSecondVertice = relatedGraph.verticesAndTheirIndices.get(innerEntry.getKey().secondVertice);
                     matrix[currentLine][currentColumn] = 1;
                     matrix[indexOfSecondVertice][currentColumn] = -1;
                 } else if (matrix[currentLine][currentColumn] != -1) {
@@ -39,16 +39,16 @@ public class IncidenceMatrix extends BaseMatrix {
 
         System.out.print("\t");
 
-        for (Map.Entry<Edge, Integer> entry : relatedGraph.edges.entrySet())
+        for (Map.Entry<Edge, Integer> entry : relatedGraph.edgesAndTheirIndices.entrySet())
             System.out.print(entry.getKey().firstVertice.name + " -- " + entry.getKey().secondVertice.name + "\t");
 
         System.out.println();
 
-        for (Map.Entry<Vertice, Integer> entry : relatedGraph.vertices.entrySet()) {
+        for (Map.Entry<Vertice, Integer> entry : relatedGraph.verticesAndTheirIndices.entrySet()) {
             System.out.print(entry.getKey().name + "\t");
             currentColumn = 0;
 
-            for (Map.Entry<Edge, Integer> innerEntry : relatedGraph.edges.entrySet()) {
+            for (Map.Entry<Edge, Integer> innerEntry : relatedGraph.edgesAndTheirIndices.entrySet()) {
                 currentItem = matrix[currentLine][currentColumn];
 
                 if (currentItem == 1)

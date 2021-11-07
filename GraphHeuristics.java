@@ -43,8 +43,8 @@ public class GraphHeuristics {
         Optional<Vertice> verticeFound;
         int currentVerticeIndex;
 
-        for (Vertice vertice : relatedGraph.vertices.keySet()) {
-            currentVerticeIndex = relatedGraph.vertices.get(vertice);
+        for (Vertice vertice : relatedGraph.verticesAndTheirIndices.keySet()) {
+            currentVerticeIndex = relatedGraph.verticesAndTheirIndices.get(vertice);
             if (currentVerticeIndex >= partsOfHeuristics.length) {
                 heuristics.put(vertice, 0F);
             } else {
@@ -55,7 +55,7 @@ public class GraphHeuristics {
 
                 if (verticeFound.isEmpty()) {
                     throw new IllegalArgumentException("The vertice " + verticeNameAndHeuristicValue[0]
-                            + " is not in the vertice set." + " The vertice set is: " + relatedGraph.vertices.keySet());
+                            + " is not in the vertice set." + " The vertice set is: " + relatedGraph.verticesAndTheirIndices.keySet());
                 }
 
                 heuristics.put(verticeFound.get(), Float.parseFloat(verticeNameAndHeuristicValue[1]));
@@ -64,7 +64,7 @@ public class GraphHeuristics {
     }
 
     private Optional<Vertice> getTheVerticeWithThisName(String name) {
-        return relatedGraph.vertices.keySet().stream()
+        return relatedGraph.verticesAndTheirIndices.keySet().stream()
                 .filter(vertice -> vertice.name.compareTo(name) == 0).findFirst();
     }
 }
