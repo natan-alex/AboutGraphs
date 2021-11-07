@@ -1,15 +1,10 @@
-import java.util.regex.*;
-
 public class Edge {
     public final String stringRepresentation;
     public final Vertice firstVertice;
     public final Vertice secondVertice;
-    public final int value;
+    public final float value;
     public final boolean isDirected;
     public final boolean isPondered;
-
-    public static final Pattern PATTERN_TO_VALIDATE_AN_EDGE = Pattern
-            .compile("[(|{]\\s*\\w+\\s*,(\\s*\\w+\\s*,)?\\s*\\w+\\s*[)|}]");
 
     public enum EdgeClassifications {
         TREE("Tree"), CROSSING("Crossing"), RETURN("Return"), ADVANCE("Advance");
@@ -26,7 +21,7 @@ public class Edge {
     }
 
     public Edge(String edgeRepresentation) throws IllegalArgumentException {
-        checkIfRepresentationIsValid(edgeRepresentation);
+        EdgeValidator.checkIfEdgeRepresentationIsValid(edgeRepresentation);
 
         stringRepresentation = edgeRepresentation.trim();
         String[] partsOfStringRepresentation = stringRepresentation.substring(1, stringRepresentation.length() - 1)
@@ -47,29 +42,6 @@ public class Edge {
             isDirected = true;
         else
             isDirected = false;
-    }
-
-    private void checkIfRepresentationIsValid(String edgeRepresentation) throws IllegalArgumentException {
-        Matcher matcher = PATTERN_TO_VALIDATE_AN_EDGE.matcher(edgeRepresentation);
-
-        if (!matcher.matches()) {
-            throw new IllegalArgumentException(
-                    "Invalid edge " + edgeRepresentation + "\nExample of a valid edge: (a, b) or {hello, world}");
-        }
-
-        if (!isRepresentationEnclosedCorrectly(edgeRepresentation)) {
-            throw new IllegalArgumentException("Invalid edge " + edgeRepresentation
-                    + ": the edge representation is not enclosed correctly."
-                    + "\nA valid edge must be enclosed with () if it is part of a directed graph or {} if it is part of an undirected graph."
-                    + "\nExample of a valid edge: (a, b) or {hello, world}");
-        }
-    }
-
-    private boolean isRepresentationEnclosedCorrectly(String edgeRepresentation) {
-        char openingChar = edgeRepresentation.charAt(0);
-        char closingChar = edgeRepresentation.charAt(edgeRepresentation.length() - 1);
-
-        return ((openingChar == '(' && closingChar == ')') || (openingChar == '{' && closingChar == '}'));
     }
 
     @Override

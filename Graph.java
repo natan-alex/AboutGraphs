@@ -1,110 +1,72 @@
 import java.util.regex.*;
-import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 
 public class Graph {
     public final String stringRepresentation;
-    public final Map<Edge, Integer> edges;
-    public final Map<Vertice, Integer> vertices;
-    public final List<Integer> edgeValues;
+    public final Map<Edge, Integer> edgesAndTheirIndices;
+    public final Map<Vertice, Integer> verticesAndTheirIndices;
+    public final Map<Edge, Float> edgesAndTheirValues;
     public final boolean isPondered;
     public final boolean isDirected;
     public final int numberOfVertices;
     public final int numberOfEdges;
 
-    private static Pattern PATTERN_TO_VALIDATE_A_DIRECTED_UNPONDERED_GRAPH = Pattern.compile(
-            "^\\s*\\{\\s*(?:\\{\\s*\\w+\\s*,\\s*\\w+\\s*\\}\\s*,\\s*)*\\{\\s*\\w+\\s*,\\s*\\w+\\s*\\}\\s*\\}\\s*$",
-            Pattern.MULTILINE);
-    private static Pattern PATTERN_TO_VALIDATE_AN_UNDIRECTED_UNPONDERED_GRAPH = Pattern.compile(
-            "^\\s*\\{\\s*(?:\\(\\s*\\w+\\s*,\\s*\\w+\\s*\\)\\s*,\\s*)*\\(\\s*\\w+\\s*,\\s*\\w+\\s*\\)\\s*\\}\\s*$",
-            Pattern.MULTILINE);
-    private static Pattern PATTERN_TO_VALIDATE_A_DIRECTED_PONDERED_GRAPH = Pattern.compile(
-            "^\\s*\\{\\s*(?:\\(\\s*\\w+\\s*,\\s*\\w+\\s*,\\s*(?:\\+|\\-)?\\d+\\s*\\)\\s*,\\s*)*\\(\\s*\\w+\\s*,\\s*\\w+\\s*,\\s*(?:\\+|\\-)?\\d+\\s*\\)\\s*\\}\\s*$",
-            Pattern.MULTILINE);
-    private static Pattern PATTERN_TO_VALIDATE_AN_UNDIRECTED_PONDERED_GRAPH = Pattern.compile(
-            "^\\s*\\{\\s*(?:\\{\\s*\\w+\\s*,\\s*\\w+\\s*,\\s*(?:\\+|\\-)?\\d+\\s*\\}\\s*,\\s*)*\\{\\s*\\w+\\s*,\\s*\\w+\\s*,\\s*(?:\\+|\\-)?\\d+\\s*\\}\\s*\\}\\s*$",
-            Pattern.MULTILINE);
-
     public Graph(String graphRepresentation) throws IllegalArgumentException {
-        Matcher matcherForDirectedAndUnponderedPattern = PATTERN_TO_VALIDATE_A_DIRECTED_UNPONDERED_GRAPH
-                .matcher(graphRepresentation);
-        Matcher matcherForDirectedAndPonderedPattern = PATTERN_TO_VALIDATE_A_DIRECTED_PONDERED_GRAPH
-                .matcher(graphRepresentation);
-        Matcher matcherForUndirectedAndPonderedPattern = PATTERN_TO_VALIDATE_AN_UNDIRECTED_PONDERED_GRAPH
-                .matcher(graphRepresentation);
-        Matcher matcherForUndirectedAndUnponderedPattern = PATTERN_TO_VALIDATE_AN_UNDIRECTED_UNPONDERED_GRAPH
-                .matcher(graphRepresentation);
-
-        if (matcherForDirectedAndUnponderedPattern.matches()) {
-            isDirected = true;
-            isPondered = false;
-        } else if (matcherForDirectedAndPonderedPattern.matches()) {
-            isDirected = true;
-            isPondered = true;
-        } else if (matcherForUndirectedAndPonderedPattern.matches()) {
-            isDirected = false;
-            isPondered = true;
-        } else if (matcherForUndirectedAndUnponderedPattern.matches()) {
-            isDirected = false;
-            isPondered = false;
-        } else {
-            throw new IllegalArgumentException("Invalid graph " + graphRepresentation
-                    + "\nA valid graph must be enclosed with {} and contains multiple edges inside curly braces."
-                    + "\nAn edge must be enclosed with () if it is part of a directed graph or {} if it is part of an undirected graph."
-                    + "\nExample of valid graph: { (a, b), (b, c) } or { {hello, world}, {foo, bar} }");
-        }
+        GraphValidator.validateStringRepresentationAndFillGraphProperties(graphRepresentation);
 
         stringRepresentation = graphRepresentation;
-        edges = new LinkedHashMap<>();
-        edgeValues = new ArrayList<>();
-        vertices = new LinkedHashMap<>();
-        numberOfEdges = fillEdgeListAndReturnTheNumberOfEdges();
-        numberOfVertices = fillVerticeSetAndReturnTheNumberOfVertices();
+        edgesAndTheirIndices = new LinkedHashMap<>();
+        edgesAndTheirValues = new LinkedHashMap<>();
+        verticesAndTheirIndices = new LinkedHashMap<>();
+        numberOfEdges = fillEdgeMapsAndReturnTheNumberOfEdges();
+        numberOfVertices = fillVerticeMapAndReturnTheNumberOfVertices();
+        isDirected = GraphValidator.isGraphDirected();
+        isPondered = GraphValidator.isGraphPondered();
     }
 
-    private int fillEdgeListAndReturnTheNumberOfEdges() {
+    private int fillEdgeMapsAndReturnTheNumberOfEdges() {
         int edgeIndex = 0;
+        Matcher matcher = EdgeValidator.PATTERN_TO_VALIDATE_AN_EDGE.matcher(stringRepresentation);
         Edge newEdge;
-        Matcher matcher = Edge.PATTERN_TO_VALIDATE_AN_EDGE.matcher(stringRepresentation.trim());
 
         while (matcher.find()) {
             newEdge = new Edge(matcher.group());
 
-            edges.put(newEdge, edgeIndex);
+            edgesAndTheirIndices.put(newEdge, edgeIndex);
             edgeIndex++;
 
             if (newEdge.isPondered)
-                edgeValues.add(newEdge.value);
+                edgesAndTheirValues.put(newEdge, newEdge.value);
+            else
+                edgesAndTheirValues.put(newEdge, 0F);
         }
 
-        return edges.size();
+        return edgesAndTheirIndices.size();
     }
 
-    private int fillVerticeSetAndReturnTheNumberOfVertices() {
+    private int fillVerticeMapAndReturnTheNumberOfVertices() {
         int verticeIndex = 0;
-        Set<Vertice> verticeSet = new HashSet<>();
+        Edge currentEdge;
 
-        for (Map.Entry<Edge, Integer> entry : edges.entrySet()) {
-            verticeSet.add(entry.getKey().firstVertice);
-            verticeSet.add(entry.getKey().secondVertice);
+        for (Map.Entry<Edge, Integer> entry : edgesAndTheirIndices.entrySet()) {
+            currentEdge = entry.getKey();
+
+            if (verticesAndTheirIndices.putIfAbsent(currentEdge.firstVertice, verticeIndex) == null)
+                verticeIndex++;
+
+            if (verticesAndTheirIndices.putIfAbsent(currentEdge.secondVertice, verticeIndex) == null)
+                verticeIndex++;
         }
 
-        for (Vertice vertice : verticeSet) {
-            vertices.put(vertice, verticeIndex);
-            verticeIndex++;
-        }
-
-        return vertices.size();
+        System.out.println(verticesAndTheirIndices);
+        return verticesAndTheirIndices.size();
     }
 
     public void showVertices() {
         System.out.print("\nVertices: { ");
         Vertice[] verticesArray = new Vertice[numberOfVertices];
-        vertices.keySet().toArray(verticesArray);
+        verticesAndTheirIndices.keySet().toArray(verticesArray);
 
         for (int i = 0; i < verticesArray.length - 1; i++) {
             System.out.print(verticesArray[i].name + ", ");
@@ -117,7 +79,7 @@ public class Graph {
         System.out.print("\nEdges: { ");
 
         Edge[] edgesArray = new Edge[numberOfEdges];
-        edges.keySet().toArray(edgesArray);
+        edgesAndTheirIndices.keySet().toArray(edgesArray);
 
         for (int i = 0; i < edgesArray.length - 1; i++) {
             System.out.print(edgesArray[i].stringRepresentation + ", ");
@@ -125,28 +87,4 @@ public class Graph {
 
         System.out.println(edgesArray[edgesArray.length - 1].stringRepresentation + " }");
     }
-
-    // public boolean containsCycle() {
-    // for (EdgeClassifications classification :
-    // deepSearchStructures.edgeClassifications) {
-    // if (classification == EdgeClassifications.RETURN) {
-    // return true;
-    // }
-    // }
-
-    // return false;
-    // }
-
-    // public int getNumberOfCycles() {
-    // int numberOfCycles = 0;
-
-    // for (EdgeClassifications classification :
-    // deepSearchStructures.edgeClassifications) {
-    // if (classification == EdgeClassifications.RETURN) {
-    // numberOfCycles++;
-    // }
-    // }
-
-    // return numberOfCycles;
-    // }
 }
