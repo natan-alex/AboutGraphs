@@ -16,14 +16,14 @@ public class DeepFirstSearch extends BaseSearchStructure {
         discoveredVertices = new Stack<>();
         listHeads = new Stack<>();
 
-        makeDeepSearchAndComputeTimesInArrays();
+        performDeepSearchAndComputeTimesInArrays();
     }
 
-    private void makeDeepSearchAndComputeTimesInArrays() {
+    private void performDeepSearchAndComputeTimesInArrays() {
         for (int timeNumber = 1; timeNumber <= 2 * relatedGraph.numberOfVertices; timeNumber++) {
             if (discoveredVertices.isEmpty()) {
                 currentVertice = getNextNotDiscoveredVerticeBasedOnVerticeSet();
-                verticeIndexInVerticeSet = relatedGraph.vertices.get(currentVertice);
+                verticeIndexInVerticeSet = relatedGraph.verticesAndTheirIndices.get(currentVertice);
             } else {
                 findNextNotDiscoveredVerticeInLastIteratorAndClassifyEdgesAlongTheWay();
             }
@@ -34,7 +34,7 @@ public class DeepFirstSearch extends BaseSearchStructure {
                 discoveredVertices.push(successorAdjacencyList.adjacencyList.get(currentVertice).iterator());
                 listHeads.push(currentVertice);
             } else if (!discoveredVertices.lastElement().hasNext()) {
-                verticeIndexInVerticeSet = relatedGraph.vertices.get(listHeads.lastElement());
+                verticeIndexInVerticeSet = relatedGraph.verticesAndTheirIndices.get(listHeads.lastElement());
 
                 if (endTimes[verticeIndexInVerticeSet] == -1) {
                     endTimes[verticeIndexInVerticeSet] = timeNumber;
@@ -51,12 +51,22 @@ public class DeepFirstSearch extends BaseSearchStructure {
     private void findNextNotDiscoveredVerticeInLastIteratorAndClassifyEdgesAlongTheWay() {
         while (discoveredVertices.lastElement().hasNext() && discoveryTimes[verticeIndexInVerticeSet] != -1) {
             currentVertice = discoveredVertices.lastElement().next();
-            verticeIndexInVerticeSet = relatedGraph.vertices.get(currentVertice);
+            verticeIndexInVerticeSet = relatedGraph.verticesAndTheirIndices.get(currentVertice);
             edgeToBeClassified = getEdgeThatContainsThisVertices(listHeads.lastElement(), currentVertice);
 
             if (edgeToBeClassified != null)
                 classifyTheEdge(edgeToBeClassified);
         }
+    }
+
+    public boolean containsCycle() {
+        for (var edgeClassification : edgeClassifications) {
+            if (edgeClassification == Edge.EdgeClassifications.RETURN) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override

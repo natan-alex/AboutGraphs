@@ -13,17 +13,17 @@ public class BreadthFirstSearch extends BaseSearchStructure {
 
         discoveredVertices = new ArrayDeque<>(relatedGraph.numberOfVertices);
 
-        makeBreadthSearchAndComputeTimesInArrays();
+        performBreadthSearchAndComputeTimesInArrays();
     }
 
-    private void makeBreadthSearchAndComputeTimesInArrays() {
+    private void performBreadthSearchAndComputeTimesInArrays() {
         for (int timeNumber = 1; timeNumber <= 2 * relatedGraph.numberOfVertices; timeNumber++) {
             if (discoveredVertices.isEmpty()) {
                 currentVertice = getNextNotDiscoveredVerticeBasedOnVerticeSet();
-                verticeIndexInVerticeSet = currentVertice != null ? relatedGraph.vertices.get(currentVertice) : -1;
+                verticeIndexInVerticeSet = currentVertice != null ? relatedGraph.verticesAndTheirIndices.get(currentVertice) : -1;
             } else {
                 currentVertice = discoveredVertices.poll();
-                verticeIndexInVerticeSet = relatedGraph.vertices.get(currentVertice);
+                verticeIndexInVerticeSet = relatedGraph.verticesAndTheirIndices.get(currentVertice);
             }
 
             if (discoveryTimes[verticeIndexInVerticeSet] == -1) {
@@ -40,7 +40,7 @@ public class BreadthFirstSearch extends BaseSearchStructure {
 
     private void addNecessaryItemsFromCurrentVerticeAdjacencyListToDiscoveredVertices() {
         for (Vertice vertice : successorAdjacencyList.adjacencyList.get(currentVertice)) {
-            if (!discoveredVertices.contains(vertice) && discoveryTimes[relatedGraph.vertices.get(vertice)] == -1) {
+            if (!discoveredVertices.contains(vertice) && discoveryTimes[relatedGraph.verticesAndTheirIndices.get(vertice)] == -1) {
                 discoveredVertices.add(vertice);
             }
         }
