@@ -61,32 +61,47 @@ public class BaseSearchStructure {
         return null;
     }
 
-
     protected void classifyTheEdge(Edge edge) {
-        int edgeIndex = relatedGraph.edgesAndTheirIndices.get(edge);
-        int indexOfFirstVerticeInVerticeSet = relatedGraph.verticesAndTheirIndices.get(edge.firstVertice);
-        int indexOfSecondVerticeInVerticeSet = relatedGraph.verticesAndTheirIndices.get(edge.secondVertice);
+        if (edge == null) {
+            return;
+        }
 
         if (edge.isDirected) {
-            if (discoveryTimes[indexOfFirstVerticeInVerticeSet] != -1
-                    && discoveryTimes[indexOfSecondVerticeInVerticeSet] == -1) {
-                edgeClassifications[edgeIndex] = Edge.EdgeClassifications.TREE;
-            } else if (discoveryTimes[indexOfFirstVerticeInVerticeSet] < discoveryTimes[indexOfSecondVerticeInVerticeSet]
-                    && endTimes[indexOfSecondVerticeInVerticeSet] != -1) {
-                edgeClassifications[edgeIndex] = Edge.EdgeClassifications.ADVANCE;
-            } else if (discoveryTimes[indexOfFirstVerticeInVerticeSet] > discoveryTimes[indexOfSecondVerticeInVerticeSet]
-                    && endTimes[indexOfSecondVerticeInVerticeSet] == -1) {
-                edgeClassifications[edgeIndex] = Edge.EdgeClassifications.RETURN;
-            } else {
-                edgeClassifications[edgeIndex] = Edge.EdgeClassifications.CROSSING;
-            }
+            classifyTheEdgeForDirectedGraph(edge);
         } else {
-            if (discoveryTimes[indexOfFirstVerticeInVerticeSet] != -1
-                    && discoveryTimes[indexOfSecondVerticeInVerticeSet] == -1) {
-                edgeClassifications[edgeIndex] = Edge.EdgeClassifications.TREE;
-            } else {
-                edgeClassifications[edgeIndex] = Edge.EdgeClassifications.RETURN;
-            }
+            classifyTheEdgeForUndirectedGraph(edge);
+        }
+    }
+
+    private void classifyTheEdgeForUndirectedGraph(Edge edge) {
+        int indexOfFirstVerticeInVerticeSet = relatedGraph.verticesAndTheirIndices.get(edge.firstVertice);
+        int indexOfSecondVerticeInVerticeSet = relatedGraph.verticesAndTheirIndices.get(edge.secondVertice);
+        int edgeIndex = relatedGraph.edgesAndTheirIndices.get(edge);
+
+        if (discoveryTimes[indexOfFirstVerticeInVerticeSet] != -1
+                && discoveryTimes[indexOfSecondVerticeInVerticeSet] == -1) {
+            edgeClassifications[edgeIndex] = Edge.EdgeClassifications.TREE;
+        } else {
+            edgeClassifications[edgeIndex] = Edge.EdgeClassifications.RETURN;
+        }
+    }
+
+    private void classifyTheEdgeForDirectedGraph(Edge edge) {
+        int indexOfFirstVerticeInVerticeSet = relatedGraph.verticesAndTheirIndices.get(edge.firstVertice);
+        int indexOfSecondVerticeInVerticeSet = relatedGraph.verticesAndTheirIndices.get(edge.secondVertice);
+        int edgeIndex = relatedGraph.edgesAndTheirIndices.get(edge);
+
+        if (discoveryTimes[indexOfFirstVerticeInVerticeSet] != -1
+                && discoveryTimes[indexOfSecondVerticeInVerticeSet] == -1) {
+            edgeClassifications[edgeIndex] = Edge.EdgeClassifications.TREE;
+        } else if (discoveryTimes[indexOfFirstVerticeInVerticeSet] < discoveryTimes[indexOfSecondVerticeInVerticeSet]
+                && endTimes[indexOfSecondVerticeInVerticeSet] != -1) {
+            edgeClassifications[edgeIndex] = Edge.EdgeClassifications.ADVANCE;
+        } else if (discoveryTimes[indexOfFirstVerticeInVerticeSet] > discoveryTimes[indexOfSecondVerticeInVerticeSet]
+                && endTimes[indexOfSecondVerticeInVerticeSet] == -1) {
+            edgeClassifications[edgeIndex] = Edge.EdgeClassifications.RETURN;
+        } else {
+            edgeClassifications[edgeIndex] = Edge.EdgeClassifications.CROSSING;
         }
     }
 }
