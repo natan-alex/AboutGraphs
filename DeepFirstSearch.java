@@ -1,62 +1,56 @@
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.Stack;
 
 public class DeepFirstSearch extends BaseSearchStructure {
     private final SuccessorAdjacencyList successorAdjacencyList;
-    private final Stack<Iterator<Vertice>> discoveredVertices;
-    private final Stack<Vertice> listHeads;
+    private final Stack<Vertice> discoveredVertices;
     private int verticeIndexInVerticeSet;
     private Vertice currentVertice;
-    private Edge edgeToBeClassified; 
 
     public DeepFirstSearch(Graph graph, SuccessorAdjacencyList graphSuccessorAdjacencyList) {
         super(graph);
         successorAdjacencyList = graphSuccessorAdjacencyList;
 
         discoveredVertices = new Stack<>();
-        listHeads = new Stack<>();
 
         performDeepSearchAndComputeTimesInArrays();
     }
 
     private void performDeepSearchAndComputeTimesInArrays() {
         for (int timeNumber = 1; timeNumber <= 2 * relatedGraph.numberOfVertices; timeNumber++) {
-            if (discoveredVertices.isEmpty()) {
+            if (discoveredVertices.isEmpty())
                 currentVertice = getNextNotDiscoveredVerticeBasedOnVerticeSet();
-                verticeIndexInVerticeSet = relatedGraph.verticesAndTheirIndices.get(currentVertice);
-            } else {
-                findNextNotDiscoveredVerticeInLastIteratorAndClassifyEdgesAlongTheWay();
-            }
+            else
+                currentVertice = discoveredVertices.pop();
+
+            verticeIndexInVerticeSet = relatedGraph.verticesAndTheirIndices.get(currentVertice);
 
             if (discoveryTimes[verticeIndexInVerticeSet] == -1) {
                 discoveryTimes[verticeIndexInVerticeSet] = timeNumber;
 
-                discoveredVertices.push(successorAdjacencyList.adjacencyList.get(currentVertice).iterator());
-                listHeads.push(currentVertice);
-            } else if (!discoveredVertices.lastElement().hasNext()) {
-                verticeIndexInVerticeSet = relatedGraph.verticesAndTheirIndices.get(listHeads.lastElement());
-
-                if (endTimes[verticeIndexInVerticeSet] == -1) {
-                    endTimes[verticeIndexInVerticeSet] = timeNumber;
-                }
-
-                if (!discoveredVertices.isEmpty()) {
-                    discoveredVertices.pop();
-                    listHeads.pop();
-                }
+                discoveredVertices.add(currentVertice);
+                addNotDiscoveredVerticesToStackAndClassifyEdgesAlongTheWay();
+            } else {
+                endTimes[verticeIndexInVerticeSet] = timeNumber;
             }
         }
     }
 
-    private void findNextNotDiscoveredVerticeInLastIteratorAndClassifyEdgesAlongTheWay() {
-        while (discoveredVertices.lastElement().hasNext() && discoveryTimes[verticeIndexInVerticeSet] != -1) {
-            currentVertice = discoveredVertices.lastElement().next();
-            verticeIndexInVerticeSet = relatedGraph.verticesAndTheirIndices.get(currentVertice);
-            edgeToBeClassified = getEdgeThatContainsThisVertices(listHeads.lastElement(), currentVertice);
+    private void addNotDiscoveredVerticesToStackAndClassifyEdgesAlongTheWay() {
+        var currentVerticeChildren = successorAdjacencyList.adjacencyList.get(currentVertice);
+        Collections.reverse(currentVerticeChildren);
 
-            if (edgeToBeClassified != null)
-                classifyTheEdge(edgeToBeClassified);
+        for (Vertice vertice : currentVerticeChildren) {
+            if (canAddVerticeToDiscoveredVertices(vertice))
+                discoveredVertices.add(vertice);
+
+            classifyTheEdge(getEdgeThatContainsThisVertices(currentVertice, vertice));
         }
+    }
+
+    private boolean canAddVerticeToDiscoveredVertices(Vertice vertice) {
+        return discoveryTimes[relatedGraph.verticesAndTheirIndices.get(vertice)] == -1
+                && !discoveredVertices.contains(vertice);
     }
 
     public boolean containsCycle() {
