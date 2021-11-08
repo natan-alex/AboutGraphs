@@ -11,16 +11,26 @@ public class AStarSearch extends BaseSearchStructure {
     private final class VerticeComparatorInAStarSearch implements Comparator<Vertice> {
         @Override
         public int compare(Vertice arg0, Vertice arg1) {
+            System.out.println("current vertice: " + currentVertice);
+            System.out.println("arg0: " + arg0);
+            System.out.println("arg1: " + arg1);
+            System.out.print("discovered vertices: ");
+            discoveredVertices.forEach(v -> System.out.print(v.name + " "));
+            System.out.println();
             Edge edgeWithCurrentVerticeAndArg0 = getEdgeThatContainsThisVertices(currentVertice, arg0);
             Edge edgeWithCurrentVerticeAndArg1 = getEdgeThatContainsThisVertices(currentVertice, arg1);
-            float evaluationFunctionValueForArg0 = relatedGraphHeuristics.heuristics.get(arg0);
-            float evaluationFunctionValueForArg1 = relatedGraphHeuristics.heuristics.get(arg1);
+            float evaluationFunctionValueForArg0 = relatedGraphHeuristics.verticesAndTheirHeuristics.get(arg0);
+            float evaluationFunctionValueForArg1 = relatedGraphHeuristics.verticesAndTheirHeuristics.get(arg1);
 
-            if (edgeWithCurrentVerticeAndArg0 != null) {
+            if (edgeWithCurrentVerticeAndArg0 == null) {
+                evaluationFunctionValueForArg0 = Float.MAX_VALUE;
+            } else {
                 evaluationFunctionValueForArg0 += edgeWithCurrentVerticeAndArg0.value;
             }
 
-            if (edgeWithCurrentVerticeAndArg1 != null) {
+            if (edgeWithCurrentVerticeAndArg1 == null) {
+                evaluationFunctionValueForArg1 = Float.MAX_VALUE;
+            } else {
                 evaluationFunctionValueForArg1 += edgeWithCurrentVerticeAndArg1.value;
             }
 
@@ -42,18 +52,20 @@ public class AStarSearch extends BaseSearchStructure {
 
     private void performAStarSearchAndComputeTimesInArrays() {
         for (int timeNumber = 1; timeNumber <= 2 * relatedGraph.numberOfVertices; timeNumber++) {
-            if (discoveredVertices.isEmpty()) {
+            if (discoveredVertices.isEmpty())
                 currentVertice = getNextNotDiscoveredVerticeBasedOnVerticeSet();
-                verticeIndexInVerticeSet = currentVertice != null ? relatedGraph.verticesAndTheirIndices.get(currentVertice) : -1;
-            } else {
+            else
                 currentVertice = discoveredVertices.poll();
-                verticeIndexInVerticeSet = relatedGraph.verticesAndTheirIndices.get(currentVertice);
-            }
+
+            verticeIndexInVerticeSet = relatedGraph.verticesAndTheirIndices.get(currentVertice);
 
             if (discoveryTimes[verticeIndexInVerticeSet] == -1) {
                 discoveryTimes[verticeIndexInVerticeSet] = timeNumber;
                 
                 addNecessaryItemsFromCurrentVerticeAdjacencyListToDiscoveredVertices();
+
+                discoveredVertices.add(currentVertice);
+
             } else if (endTimes[verticeIndexInVerticeSet] == -1) {
                 endTimes[verticeIndexInVerticeSet] = timeNumber;
             }
