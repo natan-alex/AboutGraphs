@@ -6,12 +6,12 @@ import java.util.regex.Pattern;
 
 public class GraphHeuristics {
     private final Graph relatedGraph;
-    public final Map<Vertice, Float> heuristics;
+    public final Map<Vertice, Float> verticesAndTheirHeuristics;
 
     public GraphHeuristics(Graph graph, String heuristicsRepresentation) {
         relatedGraph = graph;
 
-        heuristics = new LinkedHashMap<>(relatedGraph.numberOfVertices);
+        verticesAndTheirHeuristics = new LinkedHashMap<>(relatedGraph.numberOfVertices);
 
         checkIfHeuristicsRepresentationIsValid(heuristicsRepresentation);
 
@@ -46,7 +46,7 @@ public class GraphHeuristics {
         for (Vertice vertice : relatedGraph.verticesAndTheirIndices.keySet()) {
             currentVerticeIndex = relatedGraph.verticesAndTheirIndices.get(vertice);
             if (currentVerticeIndex >= partsOfHeuristics.length) {
-                heuristics.put(vertice, 0F);
+                verticesAndTheirHeuristics.put(vertice, 0F);
             } else {
                 verticeNameAndHeuristicValue = partsOfHeuristics[currentVerticeIndex].trim().split(":");
                 verticeNameAndHeuristicValue[0] = verticeNameAndHeuristicValue[0].trim();
@@ -58,7 +58,7 @@ public class GraphHeuristics {
                             + " is not in the vertice set." + " The vertice set is: " + relatedGraph.verticesAndTheirIndices.keySet());
                 }
 
-                heuristics.put(verticeFound.get(), Float.parseFloat(verticeNameAndHeuristicValue[1]));
+                verticesAndTheirHeuristics.put(verticeFound.get(), Float.parseFloat(verticeNameAndHeuristicValue[1]));
             }
         }
     }

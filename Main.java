@@ -36,7 +36,7 @@ public class Main {
         // deepSearch.showTimes();
         // deepSearch.showEdgeClassifications();
 
-        graph = new Graph("{ (a,b,1), (b,c,3), (c,a,2) }");
+        graph = new Graph("{ (a,b,1), (b,c,3), (b,d,2), (d,c,4) }");
         System.out.println("\nGraph: " + graph.stringRepresentation);
         graph.showVertices();
         graphRepresentations = new GraphRepresentations(graph);
@@ -46,7 +46,7 @@ public class Main {
         // deepSearch.showEdgeClassifications();
         // breadthSearch = new BreadthFirstSearch(graph, graphRepresentations.successorAdjacencyList);
         // breadthSearch.showTimes();
-        graphHeuristics = new GraphHeuristics(graph, "[a: 1, b: 2, c: 3]");
+        graphHeuristics = new GraphHeuristics(graph, "[a: 1, b: 2, c: 3, d: 2]");
         aStarSearch = new AStarSearch(graph, graphRepresentations.successorAdjacencyList, graphHeuristics);
         aStarSearch.showTimes();
 

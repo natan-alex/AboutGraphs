@@ -18,13 +18,12 @@ public class BreadthFirstSearch extends BaseSearchStructure {
 
     private void performBreadthSearchAndComputeTimesInArrays() {
         for (int timeNumber = 1; timeNumber <= 2 * relatedGraph.numberOfVertices; timeNumber++) {
-            if (discoveredVertices.isEmpty()) {
+            if (discoveredVertices.isEmpty())
                 currentVertice = getNextNotDiscoveredVerticeBasedOnVerticeSet();
-                verticeIndexInVerticeSet = currentVertice != null ? relatedGraph.verticesAndTheirIndices.get(currentVertice) : -1;
-            } else {
+            else
                 currentVertice = discoveredVertices.poll();
-                verticeIndexInVerticeSet = relatedGraph.verticesAndTheirIndices.get(currentVertice);
-            }
+
+            verticeIndexInVerticeSet = relatedGraph.verticesAndTheirIndices.get(currentVertice);
 
             if (discoveryTimes[verticeIndexInVerticeSet] == -1) {
                 discoveryTimes[verticeIndexInVerticeSet] = timeNumber;
