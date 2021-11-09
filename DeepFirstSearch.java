@@ -3,7 +3,7 @@ import java.util.Stack;
 
 public class DeepFirstSearch extends BaseSearchStructure {
     private final SuccessorAdjacencyList successorAdjacencyList;
-    private final Stack<Vertice> discoveredVertices;
+    private final Stack<Vertice> verticesToBeExplored;
     private int verticeIndexInVerticeSet;
     private Vertice currentVertice;
 
@@ -11,38 +11,38 @@ public class DeepFirstSearch extends BaseSearchStructure {
         super(graph);
         successorAdjacencyList = graphSuccessorAdjacencyList;
 
-        discoveredVertices = new Stack<>();
+        verticesToBeExplored = new Stack<>();
 
         performDeepSearchAndComputeTimesInArrays();
     }
 
     private void performDeepSearchAndComputeTimesInArrays() {
         for (int timeNumber = 1; timeNumber <= 2 * relatedGraph.numberOfVertices; timeNumber++) {
-            if (discoveredVertices.isEmpty())
+            if (verticesToBeExplored.isEmpty())
                 currentVertice = getNextNotDiscoveredVerticeBasedOnVerticeSet();
             else
-                currentVertice = discoveredVertices.pop();
+                currentVertice = verticesToBeExplored.pop();
 
             verticeIndexInVerticeSet = relatedGraph.verticesAndTheirIndices.get(currentVertice);
 
             if (discoveryTimes[verticeIndexInVerticeSet] == -1) {
                 discoveryTimes[verticeIndexInVerticeSet] = timeNumber;
 
-                discoveredVertices.add(currentVertice);
-                addNotDiscoveredVerticesToStackAndClassifyEdgesAlongTheWay();
+                verticesToBeExplored.add(currentVertice);
+                addCurrentVerticeChildrenToNotExploredVerticesAndClassifyEdgesAlongTheWay();
             } else {
                 endTimes[verticeIndexInVerticeSet] = timeNumber;
             }
         }
     }
 
-    private void addNotDiscoveredVerticesToStackAndClassifyEdgesAlongTheWay() {
+    private void addCurrentVerticeChildrenToNotExploredVerticesAndClassifyEdgesAlongTheWay() {
         var currentVerticeChildren = successorAdjacencyList.adjacencyList.get(currentVertice);
         Collections.reverse(currentVerticeChildren);
 
         for (Vertice vertice : currentVerticeChildren) {
             if (canAddVerticeToDiscoveredVertices(vertice))
-                discoveredVertices.add(vertice);
+                verticesToBeExplored.add(vertice);
 
             edgeClassifier.classifyTheEdge(getEdgeThatContainsThisVertices(currentVertice, vertice));
         }
@@ -50,7 +50,7 @@ public class DeepFirstSearch extends BaseSearchStructure {
 
     private boolean canAddVerticeToDiscoveredVertices(Vertice vertice) {
         return discoveryTimes[relatedGraph.verticesAndTheirIndices.get(vertice)] == -1
-                && !discoveredVertices.contains(vertice);
+                && !verticesToBeExplored.contains(vertice);
     }
 
     public boolean containsCycle() {
@@ -70,7 +70,7 @@ public class DeepFirstSearch extends BaseSearchStructure {
     }
 
     public void showEdgeClassifications() {
-        System.out.println("\n\tDEEP SEARCH EDGE CLASSIFICATIONS");
+        System.out.println("\n\tDEEP SEARCH EDGE CLASSIFICATIONS\n");
         edgeClassifier.showEdgeClassifications();
     }
 }

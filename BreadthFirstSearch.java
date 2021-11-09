@@ -3,7 +3,7 @@ import java.util.Queue;
 
 public class BreadthFirstSearch extends BaseSearchStructure {
     private final SuccessorAdjacencyList successorAdjacencyList;
-    private final Queue<Vertice> discoveredVertices;
+    private final Queue<Vertice> verticesToBeExplored;
     private Vertice currentVertice;
     private int verticeIndexInVerticeSet;
 
@@ -11,36 +11,35 @@ public class BreadthFirstSearch extends BaseSearchStructure {
         super(graph);
         successorAdjacencyList = graphSuccessorAdjacencyList;
 
-        discoveredVertices = new ArrayDeque<>(relatedGraph.numberOfVertices);
+        verticesToBeExplored = new ArrayDeque<>(relatedGraph.numberOfVertices);
 
         performBreadthSearchAndComputeTimesInArrays();
     }
 
     private void performBreadthSearchAndComputeTimesInArrays() {
         for (int timeNumber = 1; timeNumber <= 2 * relatedGraph.numberOfVertices; timeNumber++) {
-            if (discoveredVertices.isEmpty())
+            if (verticesToBeExplored.isEmpty())
                 currentVertice = getNextNotDiscoveredVerticeBasedOnVerticeSet();
             else
-                currentVertice = discoveredVertices.poll();
+                currentVertice = verticesToBeExplored.poll();
 
             verticeIndexInVerticeSet = relatedGraph.verticesAndTheirIndices.get(currentVertice);
 
             if (discoveryTimes[verticeIndexInVerticeSet] == -1) {
                 discoveryTimes[verticeIndexInVerticeSet] = timeNumber;
                 
-                addNecessaryItemsFromCurrentVerticeAdjacencyListToDiscoveredVertices();
-
-                discoveredVertices.add(currentVertice);
+                addCurrentVerticeChildrenToNotExploredVertices();
+                verticesToBeExplored.add(currentVertice);
             } else if (endTimes[verticeIndexInVerticeSet] == -1) {
                 endTimes[verticeIndexInVerticeSet] = timeNumber;
             }
         }
     }
 
-    private void addNecessaryItemsFromCurrentVerticeAdjacencyListToDiscoveredVertices() {
+    private void addCurrentVerticeChildrenToNotExploredVertices() {
         for (Vertice vertice : successorAdjacencyList.adjacencyList.get(currentVertice)) {
-            if (!discoveredVertices.contains(vertice) && discoveryTimes[relatedGraph.verticesAndTheirIndices.get(vertice)] == -1) {
-                discoveredVertices.add(vertice);
+            if (!verticesToBeExplored.contains(vertice) && discoveryTimes[relatedGraph.verticesAndTheirIndices.get(vertice)] == -1) {
+                verticesToBeExplored.add(vertice);
             }
         }
     }
