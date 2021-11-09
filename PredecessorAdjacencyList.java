@@ -3,20 +3,26 @@ import java.util.List;
 import java.util.Map;
 
 public class PredecessorAdjacencyList extends BaseAdjacencyList {
+    private Vertice currentVertice;
+    private List<Vertice> verticeChildren;
+
     public PredecessorAdjacencyList(Graph graph) {
         super();
-        List<Vertice> itemsList;
 
         for (Map.Entry<Vertice, Integer> entry : graph.verticesAndTheirIndices.entrySet()) {
-            itemsList = new ArrayList<>();
+            verticeChildren = new ArrayList<>();
+            currentVertice = entry.getKey();
 
-            for (Map.Entry<Edge, Integer> innerEntry : graph.edgesAndTheirIndices.entrySet()) {
-                if (entry.getKey().name.compareTo(innerEntry.getKey().secondVertice.name) == 0) {
-                    itemsList.add(innerEntry.getKey().firstVertice);
-                }
-            }
+            fillVerticeChildren(graph);
 
-            adjacencyList.put(entry.getKey(), itemsList);
+            adjacencyList.put(entry.getKey(), verticeChildren);
+        }
+    }
+
+    private void fillVerticeChildren(Graph graph) {
+        for (Map.Entry<Edge, Integer> innerEntry : graph.edgesAndTheirIndices.entrySet()) {
+            if (currentVertice.name.compareTo(innerEntry.getKey().secondVertice.name) == 0)
+                verticeChildren.add(innerEntry.getKey().firstVertice);
         }
     }
 }

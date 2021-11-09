@@ -6,7 +6,11 @@ import java.util.regex.Pattern;
 
 public class GraphHeuristics {
     private final Graph relatedGraph;
+    private final String[] partsOfHeuristics;
     public final Map<Vertice, Float> verticesAndTheirHeuristics;
+    private String[] verticeNameAndHeuristicValue;
+    private Optional<Vertice> verticeFound;
+    private int currentVerticeIndex;
 
     public GraphHeuristics(Graph graph, String heuristicsRepresentation) {
         relatedGraph = graph;
@@ -15,10 +19,9 @@ public class GraphHeuristics {
 
         checkIfHeuristicsRepresentationIsValid(heuristicsRepresentation);
 
-        String[] partsOfHeuristics = heuristicsRepresentation.substring(1, heuristicsRepresentation.length() - 1)
-                .split(",");
+        partsOfHeuristics = heuristicsRepresentation.substring(1, heuristicsRepresentation.length() - 1).split(",");
         
-        iterateOverPartsOfHeuristicsRepresentationAndFillCorrespondingAttribute(partsOfHeuristics);
+        fillHeuristicsForEachVertice();
     }
 
     private static Pattern PATTERN_TO_VALIDATE_THE_HEURISTICS = Pattern.compile(
@@ -37,29 +40,36 @@ public class GraphHeuristics {
             + " where the vertice is on the left of the : and the heuristic value is on the rigth.");
     }
 
-    private void iterateOverPartsOfHeuristicsRepresentationAndFillCorrespondingAttribute(String[] partsOfHeuristics) 
+    private void fillHeuristicsForEachVertice() 
         throws IllegalArgumentException {
-        String[] verticeNameAndHeuristicValue;
-        Optional<Vertice> verticeFound;
-        int currentVerticeIndex;
-
         for (Vertice vertice : relatedGraph.verticesAndTheirIndices.keySet()) {
             currentVerticeIndex = relatedGraph.verticesAndTheirIndices.get(vertice);
+
             if (currentVerticeIndex >= partsOfHeuristics.length) {
                 verticesAndTheirHeuristics.put(vertice, 0F);
             } else {
-                verticeNameAndHeuristicValue = partsOfHeuristics[currentVerticeIndex].trim().split(":");
-                verticeNameAndHeuristicValue[0] = verticeNameAndHeuristicValue[0].trim();
-                verticeNameAndHeuristicValue[1] = verticeNameAndHeuristicValue[1].trim();
+                fillVerticeNameAndHeuristicValueAccordingToCurrentVerticeIndex();
+
                 verticeFound = getTheVerticeWithThisName(verticeNameAndHeuristicValue[0]);
 
-                if (verticeFound.isEmpty()) {
-                    throw new IllegalArgumentException("The vertice " + verticeNameAndHeuristicValue[0]
-                            + " is not in the vertice set." + " The vertice set is: " + relatedGraph.verticesAndTheirIndices.keySet());
-                }
+                checkIfVerticeFoundIsEmpty();
 
                 verticesAndTheirHeuristics.put(verticeFound.get(), Float.parseFloat(verticeNameAndHeuristicValue[1]));
             }
+        }
+    }
+
+    private void fillVerticeNameAndHeuristicValueAccordingToCurrentVerticeIndex() {
+        verticeNameAndHeuristicValue = partsOfHeuristics[currentVerticeIndex].trim().split(":");
+        verticeNameAndHeuristicValue[0] = verticeNameAndHeuristicValue[0].trim();
+        verticeNameAndHeuristicValue[1] = verticeNameAndHeuristicValue[1].trim();
+    }
+
+    private void checkIfVerticeFoundIsEmpty() {
+        if (verticeFound.isEmpty()) {
+            throw new IllegalArgumentException("The vertice " + verticeNameAndHeuristicValue[0]
+                    + " is not in the vertice set." + " The vertice set is: "
+                    + relatedGraph.verticesAndTheirIndices.keySet());
         }
     }
 

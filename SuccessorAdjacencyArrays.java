@@ -1,34 +1,34 @@
-public class SuccessorAdjacencyArrays extends AdjacencyArrays {
+public class SuccessorAdjacencyArrays extends BaseAdjacencyArrays {
+    private int[] reorderedArray;
+    private int indexOfItemInStartPointsArray;
+    private int indexOfFirstOcurrenceOfAVerticeIndex;
+
     public SuccessorAdjacencyArrays(Graph graph) {
         super(graph);
+        reorderedArray = new int[graph.numberOfVertices + 1];
+
+        indexOfFirstOcurrenceOfAVerticeIndex = graph.numberOfEdges;
+
         orderAdjacencyArrays(WhichArrayToSort.START_ARRAY);
-        edgeStartPoints = reorderAndReturnSuccessorAdjacencyArrayForGraph(graph);
+        reorderSortedArrayAndFillCorrespondingAttribute(graph);
+
+        edgeStartPoints = reorderedArray;
     }
 
-    private int[] reorderAndReturnSuccessorAdjacencyArrayForGraph(Graph graph) {
-        int[] reorderedArray = new int[graph.numberOfVertices + 1];
-        int indexOfWhereInsert = 0, indexOfFirstOcurrenceOfAVerticeIndex = graph.numberOfEdges;
-
+    private void reorderSortedArrayAndFillCorrespondingAttribute(Graph graph) {
         reorderedArray[graph.numberOfVertices] = graph.numberOfEdges;
         reorderedArray[0] = 0;
 
-        for (int whereInsertInReorderedArray = graph.numberOfVertices
-                - 1; whereInsertInReorderedArray > 0; whereInsertInReorderedArray--) {
+        for (int insertionIndex = graph.numberOfVertices
+                - 1; insertionIndex > 0; insertionIndex--) {
+                    
+            indexOfItemInStartPointsArray = getIndexOfItemInArrayToBeSorted(insertionIndex);
 
-            for (int i = 0; i < edgeStartPoints.length; i++) {
-                if (edgeStartPoints[i] == whereInsertInReorderedArray) {
-                    indexOfWhereInsert = i;
-                    i = edgeStartPoints.length;
-                }
+            if (indexOfItemInStartPointsArray != -1) {
+                indexOfFirstOcurrenceOfAVerticeIndex = indexOfItemInStartPointsArray;
             }
 
-            if (indexOfWhereInsert != -1) {
-                indexOfFirstOcurrenceOfAVerticeIndex = indexOfWhereInsert;
-            }
-
-            reorderedArray[whereInsertInReorderedArray] = indexOfFirstOcurrenceOfAVerticeIndex;
+            reorderedArray[insertionIndex] = indexOfFirstOcurrenceOfAVerticeIndex;
         }
-
-        return reorderedArray;
     }
 }
