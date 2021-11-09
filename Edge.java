@@ -8,17 +8,17 @@ public class Edge {
         EdgeValidator.checkIfEdgeRepresentationIsValid(edgeRepresentation);
 
         stringRepresentation = edgeRepresentation.trim();
-        String[] partsOfStringRepresentation = stringRepresentation.substring(1, stringRepresentation.length() - 1)
-                .split(",");
+        String withoutParenthesisOrCurlyBraces = stringRepresentation.substring(1, stringRepresentation.length() - 1);
+        String[] partsOfStringRepresentation = withoutParenthesisOrCurlyBraces.split(",");
+
+        firstVertice = new Vertice(partsOfStringRepresentation[0].trim());
+        secondVertice = new Vertice(partsOfStringRepresentation[1].trim());
 
         if (partsOfStringRepresentation.length == 3) {
             value = Float.parseFloat(partsOfStringRepresentation[2].trim());
         } else {
             value = 0F;
         }
-
-        firstVertice = new Vertice(partsOfStringRepresentation[0].trim());
-        secondVertice = new Vertice(partsOfStringRepresentation[1].trim());
     }
 
     @Override
