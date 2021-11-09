@@ -10,7 +10,7 @@ public abstract class BaseSearchStructure {
         relatedGraph = graph;
         discoveryTimes = new int[graph.numberOfVertices];
         endTimes = new int[graph.numberOfVertices];
-        edgeClassifier = new EdgeClassifier(this);
+        edgeClassifier = new EdgeClassifier(relatedGraph, discoveryTimes, endTimes);
 
         for (int i = 0; i < graph.numberOfVertices; i++) {
             discoveryTimes[i] = -1;
