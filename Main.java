@@ -40,19 +40,17 @@ public class Main {
         // deepSearch.showEdgeClassifications();
 
         graph = new Graph("{ (a,b,1), (b,c,3), (b,d,2), (d,c,4) }");
-        System.out.println("\nGraph: " + graph.stringRepresentation);
         graph.showVertices();
+        graph.showEdges();
         graphRepresentations = new GraphRepresentations(graph);
-        graphRepresentations.showSuccessorAdjacencyList();
+        graphRepresentations.showAllRepresentations();
         deepSearch = new DeepFirstSearch(graph, graphRepresentations.successorAdjacencyList);
         deepSearch.showTimes();
         deepSearch.showEdgeClassifications();
-        breadthSearch = new BreadthFirstSearch(graph,
-        graphRepresentations.successorAdjacencyList);
+        breadthSearch = new BreadthFirstSearch(graph, graphRepresentations.successorAdjacencyList);
         breadthSearch.showTimes();
         graphHeuristics = new GraphHeuristics(graph, "[a: 1, b: 2, c: 3, d: 2]");
-        aStarSearch = new AStarSearch(graph,
-        graphRepresentations.successorAdjacencyList, graphHeuristics);
+        aStarSearch = new AStarSearch(graph, graphRepresentations.successorAdjacencyList, graphHeuristics);
         aStarSearch.showTimes();
 
         bufferedReader.close();
