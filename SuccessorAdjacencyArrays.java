@@ -19,10 +19,8 @@ public class SuccessorAdjacencyArrays extends BaseAdjacencyArrays {
         reorderedArray[graph.numberOfVertices] = graph.numberOfEdges;
         reorderedArray[0] = 0;
 
-        for (int insertionIndex = graph.numberOfVertices
-                - 1; insertionIndex > 0; insertionIndex--) {
-                    
-            indexOfItemInStartPointsArray = getIndexOfItemInArrayToBeSorted(insertionIndex);
+        for (int insertionIndex = graph.numberOfVertices - 1; insertionIndex > 0; insertionIndex--) {
+            indexOfItemInStartPointsArray = getIndexOfItemInToBeSortedArray(insertionIndex);
 
             if (indexOfItemInStartPointsArray != -1) {
                 indexOfFirstOcurrenceOfAVerticeIndex = indexOfItemInStartPointsArray;

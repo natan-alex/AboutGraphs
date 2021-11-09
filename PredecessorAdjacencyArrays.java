@@ -18,7 +18,7 @@ public class PredecessorAdjacencyArrays extends BaseAdjacencyArrays {
         reorderedArray[0] = 0;
 
         for (int insertionIndex = 1; insertionIndex < graph.numberOfVertices; insertionIndex++) {
-            indexOfItemInEndPointsArray = getIndexOfItemInArrayToBeSorted(insertionIndex);
+            indexOfItemInEndPointsArray = getIndexOfItemInToBeSortedArray(insertionIndex);
 
             if (indexOfItemInEndPointsArray != -1) {
                 indexOfFirstOcurrenceOfAVerticeIndex = indexOfItemInEndPointsArray;

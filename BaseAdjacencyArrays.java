@@ -61,7 +61,7 @@ public abstract class BaseAdjacencyArrays {
         }
     }
 
-    protected int getIndexOfItemInArrayToBeSorted(int item) {
+    protected int getIndexOfItemInToBeSortedArray(int item) {
         for (int i = 0; i < arrayToBeSorted.length; i++) {
             if (arrayToBeSorted[i] == item) {
                 return i;
