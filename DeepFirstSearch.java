@@ -41,14 +41,14 @@ public class DeepFirstSearch extends BaseSearchStructure {
         Collections.reverse(currentVerticeChildren);
 
         for (Vertice vertice : currentVerticeChildren) {
-            if (canAddVerticeToDiscoveredVertices(vertice))
+            if (canAddVerticeToNotExploredVertices(vertice))
                 verticesToBeExplored.add(vertice);
 
             edgeClassifier.classifyTheEdge(getEdgeThatContainsThisVertices(currentVertice, vertice));
         }
     }
 
-    private boolean canAddVerticeToDiscoveredVertices(Vertice vertice) {
+    private boolean canAddVerticeToNotExploredVertices(Vertice vertice) {
         return discoveryTimes[relatedGraph.verticesAndTheirIndices.get(vertice)] == -1
                 && !verticesToBeExplored.contains(vertice);
     }
