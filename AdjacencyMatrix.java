@@ -1,11 +1,8 @@
+import java.util.Iterator;
 import java.util.Map;
 
 public class AdjacencyMatrix extends BaseMatrix {
     private Graph relatedGraph;
-    private int indexOfSecondVertice;
-    private int currentLine;
-    private Vertice currentVertice;
-    private Edge currentEdge;
 
     public AdjacencyMatrix(Graph graph) {
         super(graph.numberOfVertices, graph.numberOfVertices);
@@ -15,27 +12,32 @@ public class AdjacencyMatrix extends BaseMatrix {
     }
 
     private void fillAdjacencyMatrix() {
-        for (Map.Entry<Vertice, Integer> entry : relatedGraph.verticesAndTheirIndices.entrySet()) {
-            currentVertice = entry.getKey();
+        int indexOfSecondVertice = 0;
+        Iterator<Vertice> verticeIterator = relatedGraph.verticesAndTheirIndices.keySet().iterator();
+        Iterator<Edge> edgeIterator;
+        Edge currentEdge;
+        Vertice currentVertice;
 
-            for (int j = 0; j < numberOfLines; j++)
-                matrix[currentLine][j] = 0;
+        for (int currentLine = 0; currentLine < numberOfLines; currentLine++) {
+            edgeIterator = relatedGraph.edgesAndTheirIndices.keySet().iterator();
+            currentVertice = verticeIterator.next();
 
-            fillMatrixAccordingToExistingEdges();
+            initializeMatrixColumnsForLine(currentLine);
 
-            currentLine++;
+            for (int currentColumn = 0; currentColumn < numberOfColumns; currentColumn++) {
+                currentEdge = edgeIterator.next();
+
+                if (currentVertice.equals(currentEdge.firstVertice)) {
+                    indexOfSecondVertice = relatedGraph.verticesAndTheirIndices.get(currentEdge.secondVertice);
+                    matrix[currentLine][indexOfSecondVertice] = 1;
+                }
+            }
         }
     }
 
-    private void fillMatrixAccordingToExistingEdges() {
-        for (Map.Entry<Edge, Integer> edgeMapEntry : relatedGraph.edgesAndTheirIndices.entrySet()) {
-            currentEdge = edgeMapEntry.getKey();
-
-            if (currentVertice.name.compareTo(currentEdge.firstVertice.name) == 0) {
-                indexOfSecondVertice = relatedGraph.verticesAndTheirIndices.get(currentEdge.secondVertice);
-                matrix[currentLine][indexOfSecondVertice] = 1;
-            }
-        }
+    private void initializeMatrixColumnsForLine(int currentLine) {
+        for (int currentColumn = 0; currentColumn < numberOfColumns; currentColumn++)
+            matrix[currentLine][currentColumn] = 0;
     }
 
     public void showAdjacencyMatrix() {

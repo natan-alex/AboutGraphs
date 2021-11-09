@@ -2,35 +2,28 @@ import java.util.Map;
 
 public class IncidenceMatrix extends BaseMatrix {
     private Graph relatedGraph;
-    private int currentColumn;
-    private int currentLine;
-    private Edge currentEdge;
-    private Vertice currentVertice;
-    private int currentMatrixItem;
-    private int indexOfSecondVertice;
 
     public IncidenceMatrix(Graph graph) {
         super(graph.numberOfVertices, graph.numberOfEdges);
         relatedGraph = graph;
 
-        fillIncidenceMatrix();
-    }
-
-    private void fillIncidenceMatrix() {
-        currentColumn = 0; 
-        currentLine = 0;
+        int currentLine = 0;
+        Vertice currentVertice;
 
         for (Map.Entry<Vertice, Integer> entry : relatedGraph.verticesAndTheirIndices.entrySet()) {
-            currentColumn = 0;
             currentVertice = entry.getKey();
 
-            fillMatrixAccordingToExistingEdges();
+            fillMatrixLineAccordingToCurrentVertice(currentLine, currentVertice);
 
             currentLine++;
         }
     }
 
-    private void fillMatrixAccordingToExistingEdges() {
+    private void fillMatrixLineAccordingToCurrentVertice(int currentLine, Vertice currentVertice) {
+        int currentColumn = 0;
+        Edge currentEdge;
+        int indexOfSecondVertice;
+
         for (Map.Entry<Edge, Integer> edgeMapEntry : relatedGraph.edgesAndTheirIndices.entrySet()) {
             currentEdge = edgeMapEntry.getKey();
 
@@ -47,19 +40,18 @@ public class IncidenceMatrix extends BaseMatrix {
     }
 
     public void showIncidenceMatrix() {
-        currentLine = 0;
-        currentColumn = 0;
+        int currentLine = 0;
 
         showEdgesSeparatedByTabs();
 
         for (Map.Entry<Vertice, Integer> entry : relatedGraph.verticesAndTheirIndices.entrySet()) {
             System.out.print(entry.getKey().name + "\t");
-            currentColumn = 0;
 
-            showCurrentLineItems();
+            showCurrentLineItems(currentLine);
+
+            System.out.println();
 
             currentLine++;
-            System.out.println();
         }
     }
 
@@ -67,27 +59,45 @@ public class IncidenceMatrix extends BaseMatrix {
         System.out.print("\t");
 
         for (Map.Entry<Edge, Integer> entry : relatedGraph.edgesAndTheirIndices.entrySet())
-            System.out.print(entry.getKey().stringRepresentation + "\t");
+            System.out.print(entry.getKey().stringRepresentation + "\t\t");
 
         System.out.println();
     }
 
-    private void showCurrentLineItems() {
+    private void showCurrentLineItems(int currentLine) {
+        if (relatedGraph.isPondered)
+            showMatrixForPonderedGraph(currentLine);
+        else
+            showMatrixForUnponderedGraph(currentLine);
+    }
+
+    private void showMatrixForPonderedGraph(int currentLine) {
+        int currentColumn = 0;
+
         for (Map.Entry<Edge, Integer> innerEntry : relatedGraph.edgesAndTheirIndices.entrySet()) {
-            currentMatrixItem = matrix[currentLine][currentColumn];
+            showMatrixItem(matrix[currentLine][currentColumn]);
 
-            if (currentMatrixItem == 1)
-                System.out.print("+");
-            else if (currentMatrixItem == 0)
-                System.out.print(" ");
-
-            System.out.print(currentMatrixItem);
-
-            if (relatedGraph.isPondered)
-                System.out.print(" | " + innerEntry.getKey().value);
+            System.out.print(" | " + innerEntry.getKey().value);
 
             System.out.print("\t");
             currentColumn++;
         }
+    }
+
+    private void showMatrixForUnponderedGraph(int currentLine) {
+        for (int currentColumn = 0; currentColumn < numberOfColumns; currentColumn++) {
+            showMatrixItem(matrix[currentLine][currentColumn]);
+
+            System.out.print("\t");
+        }
+    }
+
+    private void showMatrixItem(int item) {
+        if (item == 1)
+            System.out.print("+");
+        else if (item == 0)
+            System.out.print(" ");
+
+        System.out.print(item);
     }
 }
