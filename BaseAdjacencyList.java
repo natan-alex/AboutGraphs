@@ -2,7 +2,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BaseAdjacencyList {
+public abstract class BaseAdjacencyList {
     public final Map<Vertice, List<Vertice>> adjacencyList;
 
     protected BaseAdjacencyList() {

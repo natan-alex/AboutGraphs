@@ -1,4 +1,4 @@
-public class BaseMatrix {
+public abstract class BaseMatrix {
     public final int[][] matrix;
     public final int numberOfLines;
     public final int numberOfColumns;

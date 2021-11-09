@@ -3,22 +3,6 @@ public class Edge {
     public final Vertice firstVertice;
     public final Vertice secondVertice;
     public final float value;
-    public final boolean isDirected;
-    public final boolean isPondered;
-
-    public enum EdgeClassifications {
-        TREE("Tree"), CROSSING("Crossing"), RETURN("Return"), ADVANCE("Advance");
-
-        String name;
-
-        private EdgeClassifications(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
-        }
-    }
 
     public Edge(String edgeRepresentation) throws IllegalArgumentException {
         EdgeValidator.checkIfEdgeRepresentationIsValid(edgeRepresentation);
@@ -28,20 +12,13 @@ public class Edge {
                 .split(",");
 
         if (partsOfStringRepresentation.length == 3) {
-            isPondered = true;
-            value = Integer.parseInt(partsOfStringRepresentation[2].trim());
+            value = Float.parseFloat(partsOfStringRepresentation[2].trim());
         } else {
-            isPondered = false;
-            value = Integer.MIN_VALUE;
+            value = 0F;
         }
 
         firstVertice = new Vertice(partsOfStringRepresentation[0].trim());
         secondVertice = new Vertice(partsOfStringRepresentation[1].trim());
-
-        if (stringRepresentation.charAt(0) == '(')
-            isDirected = true;
-        else
-            isDirected = false;
     }
 
     @Override

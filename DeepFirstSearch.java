@@ -44,7 +44,7 @@ public class DeepFirstSearch extends BaseSearchStructure {
             if (canAddVerticeToDiscoveredVertices(vertice))
                 discoveredVertices.add(vertice);
 
-            classifyTheEdge(getEdgeThatContainsThisVertices(currentVertice, vertice));
+            edgeClassifier.classifyTheEdge(getEdgeThatContainsThisVertices(currentVertice, vertice));
         }
     }
 
@@ -54,8 +54,8 @@ public class DeepFirstSearch extends BaseSearchStructure {
     }
 
     public boolean containsCycle() {
-        for (var edgeClassification : edgeClassifications) {
-            if (edgeClassification == Edge.EdgeClassifications.RETURN) {
+        for (var edgeClassification : edgeClassifier.edgeClassifications) {
+            if (edgeClassification == EdgeClassifications.RETURN) {
                 return true;
             }
         }
@@ -69,9 +69,8 @@ public class DeepFirstSearch extends BaseSearchStructure {
         super.showTimes();
     }
 
-    @Override
     public void showEdgeClassifications() {
         System.out.println("\n\tDEEP SEARCH EDGE CLASSIFICATIONS");
-        super.showEdgeClassifications();
+        edgeClassifier.showEdgeClassifications();
     }
 }

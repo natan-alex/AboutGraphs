@@ -4,12 +4,12 @@ public class EdgeClassifier {
     private int indexOfFirstVerticeInVerticeSet;
     private int indexOfSecondVerticeInVerticeSet;
     private int edgeIndex;
-    public final Edge.EdgeClassifications[] edgeClassifications;
+    public final EdgeClassifications[] edgeClassifications;
     private final BaseSearchStructure searchStructure;
 
     public EdgeClassifier(BaseSearchStructure relatedSearchStructure) {
         searchStructure = relatedSearchStructure;
-        edgeClassifications = new Edge.EdgeClassifications[searchStructure.relatedGraph.numberOfEdges];
+        edgeClassifications = new EdgeClassifications[searchStructure.relatedGraph.numberOfEdges];
     }
 
     public void classifyTheEdge(Edge edge) {
@@ -31,30 +31,24 @@ public class EdgeClassifier {
     private void classifyTheEdgeForUndirectedGraph(Edge edge) {
         if (searchStructure.discoveryTimes[indexOfFirstVerticeInVerticeSet] != -1
                 && searchStructure.discoveryTimes[indexOfSecondVerticeInVerticeSet] == -1) {
-            edgeClassifications[edgeIndex] = Edge.EdgeClassifications.TREE;
+            edgeClassifications[edgeIndex] = EdgeClassifications.TREE;
         } else {
-            edgeClassifications[edgeIndex] = Edge.EdgeClassifications.RETURN;
+            edgeClassifications[edgeIndex] = EdgeClassifications.RETURN;
         }
     }
 
     private void classifyTheEdgeForDirectedGraph(Edge edge) {
-        int indexOfFirstVerticeInVerticeSet = searchStructure.relatedGraph.verticesAndTheirIndices
-                .get(edge.firstVertice);
-        int indexOfSecondVerticeInVerticeSet = searchStructure.relatedGraph.verticesAndTheirIndices
-                .get(edge.secondVertice);
-        int edgeIndex = searchStructure.relatedGraph.edgesAndTheirIndices.get(edge);
-
         if (searchStructure.discoveryTimes[indexOfFirstVerticeInVerticeSet] != -1
                 && searchStructure.discoveryTimes[indexOfSecondVerticeInVerticeSet] == -1) {
-            edgeClassifications[edgeIndex] = Edge.EdgeClassifications.TREE;
+            edgeClassifications[edgeIndex] = EdgeClassifications.TREE;
         } else if (searchStructure.discoveryTimes[indexOfFirstVerticeInVerticeSet] < searchStructure.discoveryTimes[indexOfSecondVerticeInVerticeSet]
                 && searchStructure.endTimes[indexOfSecondVerticeInVerticeSet] != -1) {
-            edgeClassifications[edgeIndex] = Edge.EdgeClassifications.ADVANCE;
+            edgeClassifications[edgeIndex] = EdgeClassifications.ADVANCE;
         } else if (searchStructure.discoveryTimes[indexOfFirstVerticeInVerticeSet] > searchStructure.discoveryTimes[indexOfSecondVerticeInVerticeSet]
                 && searchStructure.endTimes[indexOfSecondVerticeInVerticeSet] == -1) {
-            edgeClassifications[edgeIndex] = Edge.EdgeClassifications.RETURN;
+            edgeClassifications[edgeIndex] = EdgeClassifications.RETURN;
         } else {
-            edgeClassifications[edgeIndex] = Edge.EdgeClassifications.CROSSING;
+            edgeClassifications[edgeIndex] = EdgeClassifications.CROSSING;
         }
     }
 
