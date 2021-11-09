@@ -47,13 +47,13 @@ public class Main {
         deepSearch = new DeepFirstSearch(graph, graphRepresentations.successorAdjacencyList);
         deepSearch.showTimes();
         deepSearch.showEdgeClassifications();
-        // breadthSearch = new BreadthFirstSearch(graph,
-        // graphRepresentations.successorAdjacencyList);
-        // breadthSearch.showTimes();
-        // graphHeuristics = new GraphHeuristics(graph, "[a: 1, b: 2, c: 3, d: 2]");
-        // aStarSearch = new AStarSearch(graph,
-        // graphRepresentations.successorAdjacencyList, graphHeuristics);
-        // aStarSearch.showTimes();
+        breadthSearch = new BreadthFirstSearch(graph,
+        graphRepresentations.successorAdjacencyList);
+        breadthSearch.showTimes();
+        graphHeuristics = new GraphHeuristics(graph, "[a: 1, b: 2, c: 3, d: 2]");
+        aStarSearch = new AStarSearch(graph,
+        graphRepresentations.successorAdjacencyList, graphHeuristics);
+        aStarSearch.showTimes();
 
         bufferedReader.close();
         scanner.close();
