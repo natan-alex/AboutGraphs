@@ -36,7 +36,7 @@ public class Graph {
             edgesAndTheirIndices.put(newEdge, edgeIndex);
             edgeIndex++;
 
-            if (newEdge.isPondered)
+            if (this.isPondered)
                 edgesAndTheirValues.put(newEdge, newEdge.value);
             else
                 edgesAndTheirValues.put(newEdge, 0F);
