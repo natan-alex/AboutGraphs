@@ -1,14 +1,16 @@
 import java.util.Map;
 
-public class AdjacencyArrays {
+public abstract class BaseAdjacencyArrays {
     public int[] edgeStartPoints;
     public int[] edgeEndPoints;
+    private int[] arrayToBeSorted;
+    private int[] otherArray;
 
     protected enum WhichArrayToSort {
         START_ARRAY, END_ARRAY
     }
 
-    protected AdjacencyArrays(Graph graph) {
+    protected BaseAdjacencyArrays(Graph graph) {
         int currentIndex = 0;
         int indexOfFirstVertice, indexOfSecondVertice;
 
@@ -27,10 +29,29 @@ public class AdjacencyArrays {
     }
 
     protected void orderAdjacencyArrays(WhichArrayToSort whichArrayToSort) {
-        int currentItemOfWhichToSortArray, currentItemOfOtherArray;
-        int j;
-        int[] arrayToBeSorted, otherArray;
+        int currentItemOfWhichToSortArray;
+        int currentItemOfOtherArray;
+        int auxiliarVariable;
 
+        fillArrayToBeSortedAttributeAccordingToWhichToSort(whichArrayToSort);
+
+        for (int minimumItemIndex = 1; minimumItemIndex < arrayToBeSorted.length; minimumItemIndex++) {
+            currentItemOfWhichToSortArray = arrayToBeSorted[minimumItemIndex];
+            currentItemOfOtherArray = otherArray[minimumItemIndex];
+            auxiliarVariable = minimumItemIndex - 1;
+
+            while (auxiliarVariable >= 0 && arrayToBeSorted[auxiliarVariable] > currentItemOfWhichToSortArray) {
+                arrayToBeSorted[auxiliarVariable + 1] = arrayToBeSorted[auxiliarVariable];
+                otherArray[auxiliarVariable + 1] = otherArray[auxiliarVariable];
+                auxiliarVariable--;
+            }
+
+            arrayToBeSorted[auxiliarVariable + 1] = currentItemOfWhichToSortArray;
+            otherArray[auxiliarVariable + 1] = currentItemOfOtherArray;
+        }
+    }
+
+    private void fillArrayToBeSortedAttributeAccordingToWhichToSort(WhichArrayToSort whichArrayToSort) {
         if (whichArrayToSort == WhichArrayToSort.START_ARRAY) {
             arrayToBeSorted = edgeStartPoints;
             otherArray = edgeEndPoints;
@@ -38,21 +59,16 @@ public class AdjacencyArrays {
             arrayToBeSorted = edgeEndPoints;
             otherArray = edgeStartPoints;
         }
+    }
 
-        for (int i = 1; i < arrayToBeSorted.length; i++) {
-            currentItemOfWhichToSortArray = arrayToBeSorted[i];
-            currentItemOfOtherArray = otherArray[i];
-            j = i - 1;
-
-            while (j >= 0 && arrayToBeSorted[j] > currentItemOfWhichToSortArray) {
-                arrayToBeSorted[j + 1] = arrayToBeSorted[j];
-                otherArray[j + 1] = otherArray[j];
-                j--;
+    protected int getIndexOfItemInArrayToBeSorted(int item) {
+        for (int i = 0; i < arrayToBeSorted.length; i++) {
+            if (arrayToBeSorted[i] == item) {
+                return i;
             }
-
-            arrayToBeSorted[j + 1] = currentItemOfWhichToSortArray;
-            otherArray[j + 1] = currentItemOfOtherArray;
         }
+
+        return -1;
     }
 
     public void showAdjacencyArraysIncreasingTheirValuesByOne() {
