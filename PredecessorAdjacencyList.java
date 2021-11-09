@@ -21,7 +21,7 @@ public class PredecessorAdjacencyList extends BaseAdjacencyList {
 
     private void fillVerticeChildren(Graph graph) {
         for (Map.Entry<Edge, Integer> innerEntry : graph.edgesAndTheirIndices.entrySet()) {
-            if (currentVertice.name.compareTo(innerEntry.getKey().secondVertice.name) == 0)
+            if (currentVertice.equals(innerEntry.getKey().secondVertice))
                 verticeChildren.add(innerEntry.getKey().firstVertice);
         }
     }

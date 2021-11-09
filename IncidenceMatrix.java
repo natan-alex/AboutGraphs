@@ -27,7 +27,7 @@ public class IncidenceMatrix extends BaseMatrix {
         for (Map.Entry<Edge, Integer> edgeMapEntry : relatedGraph.edgesAndTheirIndices.entrySet()) {
             currentEdge = edgeMapEntry.getKey();
 
-            if (currentVertice.name.compareTo(currentEdge.firstVertice.name) == 0) {
+            if (currentVertice.equals(currentEdge.firstVertice)) {
                 indexOfSecondVertice = relatedGraph.verticesAndTheirIndices.get(currentEdge.secondVertice);
                 matrix[currentLine][currentColumn] = 1;
                 matrix[indexOfSecondVertice][currentColumn] = -1;

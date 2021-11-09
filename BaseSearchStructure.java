@@ -42,8 +42,8 @@ public abstract class BaseSearchStructure {
 
     protected Edge getEdgeThatContainsThisVertices(Vertice firstVertice, Vertice secondVertice) {
         for (Map.Entry<Edge, Integer> entry : relatedGraph.edgesAndTheirIndices.entrySet()) {
-            if (entry.getKey().firstVertice.name.compareTo(firstVertice.name) == 0
-                    && entry.getKey().secondVertice.name.compareTo(secondVertice.name) == 0) {
+            if (entry.getKey().firstVertice.equals(firstVertice)
+                    && entry.getKey().secondVertice.equals(secondVertice)) {
                 return entry.getKey();
             }
         }
