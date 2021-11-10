@@ -8,13 +8,20 @@ public class EdgeValidator {
             .compile("[(|{]\\s*\\w+\\s*,(\\s*\\w+\\s*,)?\\s*\\w+\\s*[)|}]");
 
     public static void checkIfEdgeRepresentationIsValid(String edgeRepresentation) throws IllegalArgumentException {
+        checkIfRepresentationMatchesThePattern(edgeRepresentation);
+        checkIfRepresentationIsEnclosedCorrectly(edgeRepresentation);
+    }
+
+    private static void checkIfRepresentationMatchesThePattern(String edgeRepresentation) {
         Matcher matcher = PATTERN_TO_VALIDATE_AN_EDGE.matcher(edgeRepresentation);
 
         if (!matcher.matches()) {
             throw new IllegalArgumentException(
                     "Invalid edge " + edgeRepresentation + "\nExample of a valid edge: (a, b) or {hello, world}");
         }
+    }
 
+    private static void checkIfRepresentationIsEnclosedCorrectly(String edgeRepresentation) {
         if (!isEdgeRepresentationEnclosedCorrectly(edgeRepresentation)) {
             throw new IllegalArgumentException("Invalid edge " + edgeRepresentation
                     + ": the edge representation is not enclosed correctly.\n"
