@@ -1,10 +1,10 @@
 public class AllGraphRepresentations {
-    public AdjacencyMatrix adjacencyMatrix;
-    public IncidenceMatrix incidenceMatrix;
-    public SuccessorAdjacencyList successorAdjacencyList;
-    public PredecessorAdjacencyList predecessorAdjacencyList;
-    public SuccessorAdjacencyArrays successorAdjacencyArrays;
-    public PredecessorAdjacencyArrays predecessorAdjacencyArrays;
+    public final AdjacencyMatrix adjacencyMatrix;
+    public final IncidenceMatrix incidenceMatrix;
+    public final SuccessorAdjacencyList successorAdjacencyList;
+    public final PredecessorAdjacencyList predecessorAdjacencyList;
+    public final SuccessorAdjacencyArrays successorAdjacencyArrays;
+    public final PredecessorAdjacencyArrays predecessorAdjacencyArrays;
     private String graphStringRepresentation;
 
     public AllGraphRepresentations(Graph graph) {
