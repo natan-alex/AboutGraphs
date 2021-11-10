@@ -48,12 +48,7 @@ public class AStarSearch extends BaseSearchStructure {
 
     private void performAStarSearchAndComputeTimesInArrays() {
         for (int timeNumber = 1; timeNumber <= 2 * relatedGraph.numberOfVertices; timeNumber++) {
-            if (verticesToBeExplored.isEmpty())
-                currentVertice = getNextNotDiscoveredVerticeBasedOnVerticeSet();
-            else
-                currentVertice = verticesToBeExplored.poll();
-
-            verticeIndexInVerticeSet = relatedGraph.verticesAndTheirIndices.get(currentVertice);
+            fillCurrentVerticeAndItsIndexAccordingToVerticesToBeExplored();
 
             if (discoveryTimes[verticeIndexInVerticeSet] == -1) {
                 discoveryTimes[verticeIndexInVerticeSet] = timeNumber;
@@ -65,6 +60,15 @@ public class AStarSearch extends BaseSearchStructure {
                 endTimes[verticeIndexInVerticeSet] = timeNumber;
             }
         }
+    }
+
+    private void fillCurrentVerticeAndItsIndexAccordingToVerticesToBeExplored() {
+        if (verticesToBeExplored.isEmpty())
+            currentVertice = getNextNotDiscoveredVerticeBasedOnVerticeSet();
+        else
+            currentVertice = verticesToBeExplored.poll();
+
+        verticeIndexInVerticeSet = relatedGraph.verticesAndTheirIndices.get(currentVertice);
     }
 
     private void addCurrentVerticeChildrenToNotExploredVertices() {

@@ -18,12 +18,7 @@ public class DeepFirstSearch extends BaseSearchStructure {
 
     private void performDeepSearchAndComputeTimesInArrays() {
         for (int timeNumber = 1; timeNumber <= 2 * relatedGraph.numberOfVertices; timeNumber++) {
-            if (verticesToBeExplored.isEmpty())
-                currentVertice = getNextNotDiscoveredVerticeBasedOnVerticeSet();
-            else
-                currentVertice = verticesToBeExplored.pop();
-
-            verticeIndexInVerticeSet = relatedGraph.verticesAndTheirIndices.get(currentVertice);
+            fillCurrentVerticeAndItsIndexAccordingToVerticesToBeExplored();
 
             if (discoveryTimes[verticeIndexInVerticeSet] == -1) {
                 discoveryTimes[verticeIndexInVerticeSet] = timeNumber;
@@ -35,6 +30,16 @@ public class DeepFirstSearch extends BaseSearchStructure {
             }
         }
     }
+
+    private void fillCurrentVerticeAndItsIndexAccordingToVerticesToBeExplored() {
+        if (verticesToBeExplored.isEmpty())
+            currentVertice = getNextNotDiscoveredVerticeBasedOnVerticeSet();
+        else
+            currentVertice = verticesToBeExplored.pop();
+
+        verticeIndexInVerticeSet = relatedGraph.verticesAndTheirIndices.get(currentVertice);
+    }
+
 
     private void addCurrentVerticeChildrenToNotExploredVerticesAndClassifyEdgesAlongTheWay() {
         var currentVerticeChildren = successorAdjacencyList.adjacencyList.get(currentVertice);
