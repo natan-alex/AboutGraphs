@@ -10,7 +10,7 @@ public class Main {
         BufferedReader bufferedReader = new BufferedReader(new FileReader("graphs.txt"));
         String fileLine;
         Graph graph = null;
-        GraphRepresentations graphRepresentations = null;
+        AllGraphRepresentations allGraphRepresentations;
         DeepFirstSearch deepSearch = null;
         BreadthFirstSearch breadthSearch = null;
         AStarSearch aStarSearch = null;
@@ -42,15 +42,15 @@ public class Main {
         graph = new Graph("{ (a,b,1), (b,c,3), (b,d,2), (d,c,4) }");
         graph.showVertices();
         graph.showEdges();
-        graphRepresentations = new GraphRepresentations(graph);
-        graphRepresentations.showAllRepresentations();
-        deepSearch = new DeepFirstSearch(graph, graphRepresentations.successorAdjacencyList);
+        allGraphRepresentations = new AllGraphRepresentations(graph);
+        allGraphRepresentations.showAllRepresentations();
+        deepSearch = new DeepFirstSearch(graph, allGraphRepresentations.successorAdjacencyList);
         deepSearch.showTimes();
         deepSearch.showEdgeClassifications();
-        breadthSearch = new BreadthFirstSearch(graph, graphRepresentations.successorAdjacencyList);
+        breadthSearch = new BreadthFirstSearch(graph, allGraphRepresentations.successorAdjacencyList);
         breadthSearch.showTimes();
         graphHeuristics = new GraphHeuristics(graph, "[a: 1, b: 2, c: 3, d: 2]");
-        aStarSearch = new AStarSearch(graph, graphRepresentations.successorAdjacencyList, graphHeuristics);
+        aStarSearch = new AStarSearch(graph, allGraphRepresentations.successorAdjacencyList, graphHeuristics);
         aStarSearch.showTimes();
 
         bufferedReader.close();
