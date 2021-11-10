@@ -21,6 +21,7 @@ public class Graph {
         verticesAndTheirIndices = new LinkedHashMap<>();
         numberOfEdges = fillEdgeMapsAndReturnTheNumberOfEdges();
         numberOfVertices = fillVerticeMapAndReturnTheNumberOfVertices();
+
         isDirected = GraphValidator.isGraphDirected();
         isPondered = GraphValidator.isGraphPondered();
     }
@@ -52,6 +53,7 @@ public class Graph {
         for (Map.Entry<Edge, Integer> entry : edgesAndTheirIndices.entrySet()) {
             currentEdge = entry.getKey();
 
+            // put if absent returns null if the key didnt exist previously in the map
             if (verticesAndTheirIndices.putIfAbsent(currentEdge.firstVertice, verticeIndex) == null)
                 verticeIndex++;
 
@@ -59,7 +61,6 @@ public class Graph {
                 verticeIndex++;
         }
 
-        System.out.println(verticesAndTheirIndices);
         return verticesAndTheirIndices.size();
     }
 
