@@ -1,6 +1,6 @@
 import java.util.Map;
 
-public class IncidenceMatrix extends BaseMatrix {
+public class IncidenceMatrix extends BaseMatrix implements GraphRepresentation {
     private Graph relatedGraph;
 
     public IncidenceMatrix(Graph graph) {
@@ -39,7 +39,9 @@ public class IncidenceMatrix extends BaseMatrix {
         }
     }
 
-    public void showIncidenceMatrix() {
+    @Override
+    public void show() {
+        System.out.println("\n\tINCIDENCE MATRIX\n");
         int currentLine = 0;
 
         showEdgesSeparatedByTabs();

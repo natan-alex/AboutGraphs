@@ -1,6 +1,6 @@
 import java.util.Map;
 
-public class AdjacencyMatrix extends BaseMatrix {
+public class AdjacencyMatrix extends BaseMatrix implements GraphRepresentation {
     private Graph relatedGraph;
 
     public AdjacencyMatrix(Graph graph) {
@@ -45,7 +45,9 @@ public class AdjacencyMatrix extends BaseMatrix {
         }
     }
 
-    public void showAdjacencyMatrix() {
+    @Override
+    public void show() {
+        System.out.println("\n\tADJACENCY MATRIX\n");
         int currentLine = 0;
 
         showVerticesSeparatedByTabs();

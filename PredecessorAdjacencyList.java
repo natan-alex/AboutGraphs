@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class PredecessorAdjacencyList extends BaseAdjacencyList {
+public class PredecessorAdjacencyList extends BaseAdjacencyList implements GraphRepresentation {
     private Vertice currentVertice;
     private List<Vertice> verticeChildren;
 
@@ -24,5 +24,11 @@ public class PredecessorAdjacencyList extends BaseAdjacencyList {
             if (currentVertice.equals(innerEntry.getKey().secondVertice))
                 verticeChildren.add(innerEntry.getKey().firstVertice);
         }
+    }
+
+    @Override
+    public void show() {
+        System.out.println("\n\tPREDECESSOR ADJACENCY LIST\n");
+        super.showAdjacencyList();
     }
 }

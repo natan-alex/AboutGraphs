@@ -1,4 +1,4 @@
-public class PredecessorAdjacencyArrays extends BaseAdjacencyArrays {
+public class PredecessorAdjacencyArrays extends BaseAdjacencyArrays implements GraphRepresentation {
     private int[] reorderedArray;
     private int indexOfItemInEndPointsArray;
     private int indexOfFirstOcurrenceOfAVerticeIndex;
@@ -26,5 +26,11 @@ public class PredecessorAdjacencyArrays extends BaseAdjacencyArrays {
 
             reorderedArray[insertionIndex] = indexOfFirstOcurrenceOfAVerticeIndex;
         }
+    }
+
+    @Override
+    public void show() {
+        System.out.println("\n\tPREDECESSOR ADJACENCY ARRAYS\n");
+        super.showAdjacencyArraysIncreasingTheirValuesByOne();
     }
 }
