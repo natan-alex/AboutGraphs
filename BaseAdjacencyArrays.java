@@ -11,20 +11,22 @@ public abstract class BaseAdjacencyArrays {
     }
 
     protected BaseAdjacencyArrays(Graph graph) {
-        int currentIndex = 0;
+        int insertionIndex = 0;
         int indexOfFirstVertice, indexOfSecondVertice;
+        Edge currentEdge;
 
         edgeStartPoints = new int[graph.numberOfEdges];
         edgeEndPoints = new int[graph.numberOfEdges];
 
-        for (Map.Entry<Edge, Integer> entry : graph.edgesAndTheirIndices.entrySet()) {
-            indexOfFirstVertice = graph.verticesAndTheirIndices.get(entry.getKey().firstVertice);
-            indexOfSecondVertice = graph.verticesAndTheirIndices.get(entry.getKey().secondVertice);
+        for (Map.Entry<Edge, Integer> edgeMapEntry : graph.edgesAndTheirIndices.entrySet()) {
+            currentEdge = edgeMapEntry.getKey();
+            indexOfFirstVertice = graph.verticesAndTheirIndices.get(currentEdge.firstVertice);
+            indexOfSecondVertice = graph.verticesAndTheirIndices.get(currentEdge.secondVertice);
 
-            edgeStartPoints[currentIndex] = indexOfFirstVertice;
-            edgeEndPoints[currentIndex] = indexOfSecondVertice;
+            edgeStartPoints[insertionIndex] = indexOfFirstVertice;
+            edgeEndPoints[insertionIndex] = indexOfSecondVertice;
 
-            currentIndex++;
+            insertionIndex++;
         }
     }
 
