@@ -1,4 +1,3 @@
-import java.util.Iterator;
 import java.util.Map;
 
 public class AdjacencyMatrix extends BaseMatrix {
@@ -12,32 +11,38 @@ public class AdjacencyMatrix extends BaseMatrix {
     }
 
     private void fillAdjacencyMatrix() {
-        int indexOfSecondVertice = 0;
-        Iterator<Vertice> verticeIterator = relatedGraph.verticesAndTheirIndices.keySet().iterator();
-        Iterator<Edge> edgeIterator;
-        Edge currentEdge;
+        int currentLine = 0;
         Vertice currentVertice;
 
-        for (int currentLine = 0; currentLine < numberOfLines; currentLine++) {
-            edgeIterator = relatedGraph.edgesAndTheirIndices.keySet().iterator();
-            currentVertice = verticeIterator.next();
+        for (Map.Entry<Vertice, Integer> verticeMapEntry : relatedGraph.verticesAndTheirIndices.entrySet()) {
+            currentVertice = verticeMapEntry.getKey();
 
-            initializeMatrixColumnsForLine(currentLine);
+            initializeTheItemsOfTheMatrixLine(currentLine);
 
-            for (int currentColumn = 0; currentColumn < numberOfColumns; currentColumn++) {
-                currentEdge = edgeIterator.next();
+            fillMatrixLineAccordingToCurrentVertice(currentLine, currentVertice);
 
-                if (currentVertice.equals(currentEdge.firstVertice)) {
-                    indexOfSecondVertice = relatedGraph.verticesAndTheirIndices.get(currentEdge.secondVertice);
-                    matrix[currentLine][indexOfSecondVertice] = 1;
-                }
-            }
+            currentLine++;
         }
     }
 
-    private void initializeMatrixColumnsForLine(int currentLine) {
+
+    private void initializeTheItemsOfTheMatrixLine(int line) {
         for (int currentColumn = 0; currentColumn < numberOfColumns; currentColumn++)
-            matrix[currentLine][currentColumn] = 0;
+            matrix[line][currentColumn] = 0;
+    }
+
+    private void fillMatrixLineAccordingToCurrentVertice(int currentLine, Vertice currentVertice) {
+        Edge currentEdge;
+        int indexOfSecondVertice = 0;
+
+        for (Map.Entry<Edge, Integer> edgeMapEntry : relatedGraph.edgesAndTheirIndices.entrySet()) {
+            currentEdge = edgeMapEntry.getKey();
+
+            if (currentVertice.equals(currentEdge.firstVertice)) {
+                indexOfSecondVertice = relatedGraph.verticesAndTheirIndices.get(currentEdge.secondVertice);
+                matrix[currentLine][indexOfSecondVertice] = 1;
+            }
+        }
     }
 
     public void showAdjacencyMatrix() {
@@ -48,9 +53,7 @@ public class AdjacencyMatrix extends BaseMatrix {
         for (Map.Entry<Vertice, Integer> entry : relatedGraph.verticesAndTheirIndices.entrySet()) {
             System.out.print(entry.getKey().name + "\t");
 
-            for (int j = 0; j < numberOfLines; j++) {
-                System.out.print(matrix[currentLine][j] + "\t");
-            }
+            showMatrixLineItemsSeparatedByTabs(currentLine);
 
             System.out.println();
             currentLine++;
@@ -65,5 +68,11 @@ public class AdjacencyMatrix extends BaseMatrix {
         }
 
         System.out.println();
+    }
+
+    private void showMatrixLineItemsSeparatedByTabs(int currentLine) {
+        for (int currentColumn = 0; currentColumn < numberOfColumns; currentColumn++) {
+            System.out.print(matrix[currentLine][currentColumn] + "\t");
+        }
     }
 }
