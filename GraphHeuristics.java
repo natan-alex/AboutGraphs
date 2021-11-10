@@ -9,8 +9,6 @@ public class GraphHeuristics {
     private final String[] partsOfHeuristics;
     public final Map<Vertice, Float> verticesAndTheirHeuristics;
     private String[] verticeNameAndHeuristicValue;
-    private Optional<Vertice> verticeFound;
-    private int currentVerticeIndex;
 
     public GraphHeuristics(Graph graph, String heuristicsRepresentation) {
         relatedGraph = graph;
@@ -40,32 +38,34 @@ public class GraphHeuristics {
             + " where the vertice is on the left of the : and the heuristic value is on the rigth.");
     }
 
-    private void fillHeuristicsForEachVertice() 
-        throws IllegalArgumentException {
+    private void fillHeuristicsForEachVertice() throws IllegalArgumentException {
+        int currentVerticeIndex = 0;
+        Optional<Vertice> verticeFound;
+
         for (Vertice vertice : relatedGraph.verticesAndTheirIndices.keySet()) {
             currentVerticeIndex = relatedGraph.verticesAndTheirIndices.get(vertice);
 
             if (currentVerticeIndex >= partsOfHeuristics.length) {
                 verticesAndTheirHeuristics.put(vertice, 0F);
             } else {
-                fillVerticeNameAndHeuristicValueAccordingToCurrentVerticeIndex();
+                fillVerticeNameAndHeuristicValueAccordingToCurrentVerticeIndex(currentVerticeIndex);
 
                 verticeFound = getTheVerticeWithThisName(verticeNameAndHeuristicValue[0]);
 
-                checkIfVerticeFoundIsEmpty();
+                checkIfOptionalContainingTheVerticeFoundIsEmpty(verticeFound);
 
                 verticesAndTheirHeuristics.put(verticeFound.get(), Float.parseFloat(verticeNameAndHeuristicValue[1]));
             }
         }
     }
 
-    private void fillVerticeNameAndHeuristicValueAccordingToCurrentVerticeIndex() {
+    private void fillVerticeNameAndHeuristicValueAccordingToCurrentVerticeIndex(int currentVerticeIndex) {
         verticeNameAndHeuristicValue = partsOfHeuristics[currentVerticeIndex].trim().split(":");
         verticeNameAndHeuristicValue[0] = verticeNameAndHeuristicValue[0].trim();
         verticeNameAndHeuristicValue[1] = verticeNameAndHeuristicValue[1].trim();
     }
 
-    private void checkIfVerticeFoundIsEmpty() {
+    private void checkIfOptionalContainingTheVerticeFoundIsEmpty(Optional<Vertice> verticeFound) {
         if (verticeFound.isEmpty()) {
             throw new IllegalArgumentException("The vertice " + verticeNameAndHeuristicValue[0]
                     + " is not in the vertice set." + " The vertice set is: "
