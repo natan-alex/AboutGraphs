@@ -1,5 +1,3 @@
-import java.util.Map;
-
 public abstract class BaseSearchStructure {
     public final int[] discoveryTimes;
     public final int[] endTimes;
@@ -26,8 +24,8 @@ public abstract class BaseSearchStructure {
         int timeIndex = 0;
         System.out.println("\nVertice -> Discovery time / End time");
 
-        for (Map.Entry<Vertice, Integer> entry : relatedGraph.verticesAndTheirIndices.entrySet()) {
-            System.out.print("  " + entry.getKey().name);
+        for (Vertice vertice : relatedGraph.vertices) {
+            System.out.print("  " + vertice.name);
             System.out.print(" -> " + discoveryTimes[timeIndex]);
             System.out.println(" / " + endTimes[timeIndex]);
             timeIndex++;
@@ -35,9 +33,11 @@ public abstract class BaseSearchStructure {
     }
 
     protected Vertice getNextNotDiscoveredVerticeBasedOnVerticeSet() {
-        for (Map.Entry<Vertice, Integer> verticeMapEntry : relatedGraph.verticesAndTheirIndices.entrySet()) {
-            if (discoveryTimes[verticeMapEntry.getValue()] == -1) {
-                return verticeMapEntry.getKey();
+        int verticeIndex = 0;
+
+        for (Vertice vertice : relatedGraph.vertices) {
+            if (discoveryTimes[verticeIndex] == -1) {
+                return vertice;
             }
         }
 
@@ -45,13 +45,9 @@ public abstract class BaseSearchStructure {
     }
 
     protected Edge getEdgeThatContainsThisVertices(Vertice firstVertice, Vertice secondVertice) {
-        Edge currentEdge;
-
-        for (Map.Entry<Edge, Integer> edgeMapEntry : relatedGraph.edgesAndTheirIndices.entrySet()) {
-            currentEdge = edgeMapEntry.getKey();
-
-            if (currentEdge.firstVertice.equals(firstVertice) && currentEdge.secondVertice.equals(secondVertice)) {
-                return currentEdge;
+        for (Edge edge : relatedGraph.edges) {
+            if (edge.firstVertice.equals(firstVertice) && edge.secondVertice.equals(secondVertice)) {
+                return edge;
             }
         }
 
