@@ -1,12 +1,13 @@
 import java.util.regex.*;
-import java.util.Map;
-import java.util.LinkedHashMap;
+import java.util.Set;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
 
 public class Graph {
     public final String stringRepresentation;
-    public final Map<Edge, Integer> edgesAndTheirIndices;
-    public final Map<Vertice, Integer> verticesAndTheirIndices;
-    public final Map<Edge, Float> edgesAndTheirValues;
+    public final List<Edge> edges;
+    public final Set<Vertice> vertices;
     public final boolean isPondered;
     public final boolean isDirected;
     public final int numberOfVertices;
@@ -16,58 +17,38 @@ public class Graph {
         GraphValidator.validateStringRepresentationAndFillGraphProperties(graphRepresentation);
 
         stringRepresentation = graphRepresentation;
-        edgesAndTheirIndices = new LinkedHashMap<>();
-        edgesAndTheirValues = new LinkedHashMap<>();
-        verticesAndTheirIndices = new LinkedHashMap<>();
-        numberOfEdges = fillEdgeMapsAndReturnTheNumberOfEdges();
-        numberOfVertices = fillVerticeMapAndReturnTheNumberOfVertices();
+        edges = new ArrayList<>();
+        vertices = new LinkedHashSet<>();
+        numberOfEdges = fillEdgeListAndReturnTheNumberOfEdges();
+        numberOfVertices = fillVerticeSetAndReturnTheNumberOfVertices();
 
         isDirected = GraphValidator.isGraphDirected();
         isPondered = GraphValidator.isGraphPondered();
     }
 
-    private int fillEdgeMapsAndReturnTheNumberOfEdges() {
-        int edgeIndex = 0;
+    private int fillEdgeListAndReturnTheNumberOfEdges() {
         Matcher matcher = EdgeValidator.PATTERN_TO_VALIDATE_AN_EDGE.matcher(stringRepresentation);
-        Edge newEdge;
 
         while (matcher.find()) {
-            newEdge = new Edge(matcher.group());
-
-            edgesAndTheirIndices.put(newEdge, edgeIndex);
-            edgeIndex++;
-
-            if (this.isPondered)
-                edgesAndTheirValues.put(newEdge, newEdge.value);
-            else
-                edgesAndTheirValues.put(newEdge, 0F);
+            edges.add(new Edge(matcher.group()));
         }
 
-        return edgesAndTheirIndices.size();
+        return edges.size();
     }
 
-    private int fillVerticeMapAndReturnTheNumberOfVertices() {
-        int verticeIndex = 0;
-        Edge currentEdge;
-
-        for (Map.Entry<Edge, Integer> entry : edgesAndTheirIndices.entrySet()) {
-            currentEdge = entry.getKey();
-
-            // put if absent returns null if the key didnt exist previously in the map
-            if (verticesAndTheirIndices.putIfAbsent(currentEdge.firstVertice, verticeIndex) == null)
-                verticeIndex++;
-
-            if (verticesAndTheirIndices.putIfAbsent(currentEdge.secondVertice, verticeIndex) == null)
-                verticeIndex++;
+    private int fillVerticeSetAndReturnTheNumberOfVertices() {
+        for (Edge edge : edges) {
+            vertices.add(edge.firstVertice);
+            vertices.add(edge.secondVertice);
         }
 
-        return verticesAndTheirIndices.size();
+        return vertices.size();
     }
 
     public void showVertices() {
         System.out.print("\nVertices: { ");
         Vertice[] verticesArray = new Vertice[numberOfVertices];
-        verticesAndTheirIndices.keySet().toArray(verticesArray);
+        vertices.toArray(verticesArray);
 
         for (int i = 0; i < verticesArray.length - 1; i++) {
             System.out.print(verticesArray[i].name + ", ");
@@ -80,12 +61,22 @@ public class Graph {
         System.out.print("\nEdges: { ");
 
         Edge[] edgesArray = new Edge[numberOfEdges];
-        edgesAndTheirIndices.keySet().toArray(edgesArray);
+        edges.toArray(edgesArray);
 
         for (int i = 0; i < edgesArray.length - 1; i++) {
             System.out.print(edgesArray[i].stringRepresentation + ", ");
         }
 
         System.out.println(edgesArray[edgesArray.length - 1].stringRepresentation + " }");
+    }
+
+    public Vertice getTheVerticeWithThisName(String name) {
+        for (Vertice vertice : vertices) {
+            if (vertice.name.compareTo(name) == 0) {
+                return vertice;
+            }
+        }
+
+        return null;
     }
 }
