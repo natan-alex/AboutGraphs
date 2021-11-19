@@ -15,25 +15,27 @@ public class DeepFirstSearch extends BaseSearchStructure {
         relatedGraph = graph;
     }
 
-    public List<Vertice> getThePathBetweenTheseVertices(String startVerticeName, String endVerticeName)
+    public List<Vertice> getPathBetweenVertices(String startVerticeName, String endVerticeName)
             throws IllegalArgumentException {
 
         Vertice startVertice = relatedGraph.getTheVerticeWithThisName(startVerticeName);
         Vertice endVertice = relatedGraph.getTheVerticeWithThisName(endVerticeName);
 
-        throwExceptionIfVerticesAreNull(startVertice, endVertice);
+        throwExceptionIfVerticeIsNull(startVertice, startVerticeName);
+        throwExceptionIfVerticeIsNull(endVertice, endVerticeName);
 
-        return getThePathBetweenTheseVertices(startVertice, endVertice);
+        return getPathBetweenVertices(startVertice, endVertice);
     }
 
-    private void throwExceptionIfVerticesAreNull(Vertice startVertice, Vertice endVertice)
+    private void throwExceptionIfVerticeIsNull(Vertice vertice, String verticeName)
             throws IllegalArgumentException {
-        if (startVertice == null || endVertice == null) {
-            throw new IllegalArgumentException();
+        if (vertice == null) {
+            throw new IllegalArgumentException("The vertice  " + verticeName + "  is not in the vertice set."
+                    + "\nThe vertice set is: " + relatedGraph.vertices);
         }
     }
 
-    private List<Vertice> getThePathBetweenTheseVertices(Vertice startVertice, Vertice endVertice) {
+    private List<Vertice> getPathBetweenVertices(Vertice startVertice, Vertice endVertice) {
         int timeNumber = 1, verticeIndexInVerticeSet;
         Vertice currentVertice;
         List<Vertice> pathBetweenVertices = new ArrayList<>();
