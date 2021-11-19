@@ -1,13 +1,11 @@
 import java.util.regex.*;
-import java.util.Set;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 public class Graph {
     public final String stringRepresentation;
     public final List<Edge> edges;
-    public final Set<Vertice> vertices;
+    public final List<Vertice> vertices;
     public final boolean isPondered;
     public final boolean isDirected;
     public final int numberOfVertices;
@@ -18,9 +16,9 @@ public class Graph {
 
         stringRepresentation = graphRepresentation;
         edges = new ArrayList<>();
-        vertices = new LinkedHashSet<>();
+        vertices = new ArrayList<>();
         numberOfEdges = fillEdgeListAndReturnTheNumberOfEdges();
-        numberOfVertices = fillVerticeSetAndReturnTheNumberOfVertices();
+        numberOfVertices = fillVerticeListAndReturnTheNumberOfVertices();
 
         isDirected = GraphValidator.isGraphDirected();
         isPondered = GraphValidator.isGraphPondered();
@@ -36,10 +34,14 @@ public class Graph {
         return edges.size();
     }
 
-    private int fillVerticeSetAndReturnTheNumberOfVertices() {
+    private int fillVerticeListAndReturnTheNumberOfVertices() {
         for (Edge edge : edges) {
-            vertices.add(edge.firstVertice);
-            vertices.add(edge.secondVertice);
+            if (!vertices.contains(edge.firstVertice)) {
+                vertices.add(edge.firstVertice);
+            }
+            if (!vertices.contains(edge.secondVertice)) {
+                vertices.add(edge.secondVertice);
+            }
         }
 
         return vertices.size();
