@@ -53,7 +53,7 @@ public class IncidenceMatrix extends BaseMatrix implements GraphRepresentation {
         System.out.print("\t");
 
         for (Edge edge : relatedGraph.edges)
-            System.out.print(edge.stringRepresentation + "\t\t");
+            System.out.print(edge.stringRepresentation + "\t");
 
         System.out.println();
     }
