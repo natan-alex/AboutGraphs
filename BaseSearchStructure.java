@@ -36,7 +36,7 @@ public abstract class BaseSearchStructure {
         int verticeIndex = 0;
 
         for (Vertice vertice : relatedGraph.vertices) {
-            if (discoveryTimes[verticeIndex] == -1) {
+            if (discoveryTimes[verticeIndex++] == -1) {
                 return vertice;
             }
         }
