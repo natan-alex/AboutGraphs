@@ -39,19 +39,23 @@ public class Main {
         // deepSearch.showTimes();
         // deepSearch.showEdgeClassifications();
 
-        graph = new Graph("{ (a,b,1), (b,c,3), (b,d,2), (d,c,4) }");
+        // graph = new Graph("{ (a,b,1), (b,c,3), (b,d,2), (d,c,4) }");
+        graph = new Graph(
+                " { (a,b), (a,f), (a,g), (b,g), (c,d), (c,b), (c,h), (d,h), (f,e), (f,i), (h,g), (i,e), (i,g), (i,a) } ");
         graph.showVertices();
         graph.showEdges();
         allGraphRepresentations = new AllGraphRepresentations(graph);
         allGraphRepresentations.showAllRepresentations();
-        deepSearch = new DeepFirstSearch(graph, allGraphRepresentations.successorAdjacencyList);
+        deepSearch = new DeepFirstSearch(graph, allGraphRepresentations.successorAdjacencyList.adjacencyList);
+        System.out.println(deepSearch.getThePathBetweenTheseVertices("a", "e"));
         deepSearch.showTimes();
-        deepSearch.showEdgeClassifications();
+        // deepSearch.showEdgeClassifications();
         breadthSearch = new BreadthFirstSearch(graph, allGraphRepresentations.successorAdjacencyList);
         breadthSearch.showTimes();
-        graphHeuristics = new GraphHeuristics(graph, "[a: 1, b: 2, c: 3, d: 2]");
-        aStarSearch = new AStarSearch(graph, allGraphRepresentations.successorAdjacencyList, graphHeuristics);
-        aStarSearch.showTimes();
+        // graphHeuristics = new GraphHeuristics(graph, "[a: 1, b: 2, c: 3, d: 2]");
+        // aStarSearch = new AStarSearch(graph,
+        // allGraphRepresentations.successorAdjacencyList, graphHeuristics);
+        // aStarSearch.showTimes();
 
         bufferedReader.close();
         scanner.close();
