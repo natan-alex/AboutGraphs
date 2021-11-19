@@ -1,14 +1,14 @@
 public abstract class BaseSearchStructure {
     public final int[] discoveryTimes;
     public final int[] endTimes;
-    public final Graph relatedGraph;
-    protected final EdgeClassifier edgeClassifier;
+    protected final Graph relatedGraph;
+    protected final EdgeClassifications[] edgeClassifications;
 
     protected BaseSearchStructure(Graph graph) {
         relatedGraph = graph;
         discoveryTimes = new int[graph.numberOfVertices];
         endTimes = new int[graph.numberOfVertices];
-        edgeClassifier = new EdgeClassifier(relatedGraph, discoveryTimes, endTimes);
+        edgeClassifications = new EdgeClassifications[graph.numberOfEdges];
 
         initializeTimeArrays(graph.numberOfVertices);
     }
@@ -52,5 +52,58 @@ public abstract class BaseSearchStructure {
         }
 
         return null;
+    }
+
+    protected void classifyTheEdge(Edge edge) {
+        if (edge == null) {
+            return;
+        }
+
+        if (relatedGraph.isDirected) {
+            classifyTheEdgeForDirectedGraph(edge);
+        } else {
+            classifyTheEdgeForUndirectedGraph(edge);
+        }
+    }
+
+    private void classifyTheEdgeForUndirectedGraph(Edge edge) {
+        int indexOfFirstVerticeInVerticeSet = relatedGraph.vertices.indexOf(edge.firstVertice);
+        int indexOfSecondVerticeInVerticeSet = relatedGraph.vertices.indexOf(edge.secondVertice);
+        int edgeIndex = relatedGraph.edges.indexOf(edge);
+
+        if (discoveryTimes[indexOfFirstVerticeInVerticeSet] != -1
+                && discoveryTimes[indexOfSecondVerticeInVerticeSet] == -1) {
+            edgeClassifications[edgeIndex] = EdgeClassifications.TREE;
+        } else {
+            edgeClassifications[edgeIndex] = EdgeClassifications.RETURN;
+        }
+    }
+
+    private void classifyTheEdgeForDirectedGraph(Edge edge) {
+        int indexOfFirstVerticeInVerticeSet = relatedGraph.vertices.indexOf(edge.firstVertice);
+        int indexOfSecondVerticeInVerticeSet = relatedGraph.vertices.indexOf(edge.secondVertice);
+        int edgeIndex = relatedGraph.edges.indexOf(edge);
+
+        if (discoveryTimes[indexOfFirstVerticeInVerticeSet] != -1
+                && discoveryTimes[indexOfSecondVerticeInVerticeSet] == -1) {
+            edgeClassifications[edgeIndex] = EdgeClassifications.TREE;
+        } else if (discoveryTimes[indexOfFirstVerticeInVerticeSet] < discoveryTimes[indexOfSecondVerticeInVerticeSet]
+                && endTimes[indexOfSecondVerticeInVerticeSet] != -1) {
+            edgeClassifications[edgeIndex] = EdgeClassifications.ADVANCE;
+        } else if (discoveryTimes[indexOfFirstVerticeInVerticeSet] > discoveryTimes[indexOfSecondVerticeInVerticeSet]
+                && endTimes[indexOfSecondVerticeInVerticeSet] == -1) {
+            edgeClassifications[edgeIndex] = EdgeClassifications.RETURN;
+        } else {
+            edgeClassifications[edgeIndex] = EdgeClassifications.CROSSING;
+        }
+    }
+
+    public void showEdgeClassifications() {
+        int edgeIndex = 0;
+
+        for (Edge edge : relatedGraph.edges) {
+            System.out.println("  " + edge.stringRepresentation + " -> " + edgeClassifications[edgeIndex]);
+            edgeIndex++;
+        }
     }
 }
