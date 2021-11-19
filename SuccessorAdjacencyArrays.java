@@ -1,33 +1,31 @@
 public class SuccessorAdjacencyArrays extends BaseAdjacencyArrays implements GraphRepresentation {
-    private int[] reorderedArray;
-    private int indexOfItemInStartPointsArray;
-    private int indexOfFirstOcurrenceOfAVerticeIndex;
-
     public SuccessorAdjacencyArrays(Graph graph) {
         super(graph);
-        reorderedArray = new int[graph.numberOfVertices + 1];
 
-        indexOfFirstOcurrenceOfAVerticeIndex = graph.numberOfEdges;
-
-        orderAdjacencyArrays(WhichArrayToSort.START_ARRAY);
-        reorderSortedArrayAndFillCorrespondingAttribute(graph);
-
-        edgeStartPoints = reorderedArray;
+        orderAdjacencyArrays(verticesWhereTheEdgeComesFrom, verticesWhereTheEdgeIsIncident);
+        verticesWhereTheEdgeComesFrom = getReorderedSortedArray(graph);
     }
 
-    private void reorderSortedArrayAndFillCorrespondingAttribute(Graph graph) {
+    private int[] getReorderedSortedArray(Graph graph) {
+        int[] reorderedArray = new int[graph.numberOfEdges + 1];
+        int indexOfFirstOcurrenceOfAVerticeIndex = graph.numberOfEdges;
+        int indexOfItemInStartWhereEdgesComesFromArray;
+
         reorderedArray[graph.numberOfVertices] = graph.numberOfEdges;
         reorderedArray[0] = 0;
 
         for (int insertionIndex = graph.numberOfVertices - 1; insertionIndex > 0; insertionIndex--) {
-            indexOfItemInStartPointsArray = getIndexOfItemInToBeSortedArray(insertionIndex);
+            indexOfItemInStartWhereEdgesComesFromArray = getIndexOfItemInToBeSortedArray(insertionIndex,
+                    verticesWhereTheEdgeComesFrom);
 
-            if (indexOfItemInStartPointsArray != -1) {
-                indexOfFirstOcurrenceOfAVerticeIndex = indexOfItemInStartPointsArray;
+            if (indexOfItemInStartWhereEdgesComesFromArray != -1) {
+                indexOfFirstOcurrenceOfAVerticeIndex = indexOfItemInStartWhereEdgesComesFromArray;
             }
 
             reorderedArray[insertionIndex] = indexOfFirstOcurrenceOfAVerticeIndex;
         }
+
+        return reorderedArray;
     }
 
     public void show() {

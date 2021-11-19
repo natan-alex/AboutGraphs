@@ -1,41 +1,29 @@
-import java.util.Map;
-
 public abstract class BaseAdjacencyArrays {
-    public int[] edgeStartPoints;
-    public int[] edgeEndPoints;
-    private int[] arrayToBeSorted;
-    private int[] otherArray;
-
-    protected enum WhichArrayToSort {
-        START_ARRAY, END_ARRAY
-    }
+    public int[] verticesWhereTheEdgeComesFrom;
+    public int[] verticesWhereTheEdgeIsIncident;
 
     protected BaseAdjacencyArrays(Graph graph) {
         int insertionIndex = 0;
         int indexOfFirstVertice, indexOfSecondVertice;
-        Edge currentEdge;
 
-        edgeStartPoints = new int[graph.numberOfEdges];
-        edgeEndPoints = new int[graph.numberOfEdges];
+        verticesWhereTheEdgeComesFrom = new int[graph.numberOfEdges];
+        verticesWhereTheEdgeIsIncident = new int[graph.numberOfEdges];
 
-        for (Map.Entry<Edge, Integer> edgeMapEntry : graph.edgesAndTheirIndices.entrySet()) {
-            currentEdge = edgeMapEntry.getKey();
-            indexOfFirstVertice = graph.verticesAndTheirIndices.get(currentEdge.firstVertice);
-            indexOfSecondVertice = graph.verticesAndTheirIndices.get(currentEdge.secondVertice);
+        for (Edge edge : graph.edges) {
+            indexOfFirstVertice = graph.vertices.indexOf(edge.firstVertice);
+            indexOfSecondVertice = graph.vertices.indexOf(edge.secondVertice);
 
-            edgeStartPoints[insertionIndex] = indexOfFirstVertice;
-            edgeEndPoints[insertionIndex] = indexOfSecondVertice;
+            verticesWhereTheEdgeComesFrom[insertionIndex] = indexOfFirstVertice;
+            verticesWhereTheEdgeIsIncident[insertionIndex] = indexOfSecondVertice;
 
             insertionIndex++;
         }
     }
 
-    protected void orderAdjacencyArrays(WhichArrayToSort whichArrayToSort) {
+    protected void orderAdjacencyArrays(int[] arrayToBeSorted, int[] otherArray) {
         int currentItemOfWhichToSortArray;
         int currentItemOfOtherArray;
         int auxiliarVariable;
-
-        fillArrayToBeSortedAttributeAccordingToWhichToSort(whichArrayToSort);
 
         for (int minimumItemIndex = 1; minimumItemIndex < arrayToBeSorted.length; minimumItemIndex++) {
             currentItemOfWhichToSortArray = arrayToBeSorted[minimumItemIndex];
@@ -53,17 +41,7 @@ public abstract class BaseAdjacencyArrays {
         }
     }
 
-    private void fillArrayToBeSortedAttributeAccordingToWhichToSort(WhichArrayToSort whichArrayToSort) {
-        if (whichArrayToSort == WhichArrayToSort.START_ARRAY) {
-            arrayToBeSorted = edgeStartPoints;
-            otherArray = edgeEndPoints;
-        } else {
-            arrayToBeSorted = edgeEndPoints;
-            otherArray = edgeStartPoints;
-        }
-    }
-
-    protected int getIndexOfItemInToBeSortedArray(int item) {
+    protected int getIndexOfItemInToBeSortedArray(int item, int[] arrayToBeSorted) {
         for (int i = 0; i < arrayToBeSorted.length; i++) {
             if (arrayToBeSorted[i] == item) {
                 return i;
@@ -76,14 +54,14 @@ public abstract class BaseAdjacencyArrays {
     public void showAdjacencyArraysIncreasingTheirValuesByOne() {
         System.out.print("First array of indices: [ ");
 
-        for (int index : edgeStartPoints)
+        for (int index : verticesWhereTheEdgeComesFrom)
             System.out.print((index + 1) + " ");
 
         System.out.println("]");
 
         System.out.print("Second array of indices: [ ");
 
-        for (int index : edgeEndPoints)
+        for (int index : verticesWhereTheEdgeIsIncident)
             System.out.print((index + 1) + " ");
 
         System.out.println("]");

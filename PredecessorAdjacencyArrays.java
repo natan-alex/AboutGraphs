@@ -1,31 +1,31 @@
 public class PredecessorAdjacencyArrays extends BaseAdjacencyArrays implements GraphRepresentation {
-    private int[] reorderedArray;
-    private int indexOfItemInEndPointsArray;
-    private int indexOfFirstOcurrenceOfAVerticeIndex;
-
     public PredecessorAdjacencyArrays(Graph graph) {
         super(graph);
-        reorderedArray = new int[graph.numberOfVertices + 1];
 
-        orderAdjacencyArrays(WhichArrayToSort.END_ARRAY);
-        reorderSortedArrayAndFillCorrespondingAttribute(graph);
-
-        edgeEndPoints = reorderedArray;
+        orderAdjacencyArrays(verticesWhereTheEdgeIsIncident, verticesWhereTheEdgeComesFrom);
+        verticesWhereTheEdgeIsIncident = getReorderedSortedArray(graph);
     }
 
-    private void reorderSortedArrayAndFillCorrespondingAttribute(Graph graph) {
+    private int[] getReorderedSortedArray(Graph graph) {
+        int[] reorderedArray = new int[graph.numberOfVertices + 1];
+        int indexOfFirstOcurrenceOfAVerticeIndex = graph.numberOfEdges;
+        int indexOfItemInWhereEdgesAreIncidentArray;
+
         reorderedArray[graph.numberOfVertices] = graph.numberOfEdges;
         reorderedArray[0] = 0;
 
         for (int insertionIndex = 1; insertionIndex < graph.numberOfVertices; insertionIndex++) {
-            indexOfItemInEndPointsArray = getIndexOfItemInToBeSortedArray(insertionIndex);
+            indexOfItemInWhereEdgesAreIncidentArray = getIndexOfItemInToBeSortedArray(insertionIndex,
+                    verticesWhereTheEdgeIsIncident);
 
-            if (indexOfItemInEndPointsArray != -1) {
-                indexOfFirstOcurrenceOfAVerticeIndex = indexOfItemInEndPointsArray;
+            if (indexOfItemInWhereEdgesAreIncidentArray != -1) {
+                indexOfFirstOcurrenceOfAVerticeIndex = indexOfItemInWhereEdgesAreIncidentArray;
             }
 
             reorderedArray[insertionIndex] = indexOfFirstOcurrenceOfAVerticeIndex;
         }
+
+        return reorderedArray;
     }
 
     @Override
