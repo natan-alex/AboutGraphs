@@ -47,7 +47,7 @@ public class Main {
         allGraphRepresentations = new AllGraphRepresentations(graph);
         allGraphRepresentations.showAllRepresentations();
         deepSearch = new DeepFirstSearch(graph, allGraphRepresentations.successorAdjacencyList.adjacencyList);
-        System.out.println(deepSearch.getThePathBetweenTheseVertices("a", "e"));
+        System.out.println("\npath between vertices: " + deepSearch.getThePathBetweenTheseVertices("a", "d"));
         deepSearch.showTimes();
         deepSearch.showEdgeClassifications();
         allGraphRepresentations.successorAdjacencyList.show();
