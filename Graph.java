@@ -81,4 +81,15 @@ public class Graph {
 
         return null;
     }
+
+    public Edge getEdgeThatContainsThisVertices(Vertice firstVertice, Vertice secondVertice) {
+        for (Edge edge : edges) {
+            if (edge.firstVertice.equals(firstVertice) && edge.secondVertice.equals(secondVertice)) {
+                return edge;
+            }
+        }
+
+        return null;
+    }
+
 }

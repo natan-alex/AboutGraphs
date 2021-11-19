@@ -44,16 +44,6 @@ public abstract class BaseSearchStructure {
         return null;
     }
 
-    protected Edge getEdgeThatContainsThisVertices(Vertice firstVertice, Vertice secondVertice) {
-        for (Edge edge : relatedGraph.edges) {
-            if (edge.firstVertice.equals(firstVertice) && edge.secondVertice.equals(secondVertice)) {
-                return edge;
-            }
-        }
-
-        return null;
-    }
-
     protected void classifyTheEdge(Edge edge) {
         if (edge == null) {
             return;
