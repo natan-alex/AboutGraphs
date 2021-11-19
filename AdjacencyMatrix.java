@@ -1,5 +1,3 @@
-import java.util.Map;
-
 public class AdjacencyMatrix extends BaseMatrix implements GraphRepresentation {
     private Graph relatedGraph;
 
@@ -12,34 +10,27 @@ public class AdjacencyMatrix extends BaseMatrix implements GraphRepresentation {
 
     private void fillAdjacencyMatrix() {
         int currentLine = 0;
-        Vertice currentVertice;
 
-        for (Map.Entry<Vertice, Integer> verticeMapEntry : relatedGraph.verticesAndTheirIndices.entrySet()) {
-            currentVertice = verticeMapEntry.getKey();
-
+        for (Vertice vertice : relatedGraph.vertices) {
             initializeTheItemsOfTheMatrixLine(currentLine);
 
-            fillMatrixLineAccordingToCurrentVertice(currentLine, currentVertice);
+            fillMatrixLineGivenTheCurrentVertice(currentLine, vertice);
 
             currentLine++;
         }
     }
-
 
     private void initializeTheItemsOfTheMatrixLine(int line) {
         for (int currentColumn = 0; currentColumn < numberOfColumns; currentColumn++)
             matrix[line][currentColumn] = 0;
     }
 
-    private void fillMatrixLineAccordingToCurrentVertice(int currentLine, Vertice currentVertice) {
-        Edge currentEdge;
+    private void fillMatrixLineGivenTheCurrentVertice(int currentLine, Vertice currentVertice) {
         int indexOfSecondVertice = 0;
 
-        for (Map.Entry<Edge, Integer> edgeMapEntry : relatedGraph.edgesAndTheirIndices.entrySet()) {
-            currentEdge = edgeMapEntry.getKey();
-
-            if (currentVertice.equals(currentEdge.firstVertice)) {
-                indexOfSecondVertice = relatedGraph.verticesAndTheirIndices.get(currentEdge.secondVertice);
+        for (Edge edge : relatedGraph.edges) {
+            if (currentVertice.equals(edge.firstVertice)) {
+                indexOfSecondVertice = relatedGraph.vertices.indexOf(edge.secondVertice);
                 matrix[currentLine][indexOfSecondVertice] = 1;
             }
         }
@@ -52,8 +43,8 @@ public class AdjacencyMatrix extends BaseMatrix implements GraphRepresentation {
 
         showVerticesSeparatedByTabs();
 
-        for (Map.Entry<Vertice, Integer> entry : relatedGraph.verticesAndTheirIndices.entrySet()) {
-            System.out.print(entry.getKey().name + "\t");
+        for (Vertice vertice : relatedGraph.vertices) {
+            System.out.print(vertice.name + "\t");
 
             showMatrixLineItemsSeparatedByTabs(currentLine);
 
@@ -65,8 +56,8 @@ public class AdjacencyMatrix extends BaseMatrix implements GraphRepresentation {
     private void showVerticesSeparatedByTabs() {
         System.out.print("\t");
 
-        for (Map.Entry<Vertice, Integer> entry : relatedGraph.verticesAndTheirIndices.entrySet()) {
-            System.out.print(entry.getKey().name + "\t");
+        for (Vertice vertice : relatedGraph.vertices) {
+            System.out.print(vertice.name + "\t");
         }
 
         System.out.println();
