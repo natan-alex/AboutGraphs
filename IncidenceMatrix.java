@@ -1,5 +1,3 @@
-import java.util.Map;
-
 public class IncidenceMatrix extends BaseMatrix implements GraphRepresentation {
     private Graph relatedGraph;
 
@@ -8,27 +6,21 @@ public class IncidenceMatrix extends BaseMatrix implements GraphRepresentation {
         relatedGraph = graph;
 
         int currentLine = 0;
-        Vertice currentVertice;
 
-        for (Map.Entry<Vertice, Integer> entry : relatedGraph.verticesAndTheirIndices.entrySet()) {
-            currentVertice = entry.getKey();
-
-            fillMatrixLineAccordingToCurrentVertice(currentLine, currentVertice);
+        for (Vertice vertice : relatedGraph.vertices) {
+            fillMatrixLineGivenTheCurrentVertice(currentLine, vertice);
 
             currentLine++;
         }
     }
 
-    private void fillMatrixLineAccordingToCurrentVertice(int currentLine, Vertice currentVertice) {
+    private void fillMatrixLineGivenTheCurrentVertice(int currentLine, Vertice currentVertice) {
         int currentColumn = 0;
-        Edge currentEdge;
         int indexOfSecondVertice;
 
-        for (Map.Entry<Edge, Integer> edgeMapEntry : relatedGraph.edgesAndTheirIndices.entrySet()) {
-            currentEdge = edgeMapEntry.getKey();
-
-            if (currentVertice.equals(currentEdge.firstVertice)) {
-                indexOfSecondVertice = relatedGraph.verticesAndTheirIndices.get(currentEdge.secondVertice);
+        for (Edge edge : relatedGraph.edges) {
+            if (currentVertice.equals(edge.firstVertice)) {
+                indexOfSecondVertice = relatedGraph.vertices.indexOf(edge.secondVertice);
                 matrix[currentLine][currentColumn] = 1;
                 matrix[indexOfSecondVertice][currentColumn] = -1;
             } else if (matrix[currentLine][currentColumn] != -1) {
@@ -46,8 +38,8 @@ public class IncidenceMatrix extends BaseMatrix implements GraphRepresentation {
 
         showEdgesSeparatedByTabs();
 
-        for (Map.Entry<Vertice, Integer> entry : relatedGraph.verticesAndTheirIndices.entrySet()) {
-            System.out.print(entry.getKey().name + "\t");
+        for (Vertice vertice : relatedGraph.vertices) {
+            System.out.print(vertice.name + "\t");
 
             showCurrentLineItems(currentLine);
 
@@ -60,8 +52,8 @@ public class IncidenceMatrix extends BaseMatrix implements GraphRepresentation {
     private void showEdgesSeparatedByTabs() {
         System.out.print("\t");
 
-        for (Map.Entry<Edge, Integer> entry : relatedGraph.edgesAndTheirIndices.entrySet())
-            System.out.print(entry.getKey().stringRepresentation + "\t\t");
+        for (Edge edge : relatedGraph.edges)
+            System.out.print(edge.stringRepresentation + "\t\t");
 
         System.out.println();
     }
@@ -76,10 +68,10 @@ public class IncidenceMatrix extends BaseMatrix implements GraphRepresentation {
     private void showMatrixForPonderedGraph(int currentLine) {
         int currentColumn = 0;
 
-        for (Map.Entry<Edge, Integer> innerEntry : relatedGraph.edgesAndTheirIndices.entrySet()) {
+        for (Edge edge : relatedGraph.edges) {
             showMatrixItem(matrix[currentLine][currentColumn]);
 
-            System.out.print(" | " + innerEntry.getKey().value);
+            System.out.print(" | " + edge.value);
 
             System.out.print("\t");
             currentColumn++;

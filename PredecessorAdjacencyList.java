@@ -1,29 +1,24 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class PredecessorAdjacencyList extends BaseAdjacencyList implements GraphRepresentation {
-    private Vertice currentVertice;
-    private List<Vertice> verticeChildren;
-
     public PredecessorAdjacencyList(Graph graph) {
         super();
 
-        for (Map.Entry<Vertice, Integer> entry : graph.verticesAndTheirIndices.entrySet()) {
-            verticeChildren = new ArrayList<>();
-            currentVertice = entry.getKey();
-
-            fillVerticeChildren(graph);
-
-            adjacencyList.put(entry.getKey(), verticeChildren);
+        for (Vertice vertice : graph.vertices) {
+            adjacencyList.put(vertice, getVerticeChildren(vertice, graph));
         }
     }
 
-    private void fillVerticeChildren(Graph graph) {
-        for (Map.Entry<Edge, Integer> innerEntry : graph.edgesAndTheirIndices.entrySet()) {
-            if (currentVertice.equals(innerEntry.getKey().secondVertice))
-                verticeChildren.add(innerEntry.getKey().firstVertice);
+    private List<Vertice> getVerticeChildren(Vertice vertice, Graph graph) {
+        List<Vertice> verticeChildren = new ArrayList<>();
+
+        for (Edge edge : graph.edges) {
+            if (vertice.equals(edge.secondVertice))
+                verticeChildren.add(edge.firstVertice);
         }
+
+        return verticeChildren;
     }
 
     @Override
