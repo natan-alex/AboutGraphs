@@ -49,13 +49,14 @@ public class Main {
         deepSearch = new DeepFirstSearch(graph, allGraphRepresentations.successorAdjacencyList.adjacencyList);
         System.out.println(deepSearch.getThePathBetweenTheseVertices("a", "e"));
         deepSearch.showTimes();
-        // deepSearch.showEdgeClassifications();
-        breadthSearch = new BreadthFirstSearch(graph, allGraphRepresentations.successorAdjacencyList);
+        deepSearch.showEdgeClassifications();
+        allGraphRepresentations.successorAdjacencyList.show();
+        breadthSearch = new BreadthFirstSearch(graph, allGraphRepresentations.successorAdjacencyList.adjacencyList);
         breadthSearch.showTimes();
-        // graphHeuristics = new GraphHeuristics(graph, "[a: 1, b: 2, c: 3, d: 2]");
-        // aStarSearch = new AStarSearch(graph,
-        // allGraphRepresentations.successorAdjacencyList, graphHeuristics);
-        // aStarSearch.showTimes();
+        graphHeuristics = new GraphHeuristics(graph, "[a: 1, b: 2, c: 3, d: 2]");
+        aStarSearch = new AStarSearch(graph, allGraphRepresentations.successorAdjacencyList.adjacencyList,
+                graphHeuristics);
+        aStarSearch.showTimes();
 
         bufferedReader.close();
         scanner.close();
