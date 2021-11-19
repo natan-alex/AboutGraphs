@@ -40,23 +40,22 @@ public class GraphHeuristics {
     }
 
     private void fillHeuristicsForEachVertice() throws IllegalArgumentException {
-        int currentVerticeIndex = 0;
         Vertice verticeFound;
         String[] partsOfHeuristics = splitHeuristicRepresentation();
         String[] verticeNameAndHeuristicValue;
 
+        for (String part : partsOfHeuristics) {
+            verticeNameAndHeuristicValue = splitPartOfHeuristics(part);
+
+            verticeFound = relatedGraph.getTheVerticeWithThisName(verticeNameAndHeuristicValue[0]);
+
+            throwsExceptionIfVerticeIsNull(verticeFound, verticeNameAndHeuristicValue[0]);
+
+            verticesAndTheirHeuristics.put(verticeFound, Float.parseFloat(verticeNameAndHeuristicValue[1]));
+        }
+
         for (Vertice vertice : relatedGraph.vertices) {
-            if (currentVerticeIndex >= partsOfHeuristics.length) {
-                verticesAndTheirHeuristics.put(vertice, 0F);
-            } else {
-                verticeNameAndHeuristicValue = splitPartOfHeuristics(partsOfHeuristics[currentVerticeIndex]);
-
-                verticeFound = relatedGraph.getTheVerticeWithThisName(verticeNameAndHeuristicValue[0]);
-
-                throwsExceptionIfVerticeIsNull(verticeFound, verticeNameAndHeuristicValue[0]);
-
-                verticesAndTheirHeuristics.put(verticeFound, Float.parseFloat(verticeNameAndHeuristicValue[1]));
-            }
+            verticesAndTheirHeuristics.putIfAbsent(vertice, 0F);
         }
     }
 
