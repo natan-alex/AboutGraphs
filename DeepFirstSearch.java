@@ -1,8 +1,7 @@
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Stack;
 
 public class DeepFirstSearch extends BaseSearchStructure {
@@ -16,7 +15,7 @@ public class DeepFirstSearch extends BaseSearchStructure {
         relatedGraph = graph;
     }
 
-    public Vertice[] getThePathBetweenTheseVertices(String startVerticeName, String endVerticeName)
+    public List<Vertice> getThePathBetweenTheseVertices(String startVerticeName, String endVerticeName)
             throws IllegalArgumentException {
 
         Vertice startVertice = relatedGraph.getTheVerticeWithThisName(startVerticeName);
@@ -34,10 +33,10 @@ public class DeepFirstSearch extends BaseSearchStructure {
         }
     }
 
-    private Vertice[] getThePathBetweenTheseVertices(Vertice startVertice, Vertice endVertice) {
+    private List<Vertice> getThePathBetweenTheseVertices(Vertice startVertice, Vertice endVertice) {
         int timeNumber = 1, verticeIndexInVerticeSet;
         Vertice currentVertice;
-        Set<Vertice> pathBetweenVertices = new LinkedHashSet<>();
+        List<Vertice> pathBetweenVertices = new ArrayList<>();
 
         verticesToBeExplored = new Stack<>();
         verticesToBeExplored.add(startVertice);
@@ -53,12 +52,12 @@ public class DeepFirstSearch extends BaseSearchStructure {
                 verticesToBeExplored.add(currentVertice);
                 addVerticeChildrenToNotExploredVertices(currentVertice);
             } else {
+                pathBetweenVertices.remove(currentVertice);
                 endTimes[verticeIndexInVerticeSet] = timeNumber++;
             }
         } while (!currentVertice.equals(endVertice) && !verticesToBeExplored.isEmpty());
 
-        Vertice[] path = new Vertice[pathBetweenVertices.size()];
-        return pathBetweenVertices.toArray(path);
+        return pathBetweenVertices;
     }
 
     public void computeTimes() {
