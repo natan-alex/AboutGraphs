@@ -16,47 +16,21 @@ public class Main {
         AStarSearch aStarSearch = null;
         GraphHeuristics graphHeuristics = null;
 
-        // while ((fileLine = bufferedReader.readLine()) != null) {
-        // graph = new Graph(fileLine);
-        // graphRepresentations = new GraphRepresentations(graph);
-        // System.out.println("\nGraph: " + graph.stringRepresentation);
-        // graph.showVertices();
-        // graphRepresentations.showSuccessorAdjacencyList();
-        // deepSearch = new DeepFirstSearch(graph,
-        // graphRepresentations.successorAdjacencyList);
-        // deepSearch.showTimes();
-        // deepSearch.showEdgeClassifications();
-        // graphHeuristics = new GraphHeuristics(graph, "[a: 1]");
-        // breadthSearch = new BreadthFirstSearch(graph,
-        // graphRepresentations.successorAdjacencyList);
-        // breadthSearch.showTimes();
-        // }
-
-        // graph = new Graph(scanner.nextLine());
-        // graphRepresentation = new GraphRepresentations(graph);
-        // deepSearch = new DeepSearch(graph,
-        // graphRepresentation.successorAdjacencyList);
-        // deepSearch.showTimes();
-        // deepSearch.showEdgeClassifications();
-
-        // graph = new Graph("{ (a,b,1), (b,c,3), (b,d,2), (d,c,4) }");
-        graph = new Graph(
-                " { (a,b), (a,f), (a,g), (b,g), (c,d), (c,b), (c,h), (d,h), (f,e), (f,i), (h,g), (i,e), (i,g), (i,a) } ");
-        graph.showVertices();
-        graph.showEdges();
-        allGraphRepresentations = new AllGraphRepresentations(graph);
-        allGraphRepresentations.showAllRepresentations();
-        deepSearch = new DeepFirstSearch(graph, allGraphRepresentations.successorAdjacencyList.adjacencyList);
-        System.out.println("\npath between vertices: " + deepSearch.getThePathBetweenTheseVertices("a", "d"));
-        deepSearch.showTimes();
-        deepSearch.showEdgeClassifications();
-        allGraphRepresentations.successorAdjacencyList.show();
-        breadthSearch = new BreadthFirstSearch(graph, allGraphRepresentations.successorAdjacencyList.adjacencyList);
-        breadthSearch.showTimes();
-        graphHeuristics = new GraphHeuristics(graph, "[a: 1, b: 2, c: 3, d: 2]");
-        aStarSearch = new AStarSearch(graph, allGraphRepresentations.successorAdjacencyList.adjacencyList,
-                graphHeuristics);
-        aStarSearch.showTimes();
+        while ((fileLine = bufferedReader.readLine()) != null) {
+            graph = new Graph(fileLine);
+            allGraphRepresentations = new AllGraphRepresentations(graph);
+            System.out.println("\nGraph: " + graph.stringRepresentation);
+            graph.showVertices();
+            deepSearch = new DeepFirstSearch(graph, allGraphRepresentations.successorAdjacencyList.adjacencyList);
+            System.out.println("path: " + deepSearch.getPathBetweenVertices("a", "d"));
+            deepSearch.showTimes();
+            graphHeuristics = new GraphHeuristics(graph, "[a: 1]");
+            breadthSearch = new BreadthFirstSearch(graph, allGraphRepresentations.successorAdjacencyList.adjacencyList);
+            breadthSearch.showTimes();
+            aStarSearch = new AStarSearch(graph, allGraphRepresentations.successorAdjacencyList.adjacencyList
+            , graphHeuristics);
+            aStarSearch.showTimes();
+        }
 
         bufferedReader.close();
         scanner.close();
