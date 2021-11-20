@@ -22,10 +22,12 @@ public class Main {
             System.out.println("\nGraph: " + graph.stringRepresentation);
             graph.showVertices();
             deepSearch = new DeepFirstSearch(graph, allGraphRepresentations.successorAdjacencyList.adjacencyList);
-            System.out.println("path: " + deepSearch.getPathBetweenVertices("a", "d"));
+            System.out.println("path: " + deepSearch.getPathBetweenVertices("a", "c"));
             deepSearch.showTimes();
             graphHeuristics = new GraphHeuristics(graph, "[a: 1]");
             breadthSearch = new BreadthFirstSearch(graph, allGraphRepresentations.successorAdjacencyList.adjacencyList);
+            System.out.println("path: " + breadthSearch.getPathBetweenVertices("a", "c"));
+            // breadthSearch.computeTimes();
             breadthSearch.showTimes();
             aStarSearch = new AStarSearch(graph, allGraphRepresentations.successorAdjacencyList.adjacencyList
             , graphHeuristics);
