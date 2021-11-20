@@ -12,13 +12,13 @@ public class BreadthFirstSearch extends BaseSearchStructure {
     protected BreadthFirstSearch(Graph graph, Map<Vertice, List<Vertice>> graphSuccessorAdjacencyList) {
         super(graph);
         successorAdjacencyList = graphSuccessorAdjacencyList;
-
-        verticesToBeExplored = new ArrayDeque<>(relatedGraph.numberOfVertices);
     }
 
     public void computeTimes() {
         Vertice currentVertice;
         int verticeIndexInVerticeSet;
+
+        verticesToBeExplored = new ArrayDeque<>(relatedGraph.numberOfVertices);
 
         for (int timeNumber = 1; timeNumber <= 2 * relatedGraph.numberOfVertices; timeNumber++) {
             currentVertice = getNextNotExploredVertice();
@@ -60,7 +60,7 @@ public class BreadthFirstSearch extends BaseSearchStructure {
         Vertice currentVertice;
         List<Vertice> pathBetweenVertices = new ArrayList<>();
 
-        verticesToBeExplored = new ArrayDeque<>();
+        verticesToBeExplored = new ArrayDeque<>(relatedGraph.numberOfVertices);
         verticesToBeExplored.add(startVertice);
 
         do {
@@ -95,10 +95,14 @@ public class BreadthFirstSearch extends BaseSearchStructure {
         Collections.sort(currentVerticeChildren, verticeComparator);
 
         for (Vertice v : currentVerticeChildren) {
-            if (!verticesToBeExplored.contains(v) && discoveryTimes[relatedGraph.vertices.indexOf(v)] == -1) {
+            if (canAddVerticeToNotExploredVertices(v)) {
                 verticesToBeExplored.add(v);
             }
         }
+    }
+
+    private boolean canAddVerticeToNotExploredVertices(Vertice vertice) {
+        return discoveryTimes[relatedGraph.vertices.indexOf(vertice)] == -1 && !verticesToBeExplored.contains(vertice);
     }
 
     @Override
