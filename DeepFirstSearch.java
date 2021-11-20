@@ -66,12 +66,10 @@ public class DeepFirstSearch extends BaseSearchStructure {
         Vertice currentVertice;
         int verticeIndexInVerticeSet;
 
-        for (int timeNumber = 1; timeNumber <= 2 * relatedGraph.numberOfVertices; timeNumber++) {
-            if (verticesToBeExplored.isEmpty())
-                currentVertice = getNextNotDiscoveredVerticeBasedOnVerticeSet();
-            else
-                currentVertice = verticesToBeExplored.pop();
+        verticesToBeExplored = new Stack<>();
 
+        for (int timeNumber = 1; timeNumber <= 2 * relatedGraph.numberOfVertices; timeNumber++) {
+            currentVertice = getNextVerticeToBeExplored();
             verticeIndexInVerticeSet = relatedGraph.vertices.indexOf(currentVertice);
 
             if (discoveryTimes[verticeIndexInVerticeSet] == -1) {
@@ -85,9 +83,15 @@ public class DeepFirstSearch extends BaseSearchStructure {
         }
     }
 
+    private Vertice getNextVerticeToBeExplored() {
+        if (verticesToBeExplored.isEmpty())
+            return getNextNotDiscoveredVerticeBasedOnVerticeSet();
+        else
+            return verticesToBeExplored.pop();
+    }
+
     private void addVerticeChildrenToNotExploredVertices(Vertice vertice) {
-        var verticeChildren = successorAdjacencyList.get(vertice);
-        Collections.reverse(verticeChildren);
+        List<Vertice> verticeChildren = getReversedVerticeChildren(vertice);
 
         for (Vertice v : verticeChildren) {
             if (canAddVerticeToNotExploredVertices(v))
@@ -95,9 +99,14 @@ public class DeepFirstSearch extends BaseSearchStructure {
         }
     }
 
-    private void addVerticeChildrenToNotExploredVerticesAndClassifyEdgesAlongTheWay(Vertice vertice) {
+    private List<Vertice> getReversedVerticeChildren(Vertice vertice) {
         var verticeChildren = successorAdjacencyList.get(vertice);
         Collections.reverse(verticeChildren);
+        return verticeChildren;
+    }
+
+    private void addVerticeChildrenToNotExploredVerticesAndClassifyEdgesAlongTheWay(Vertice vertice) {
+        List<Vertice> verticeChildren = getReversedVerticeChildren(vertice);
 
         for (Vertice v : verticeChildren) {
             if (canAddVerticeToNotExploredVertices(v))
