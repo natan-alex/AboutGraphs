@@ -9,14 +9,13 @@ public class AStarSearch extends BaseSearchStructure {
     private final Queue<Vertice> verticesToBeExplored;
     private final GraphHeuristics relatedGraphHeuristics;
 
-    protected AStarSearch(Graph graph, Map<Vertice, List<Vertice>> graphSuccessorAdjacencyList,
-            GraphHeuristics graphHeuristics) {
+    protected AStarSearch(Graph graph, String heuristicsRepresentation) {
         super(graph);
 
-        successorAdjacencyList = graphSuccessorAdjacencyList;
+        successorAdjacencyList = new SuccessorAdjacencyList(graph).adjacencyList;
 
         verticesToBeExplored = new ArrayDeque<>(graph.numberOfVertices);
-        relatedGraphHeuristics = graphHeuristics;
+        relatedGraphHeuristics = new GraphHeuristics(graph, heuristicsRepresentation);
 
         performAStarSearchAndComputeTimesInArrays();
     }

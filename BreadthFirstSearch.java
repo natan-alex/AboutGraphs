@@ -1,5 +1,4 @@
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Queue;
 import java.util.Collections;
 import java.util.List;
@@ -9,9 +8,9 @@ public class BreadthFirstSearch extends BaseSearchStructure {
     private final Map<Vertice, List<Vertice>> successorAdjacencyList;
     private Queue<Vertice> verticesToBeExplored;
 
-    protected BreadthFirstSearch(Graph graph, Map<Vertice, List<Vertice>> graphSuccessorAdjacencyList) {
+    protected BreadthFirstSearch(Graph graph) {
         super(graph);
-        successorAdjacencyList = graphSuccessorAdjacencyList;
+        successorAdjacencyList = new SuccessorAdjacencyList(graph).adjacencyList;
     }
 
     public void computeTimes() {
