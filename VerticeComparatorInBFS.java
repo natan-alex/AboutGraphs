@@ -11,15 +11,15 @@ public final class VerticeComparatorInBFS implements Comparator<Vertice> {
 
     @Override
     public int compare(Vertice arg0, Vertice arg1) {
-        float evaluationFunctionValueForArg0 = getEvaluationFunctionValueForVertices(startingPointVertice, arg0);
-        float evaluationFunctionValueForArg1 = getEvaluationFunctionValueForVertices(startingPointVertice, arg1);
+        int evaluationFunctionValueForArg0 = getEvaluationFunctionValueForVertices(startingPointVertice, arg0);
+        int evaluationFunctionValueForArg1 = getEvaluationFunctionValueForVertices(startingPointVertice, arg1);
 
-        return Float.compare(evaluationFunctionValueForArg0, evaluationFunctionValueForArg1);
+        return Integer.compare(evaluationFunctionValueForArg0, evaluationFunctionValueForArg1);
     }
 
-    private float getEvaluationFunctionValueForVertices(Vertice firstVertice, Vertice secondVertice) {
+    private int getEvaluationFunctionValueForVertices(Vertice firstVertice, Vertice secondVertice) {
         Edge edgeThatContainsTheVertices = graph.getEdgeThatContainsThisVertices(firstVertice, secondVertice);
-        float evaluationFunctionValue = Float.MAX_VALUE;
+        int evaluationFunctionValue = Integer.MAX_VALUE;
 
         if (edgeThatContainsTheVertices != null) {
             evaluationFunctionValue = edgeThatContainsTheVertices.value;

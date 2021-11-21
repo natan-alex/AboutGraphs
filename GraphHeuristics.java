@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 public class GraphHeuristics {
     private final Graph relatedGraph;
     private final String heuristicsStringRepresentation;
-    public final Map<Vertice, Float> verticesAndTheirHeuristics;
+    public final Map<Vertice, Integer> verticesAndTheirHeuristics;
 
     public GraphHeuristics(Graph graph, String heuristicsRepresentation) {
         relatedGraph = graph;
@@ -19,9 +19,8 @@ public class GraphHeuristics {
         fillHeuristicsForEachVertice();
     }
 
-    private static Pattern PATTERN_TO_VALIDATE_THE_HEURISTICS = Pattern.compile(
-            "^\\s*\\[\\s*(?:\\s*\\w+\\s*:\\s*\\d+(?:\\.\\d+)?\\s*,)*\\s*\\w+\\s*:\\s*\\d+(?:\\.\\d+)?\\s*\\]\\s*",
-            Pattern.MULTILINE);
+    private static Pattern PATTERN_TO_VALIDATE_THE_HEURISTICS = Pattern
+            .compile("^\\s*\\[\\s*(?:\\s*\\w+\\s*:\\s*\\d+\\s*,)*\\s*\\w+\\s*:\\s*\\d+\\s*\\]\\s*", Pattern.MULTILINE);
 
     private void checkIfHeuristicsRepresentationIsValid(String heuristicsRepresentation)
             throws IllegalArgumentException {
@@ -51,11 +50,11 @@ public class GraphHeuristics {
 
             throwsExceptionIfVerticeIsNull(verticeFound, verticeNameAndHeuristicValue[0]);
 
-            verticesAndTheirHeuristics.put(verticeFound, Float.parseFloat(verticeNameAndHeuristicValue[1]));
+            verticesAndTheirHeuristics.put(verticeFound, Integer.parseInt(verticeNameAndHeuristicValue[1]));
         }
 
         for (Vertice vertice : relatedGraph.vertices) {
-            verticesAndTheirHeuristics.putIfAbsent(vertice, 0F);
+            verticesAndTheirHeuristics.putIfAbsent(vertice, 0);
         }
     }
 
