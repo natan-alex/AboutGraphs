@@ -17,7 +17,7 @@ public class Main {
         GraphHeuristics graphHeuristics = null;
 
         graph = new Graph("{(a,b,1), (a,c,1), (b,c,2)}");
-        FordFulkerson fordFulkerson = new FordFulkerson(graph, "b", "a");
+        FordFulkerson fordFulkerson = new FordFulkerson(graph, "a", "c");
 
         // while ((fileLine = bufferedReader.readLine()) != null) {
         // graph = new Graph(fileLine);
