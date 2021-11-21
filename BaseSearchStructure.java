@@ -1,6 +1,6 @@
 public abstract class BaseSearchStructure {
-    public final int[] discoveryTimes;
-    public final int[] endTimes;
+    protected final int[] discoveryTimes;
+    protected final int[] endTimes;
     protected final Graph relatedGraph;
     protected final EdgeClassifications[] edgeClassifications;
 
