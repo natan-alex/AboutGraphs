@@ -9,9 +9,9 @@ public class DeepFirstSearch extends BaseSearchStructure {
     private final Graph relatedGraph;
     private Stack<Vertice> verticesToBeExplored;
 
-    public DeepFirstSearch(Graph graph, Map<Vertice, List<Vertice>> successorAdjacencyList) {
+    public DeepFirstSearch(Graph graph) {
         super(graph);
-        this.successorAdjacencyList = successorAdjacencyList;
+        successorAdjacencyList = new SuccessorAdjacencyList(graph).adjacencyList;
         relatedGraph = graph;
     }
 
@@ -34,7 +34,7 @@ public class DeepFirstSearch extends BaseSearchStructure {
         }
     }
 
-    private List<Vertice> getPathBetweenVertices(Vertice startVertice, Vertice endVertice) {
+    public List<Vertice> getPathBetweenVertices(Vertice startVertice, Vertice endVertice) {
         int timeNumber = 1, verticeIndexInVerticeSet;
         Vertice currentVertice;
         List<Vertice> pathBetweenVertices = new ArrayList<>();
