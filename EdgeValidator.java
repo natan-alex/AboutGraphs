@@ -1,7 +1,7 @@
 import java.util.regex.*;
 
 public class EdgeValidator {
-    public static final String EXAMPLE_OF_A_VALID_EDGE_MESSAGE = "Example of a valid edge: (a, b) , {hello, world} or (foo, bar, 10)";
+    public static final String EXAMPLE_OF_A_VALID_EDGE_MESSAGE = "Example of a valid edge: \n  (a, b)\n  {hello, world}\n  (foo, bar, 10)";
     public static final String INFORMATIVE_EXCEPTION_MESSAGE = "A valid edge must be enclosed with () if it is part of a directed graph or {} if it is part of an undirected graph."
             + "\n" + EXAMPLE_OF_A_VALID_EDGE_MESSAGE;
 

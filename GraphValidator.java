@@ -15,8 +15,8 @@ public class GraphValidator {
             Pattern.MULTILINE);
 
     public static final String INFORMATIVE_EXCEPTION_MESSAGE = "A valid graph must be enclosed with {} and contains multiple edges inside curly braces."
-        + "\nAn edge must be enclosed with () if it is part of a directed graph or {} if it is part of an undirected graph."
-        + "\nExample of valid graph: { (a, b), (b, c) } or { {hello, world}, {foo, bar} }";
+            + "\nAn edge must be enclosed with () if it is part of a directed graph or {} if it is part of an undirected graph."
+            + "\nExample of valid graphs: \n  { (a, b), (b, c) }\n  { {hello, world}, {foo, bar} }\n  { (a,b,10), (a,c,12) }";
 
     private static Matcher matcherForDirectedAndUnponderedPattern;
     private static Matcher matcherForDirectedAndPonderedPattern;
@@ -26,7 +26,8 @@ public class GraphValidator {
     private static boolean isGraphDirected;
     private static boolean isGraphPondered;
 
-    public static void validateStringRepresentationAndFillGraphProperties(String graphRepresentation) throws IllegalArgumentException {
+    public static void validateStringRepresentationAndFillGraphProperties(String graphRepresentation)
+            throws IllegalArgumentException {
         fillMatchersForGraphRepresentation(graphRepresentation);
 
         if (matcherForDirectedAndUnponderedPattern.matches()) {
@@ -42,8 +43,8 @@ public class GraphValidator {
             isGraphDirected = false;
             isGraphPondered = false;
         } else {
-            throw new IllegalArgumentException("Invalid graph " + graphRepresentation 
-                + "\n" + INFORMATIVE_EXCEPTION_MESSAGE);
+            throw new IllegalArgumentException(
+                    "Invalid graph " + graphRepresentation + "\n" + INFORMATIVE_EXCEPTION_MESSAGE);
         }
     }
 
@@ -55,7 +56,7 @@ public class GraphValidator {
         matcherForUndirectedAndPonderedPattern = PATTERN_TO_VALIDATE_AN_UNDIRECTED_PONDERED_GRAPH
                 .matcher(graphRepresentation);
         matcherForUndirectedAndUnponderedPattern = PATTERN_TO_VALIDATE_AN_UNDIRECTED_UNPONDERED_GRAPH
-            .matcher(graphRepresentation);
+                .matcher(graphRepresentation);
     }
 
     public static boolean isGraphDirected() {
