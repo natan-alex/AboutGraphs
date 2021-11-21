@@ -46,9 +46,9 @@ public class GraphHeuristics {
         for (String part : partsOfHeuristics) {
             verticeNameAndHeuristicValue = splitPartOfHeuristics(part);
 
-            verticeFound = relatedGraph.getTheVerticeWithThisName(verticeNameAndHeuristicValue[0]);
+            verticeFound = relatedGraph.getVerticeByName(verticeNameAndHeuristicValue[0]);
 
-            throwsExceptionIfVerticeIsNull(verticeFound, verticeNameAndHeuristicValue[0]);
+            throwExceptionIfVerticeIsNull(verticeFound, verticeNameAndHeuristicValue[0]);
 
             verticesAndTheirHeuristics.put(verticeFound, Integer.parseInt(verticeNameAndHeuristicValue[1]));
         }
@@ -65,7 +65,7 @@ public class GraphHeuristics {
         return verticeNameAndHeuristicValue;
     }
 
-    private void throwsExceptionIfVerticeIsNull(Vertice verticeFound, String verticeName)
+    private void throwExceptionIfVerticeIsNull(Vertice verticeFound, String verticeName)
             throws IllegalArgumentException {
         if (verticeFound == null) {
             throw new IllegalArgumentException("The vertice " + verticeName + " is not in the vertice set."

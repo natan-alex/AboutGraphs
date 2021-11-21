@@ -18,8 +18,8 @@ public class DeepFirstSearch extends BaseSearchStructure {
     public List<Vertice> getPathBetweenVertices(String startVerticeName, String endVerticeName)
             throws IllegalArgumentException {
 
-        Vertice startVertice = relatedGraph.getTheVerticeWithThisName(startVerticeName);
-        Vertice endVertice = relatedGraph.getTheVerticeWithThisName(endVerticeName);
+        Vertice startVertice = relatedGraph.getVerticeByName(startVerticeName);
+        Vertice endVertice = relatedGraph.getVerticeByName(endVerticeName);
 
         throwExceptionIfVerticeIsNull(startVertice, startVerticeName);
         throwExceptionIfVerticeIsNull(endVertice, endVerticeName);
@@ -27,8 +27,7 @@ public class DeepFirstSearch extends BaseSearchStructure {
         return getPathBetweenVertices(startVertice, endVertice);
     }
 
-    private void throwExceptionIfVerticeIsNull(Vertice vertice, String verticeName)
-            throws IllegalArgumentException {
+    private void throwExceptionIfVerticeIsNull(Vertice vertice, String verticeName) throws IllegalArgumentException {
         if (vertice == null) {
             throw new IllegalArgumentException("The vertice  " + verticeName + "  is not in the vertice set."
                     + "\nThe vertice set is: " + relatedGraph.vertices);
@@ -112,7 +111,7 @@ public class DeepFirstSearch extends BaseSearchStructure {
             if (canAddVerticeToNotExploredVertices(v))
                 verticesToBeExplored.add(v);
 
-            classifyTheEdge(relatedGraph.getEdgeThatContainsThisVertices(vertice, v));
+            classifyTheEdge(relatedGraph.getDirectedEdgeWithThisVertices(vertice, v));
         }
     }
 

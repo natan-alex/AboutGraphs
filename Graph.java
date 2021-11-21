@@ -72,7 +72,7 @@ public class Graph {
         System.out.println(edgesArray[edgesArray.length - 1].stringRepresentation + " }");
     }
 
-    public Vertice getTheVerticeWithThisName(String name) {
+    public Vertice getVerticeByName(String name) {
         for (Vertice vertice : vertices) {
             if (vertice.name.compareTo(name) == 0) {
                 return vertice;
@@ -82,7 +82,7 @@ public class Graph {
         return null;
     }
 
-    public Edge getEdgeThatContainsThisVertices(Vertice firstVertice, Vertice secondVertice) {
+    public Edge getDirectedEdgeWithThisVertices(Vertice firstVertice, Vertice secondVertice) {
         for (Edge edge : edges) {
             if (edge.firstVertice.equals(firstVertice) && edge.secondVertice.equals(secondVertice)) {
                 return edge;

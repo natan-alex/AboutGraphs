@@ -20,7 +20,7 @@ public final class VerticeComparatorInAStarSearch implements Comparator<Vertice>
     }
 
     private int getEvaluationFunctionValueForVertices(Vertice firstVertice, Vertice secondVertice) {
-        Edge edgeThatContainsTheVertices = graph.getEdgeThatContainsThisVertices(firstVertice, secondVertice);
+        Edge edgeThatContainsTheVertices = graph.getDirectedEdgeWithThisVertices(firstVertice, secondVertice);
         int evaluationFunctionValue = Integer.MAX_VALUE;
 
         if (edgeThatContainsTheVertices != null) {
