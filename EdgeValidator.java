@@ -1,11 +1,12 @@
 import java.util.regex.*;
 
 public class EdgeValidator {
+    public static final String EXAMPLE_OF_A_VALID_EDGE_MESSAGE = "Example of a valid edge: (a, b) , {hello, world} or (foo, bar, 10)";
     public static final String INFORMATIVE_EXCEPTION_MESSAGE = "A valid edge must be enclosed with () if it is part of a directed graph or {} if it is part of an undirected graph."
-                    + "\nExample of a valid edge: (a, b) or {hello, world}";
+            + "\n" + EXAMPLE_OF_A_VALID_EDGE_MESSAGE;
 
     public static final Pattern PATTERN_TO_VALIDATE_AN_EDGE = Pattern
-            .compile("[(|{]\\s*\\w+\\s*,(\\s*\\w+\\s*,)?\\s*\\w+\\s*[)|}]");
+            .compile("[(|{]\\s*\\w+\\s*,\\s*\\w+\\s*(?:,\\s*\\d{1,6}\\s*)?[)|}]");
 
     public static void checkIfEdgeRepresentationIsValid(String edgeRepresentation) throws IllegalArgumentException {
         checkIfRepresentationMatchesThePattern(edgeRepresentation);
@@ -17,15 +18,14 @@ public class EdgeValidator {
 
         if (!matcher.matches()) {
             throw new IllegalArgumentException(
-                    "Invalid edge " + edgeRepresentation + "\nExample of a valid edge: (a, b) or {hello, world}");
+                    "Invalid edge " + edgeRepresentation + "\n" + EXAMPLE_OF_A_VALID_EDGE_MESSAGE);
         }
     }
 
     private static void checkIfRepresentationIsEnclosedCorrectly(String edgeRepresentation) {
         if (!isEdgeRepresentationEnclosedCorrectly(edgeRepresentation)) {
             throw new IllegalArgumentException("Invalid edge " + edgeRepresentation
-                    + ": the edge representation is not enclosed correctly.\n"
-                    + INFORMATIVE_EXCEPTION_MESSAGE);
+                    + ": the edge representation is not enclosed correctly.\n" + INFORMATIVE_EXCEPTION_MESSAGE);
         }
     }
 
