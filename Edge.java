@@ -29,7 +29,7 @@ public class Edge {
 
     @Override
     public boolean equals(Object obj) {
-        return stringRepresentation.compareTo(((Edge) obj).stringRepresentation) == 0;
+        return stringRepresentation.compareToIgnoreCase(((Edge) obj).stringRepresentation) == 0;
     }
 
     @Override

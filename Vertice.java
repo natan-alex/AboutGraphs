@@ -7,7 +7,7 @@ public class Vertice {
 
     @Override
     public boolean equals(Object obj) {
-        return name.compareTo(((Vertice) obj).name) == 0;
+        return name.compareToIgnoreCase(((Vertice) obj).name) == 0;
     }
 
     @Override
