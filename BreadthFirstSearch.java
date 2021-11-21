@@ -35,52 +35,56 @@ public class BreadthFirstSearch extends BaseSearchStructure {
         }
     }
 
-    public List<Vertice> getPathBetweenVertices(String startVerticeName, String endVerticeName)
-            throws IllegalArgumentException {
+    // public List<Vertice> getPathBetweenVertices(String startVerticeName, String
+    // endVerticeName)
+    // throws IllegalArgumentException {
 
-        Vertice startVertice = relatedGraph.getTheVerticeWithThisName(startVerticeName);
-        Vertice endVertice = relatedGraph.getTheVerticeWithThisName(endVerticeName);
+    // Vertice startVertice = relatedGraph.getVerticeByName(startVerticeName);
+    // Vertice endVertice = relatedGraph.getVerticeByName(endVerticeName);
 
-        throwExceptionIfVerticeIsNull(startVertice, startVerticeName);
-        throwExceptionIfVerticeIsNull(endVertice, endVerticeName);
+    // throwExceptionIfVerticeIsNull(startVertice, startVerticeName);
+    // throwExceptionIfVerticeIsNull(endVertice, endVerticeName);
 
-        return getPathBetweenVertices(startVertice, endVertice);
-    }
+    // return getPathBetweenVertices(startVertice, endVertice);
+    // }
 
-    private void throwExceptionIfVerticeIsNull(Vertice vertice, String verticeName)
-            throws IllegalArgumentException {
-        if (vertice == null) {
-            throw new IllegalArgumentException("The vertice  " + verticeName + "  is not in the vertice set."
-                    + "\nThe vertice set is: " + relatedGraph.vertices);
-        }
-    }
+    // private void throwExceptionIfVerticeIsNull(Vertice vertice, String
+    // verticeName) throws IllegalArgumentException {
+    // if (vertice == null) {
+    // throw new IllegalArgumentException("The vertice " + verticeName + " is not in
+    // the vertice set."
+    // + "\nThe vertice set is: " + relatedGraph.vertices);
+    // }
+    // }
 
-    private List<Vertice> getPathBetweenVertices(Vertice startVertice, Vertice endVertice) {
-        int timeNumber = 1, verticeIndexInVerticeSet;
-        Vertice currentVertice;
-        List<Vertice> pathBetweenVertices = new ArrayList<>();
+    // private List<Vertice> getPathBetweenVertices(Vertice startVertice, Vertice
+    // endVertice) {
+    // int timeNumber = 1, verticeIndexInVerticeSet;
+    // Vertice currentVertice;
+    // List<Vertice> pathBetweenVertices = new ArrayList<>();
 
-        verticesToBeExplored = new ArrayDeque<>(relatedGraph.numberOfVertices);
-        verticesToBeExplored.add(startVertice);
+    // verticesToBeExplored = new ArrayDeque<>(relatedGraph.numberOfVertices);
+    // verticesToBeExplored.add(startVertice);
 
-        do {
-            currentVertice = verticesToBeExplored.poll();
-            verticeIndexInVerticeSet = relatedGraph.vertices.indexOf(currentVertice);
+    // do {
+    // currentVertice = verticesToBeExplored.poll();
+    // verticeIndexInVerticeSet = relatedGraph.vertices.indexOf(currentVertice);
 
-            if (discoveryTimes[verticeIndexInVerticeSet] == -1) {
-                discoveryTimes[verticeIndexInVerticeSet] = timeNumber++;
+    // if (discoveryTimes[verticeIndexInVerticeSet] == -1) {
+    // discoveryTimes[verticeIndexInVerticeSet] = timeNumber++;
 
-                addVerticeChildrenToNotExploredVertices(currentVertice);
-                verticesToBeExplored.add(currentVertice);
-                pathBetweenVertices.add(currentVertice);
-            } else if (endTimes[verticeIndexInVerticeSet] == -1) {
-                endTimes[verticeIndexInVerticeSet] = timeNumber++;
-                pathBetweenVertices.remove(currentVertice);
-            }
-        } while (!currentVertice.equals(endVertice) && !verticesToBeExplored.isEmpty());
+    // addVerticeChildrenToNotExploredVertices(currentVertice);
+    // verticesToBeExplored.add(currentVertice);
+    // pathBetweenVertices.add(currentVertice);
+    // } else if (endTimes[verticeIndexInVerticeSet] == -1) {
+    // endTimes[verticeIndexInVerticeSet] = timeNumber++;
+    // pathBetweenVertices.remove(currentVertice);
+    // }
+    // } while (!currentVertice.equals(endVertice) &&
+    // !verticesToBeExplored.isEmpty());
 
-        return pathBetweenVertices;
-    }
+    // return pathBetweenVertices;
+    // }
 
     private Vertice getNextNotExploredVertice() {
         if (verticesToBeExplored.isEmpty())
