@@ -4,37 +4,57 @@ import java.util.List;
 
 public class Graph {
     public final String stringRepresentation;
-    public final List<Edge> edges;
-    public final List<Vertice> vertices;
     public final boolean isPondered;
     public final boolean isDirected;
-    public final int numberOfVertices;
-    public final int numberOfEdges;
+    public List<Edge> edges;
+    public List<Vertice> vertices;
+    public int numberOfVertices;
+    public int numberOfEdges;
+
+    public static final String EXAMPLES_OF_VALID_GRAPHS_MESSAGE = "Examples of valid graphs:"
+            + "\n  { (a, b) } for a directed and unpondered graph"
+            + "\n  { {hello, world} } for a undirected and unpondered graph"
+            + "\n  { (foo, bar, 10) } for a directed and pondered graph"
+            + "\n  { {hey, man, 1} } for a undirected and pondered graph";
+
+    public static final String INFORMATIVE_EXCEPTION_MESSAGE = "A valid graph must be enclosed with {} and contains multiple edges inside curly braces."
+            + "\nAn edge must be enclosed with () if it is part of a directed graph or {} if it is part of an undirected graph."
+            + "\n" + EXAMPLES_OF_VALID_GRAPHS_MESSAGE;
 
     public Graph(String graphRepresentation) throws IllegalArgumentException {
-        GraphValidator.validateStringRepresentationAndFillGraphProperties(graphRepresentation);
+        GraphRepresentationTypes graphType = GraphValidator.whichTypeOfGraphRepresentationIs(graphRepresentation);
+
+        throwExceptionIfGraphIsInvalid(graphType);
+
+        isPondered = graphType.isGraphPondered();
+        isDirected = graphType.isGraphDirected();
 
         stringRepresentation = graphRepresentation;
         edges = new ArrayList<>();
         vertices = new ArrayList<>();
-        numberOfEdges = fillEdgeListAndReturnTheNumberOfEdges();
-        numberOfVertices = fillVerticeListAndReturnTheNumberOfVertices();
 
-        isDirected = GraphValidator.isGraphDirected();
-        isPondered = GraphValidator.isGraphPondered();
+        fillEdgeList();
+        fillVerticeSet();
+
+        numberOfEdges = edges.size();
+        numberOfVertices = vertices.size();
     }
 
-    private int fillEdgeListAndReturnTheNumberOfEdges() {
+    private void throwExceptionIfGraphIsInvalid(GraphRepresentationTypes graphType) throws IllegalArgumentException {
+        if (graphType == null) {
+            throw new IllegalArgumentException(INFORMATIVE_EXCEPTION_MESSAGE);
+        }
+    }
+
+    private void fillEdgeList() {
         Matcher matcher = EdgeValidator.PATTERN_TO_VALIDATE_AN_EDGE.matcher(stringRepresentation);
 
         while (matcher.find()) {
             edges.add(new Edge(matcher.group()));
         }
-
-        return edges.size();
     }
 
-    private int fillVerticeListAndReturnTheNumberOfVertices() {
+    private void fillVerticeSet() {
         for (Edge edge : edges) {
             if (!vertices.contains(edge.firstVertice)) {
                 vertices.add(edge.firstVertice);
@@ -43,8 +63,6 @@ public class Graph {
                 vertices.add(edge.secondVertice);
             }
         }
-
-        return vertices.size();
     }
 
     public void showVertices() {
