@@ -82,6 +82,16 @@ public class Graph {
         return null;
     }
 
+    public Edge getEdgeByRepresentation(String representation) {
+        for (Edge edge : edges) {
+            if (edge.stringRepresentation.compareToIgnoreCase(representation) == 0) {
+                return edge;
+            }
+        }
+
+        return null;
+    }
+
     public Edge getDirectedEdgeWithThisVertices(Vertice firstVertice, Vertice secondVertice) {
         for (Edge edge : edges) {
             if (edge.firstVertice.equals(firstVertice) && edge.secondVertice.equals(secondVertice)) {
