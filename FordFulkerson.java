@@ -13,7 +13,7 @@ public class FordFulkerson {
     public FordFulkerson(Graph graph, String source, String sink) throws IllegalArgumentException {
         relatedGraph = graph;
 
-        throwExceptionIfSourceAndSinkRepresentationsAreEquals(source, sink);
+        throwExceptionIfSourceAndSinkAreEquals(source, sink);
         throwExceptionIfGraphIsInvalid();
 
         this.source = relatedGraph.getVerticeByName(source);
@@ -27,16 +27,38 @@ public class FordFulkerson {
         computeMaximumFlow();
     }
 
+    public FordFulkerson(Graph graph, Vertice source, Vertice sink) throws IllegalArgumentException {
+        relatedGraph = graph;
+
+        throwExceptionIfSourceAndSinkAreEquals(source, sink);
+        throwExceptionIfGraphIsInvalid();
+
+        this.source = source;
+        this.sink = sink;
+
+        checkIfSourceAndSinkAreValid();
+        checkIfSourceAndSinkAreInVerticeSet();
+
+        computeMaximumFlow();
+    }
+
     private void computeMaximumFlow() {
         // set edge values to 0 in residual graph
-        residualGraph = new Graph(relatedGraph.stringRepresentation.replaceAll(",\\s*\\d+", ",0"));
+        String stringRepresentationForZeroEdgeValues = relatedGraph.stringRepresentation.replaceAll(",\\s*\\d+", ",0");
+        residualGraph = new Graph(stringRepresentationForZeroEdgeValues);
         disjointPaths = new ArrayList<>();
         deepFirstSearch = new DeepFirstSearch(residualGraph);
         List<Vertice> path = deepFirstSearch.getPathBetweenVertices(source, sink);
+        List<Edge> edgesInThePath;
+        int maximumFlowBetweenEdges;
 
         while (path != null && !path.isEmpty()) {
+            edgesInThePath = getEdgesInThePath(path);
+            System.out.println("edges: " + edgesInThePath);
+            maximumFlowBetweenEdges = edgesInThePath.stream().mapToInt(edge -> edge.value).min().getAsInt();
+            System.out.println("max flow: " + maximumFlowBetweenEdges);
+            disjointPaths.add(path);
             System.out.println("path: " + path);
-            System.out.println(getEdgesInThePath(path));
             path = deepFirstSearch.getPathBetweenVertices(source, sink);
         }
     }
@@ -49,7 +71,7 @@ public class FordFulkerson {
         path.toArray(pathArray);
 
         while (currentVerticeIndex + 1 < pathArray.length) {
-            edges.add(residualGraph.getDirectedEdgeWithThisVertices(pathArray[currentVerticeIndex],
+            edges.add(relatedGraph.getDirectedEdgeWithThisVertices(pathArray[currentVerticeIndex],
                     pathArray[currentVerticeIndex + 1]));
             currentVerticeIndex++;
         }
@@ -57,8 +79,14 @@ public class FordFulkerson {
         return edges;
     }
 
-    private void throwExceptionIfSourceAndSinkRepresentationsAreEquals(String first, String second) {
+    private void throwExceptionIfSourceAndSinkAreEquals(String first, String second) {
         if (first.compareToIgnoreCase(second) == 0) {
+            throw new IllegalArgumentException("Source and sink vertices can not be the same vertice.");
+        }
+    }
+
+    private void throwExceptionIfSourceAndSinkAreEquals(Vertice first, Vertice second) {
+        if (first.equals(second)) {
             throw new IllegalArgumentException("Source and sink vertices can not be the same vertice.");
         }
     }
@@ -73,6 +101,16 @@ public class FordFulkerson {
         }
     }
 
+    private void checkIfSourceAndSinkAreInVerticeSet() {
+        if (!relatedGraph.vertices.contains(source)) {
+            throw new IllegalArgumentException(getNotFoundExceptionMessage(source.name));
+        }
+
+        if (!relatedGraph.vertices.contains(sink)) {
+            throw new IllegalArgumentException(getNotFoundExceptionMessage(sink.name));
+        }
+    }
+
     private void throwExceptionIfGraphIsInvalid() throws IllegalArgumentException {
         if (!relatedGraph.isPondered && !relatedGraph.isDirected) {
             throw new IllegalArgumentException(
@@ -83,8 +121,13 @@ public class FordFulkerson {
     private void throwExceptionIfVerticeIsNull(Vertice verticeFound, String verticeName)
             throws IllegalArgumentException {
         if (verticeFound == null) {
-            throw new IllegalArgumentException("The vertice " + verticeName + " is not in the vertice set."
-                    + " The vertice set is: " + relatedGraph.vertices);
+            throw new IllegalArgumentException(getNotFoundExceptionMessage(verticeName));
         }
     }
+
+    private String getNotFoundExceptionMessage(String verticeName) {
+        return "The vertice " + verticeName + " is not in the vertice set." + "\nThe vertice set is: "
+                + relatedGraph.vertices;
+    }
+
 }
