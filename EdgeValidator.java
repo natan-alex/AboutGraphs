@@ -1,9 +1,14 @@
 import java.util.regex.*;
 
 public class EdgeValidator {
-    public static final String EXAMPLE_OF_A_VALID_EDGE_MESSAGE = "Example of a valid edge: \n  (a, b)\n  {hello, world}\n  (foo, bar, 10)";
-    public static final String INFORMATIVE_EXCEPTION_MESSAGE = "A valid edge must be enclosed with () if it is part of a directed graph or {} if it is part of an undirected graph."
-            + "\n" + EXAMPLE_OF_A_VALID_EDGE_MESSAGE;
+    public static final String EXAMPLE_OF_VALID_EDGE_MESSAGES = "Example of valid edges:"
+            + "\n  (a, b) for a directed and unpondered edge"
+            + "\n  {hello, world} for a undirected and unpondered edge"
+            + "\n  (foo, bar, 10) for a directed and pondered edge"
+            + "\n  {hey, man, 1} for a undirected and pondered edge";
+
+    public static final String INFORMATIVE_EXCEPTION_MESSAGE = "A valid edge must be enclosed with () if it is part of a directed graph and with {} if it is part of an undirected graph."
+            + "\n" + EXAMPLE_OF_VALID_EDGE_MESSAGES;
 
     public static final Pattern PATTERN_TO_VALIDATE_AN_EDGE = Pattern
             .compile("[(|{]\\s*\\w+\\s*,\\s*\\w+\\s*(?:,\\s*\\d{1,6}\\s*)?[)|}]");
@@ -17,9 +22,13 @@ public class EdgeValidator {
         Matcher matcher = PATTERN_TO_VALIDATE_AN_EDGE.matcher(edgeRepresentation);
 
         if (!matcher.matches()) {
-            throw new IllegalArgumentException(
-                    "Invalid edge " + edgeRepresentation + "\n" + EXAMPLE_OF_A_VALID_EDGE_MESSAGE);
+            throwExceptionForInvalidEdge(edgeRepresentation);
         }
+    }
+
+    private static void throwExceptionForInvalidEdge(String edgeRepresentation) {
+        throw new IllegalArgumentException(
+                "Invalid edge " + edgeRepresentation + "\n" + EXAMPLE_OF_VALID_EDGE_MESSAGES);
     }
 
     private static void checkIfRepresentationIsEnclosedCorrectly(String edgeRepresentation) {
