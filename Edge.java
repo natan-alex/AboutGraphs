@@ -8,8 +8,7 @@ public class Edge {
         EdgeValidator.checkIfEdgeRepresentationIsValid(edgeRepresentation);
 
         stringRepresentation = removeSpacesFromEdgeRepresentation(edgeRepresentation);
-        String withoutParenthesisOrCurlyBraces = stringRepresentation.substring(1, stringRepresentation.length() - 1);
-        String[] partsOfStringRepresentation = withoutParenthesisOrCurlyBraces.split(",");
+        String[] partsOfStringRepresentation = splitStringRepresentation();
 
         firstVertice = new Vertice(partsOfStringRepresentation[0]);
         secondVertice = new Vertice(partsOfStringRepresentation[1]);
@@ -19,6 +18,12 @@ public class Edge {
         } else {
             value = 0;
         }
+    }
+
+    private String[] splitStringRepresentation() {
+        String withoutParenthesisOrCurlyBraces = stringRepresentation.substring(1, stringRepresentation.length() - 1);
+        String[] partsOfStringRepresentation = withoutParenthesisOrCurlyBraces.split(",");
+        return partsOfStringRepresentation;
     }
 
     private String removeSpacesFromEdgeRepresentation(String edgeRepresentation) {
