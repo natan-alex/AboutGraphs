@@ -13,4 +13,15 @@ public class FlowNetwork extends Graph {
         }
     }
 
+    @Override
+    public FlowEdge getDirectedEdgeWithThisVertices(Vertice firstVertice, Vertice secondVertice) {
+        for (FlowEdge flowEdge : flowEdges) {
+            if (flowEdge.firstVertice.equals(firstVertice) && flowEdge.secondVertice.equals(secondVertice)) {
+                return flowEdge;
+            }
+        }
+
+        return null;
+    }
+
 }
