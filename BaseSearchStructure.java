@@ -49,7 +49,7 @@ public abstract class BaseSearchStructure {
             return;
         }
 
-        if (relatedGraph.isDirected) {
+        if (relatedGraph.type.isDirected) {
             classifyTheEdgeForDirectedGraph(edge);
         } else {
             classifyTheEdgeForUndirectedGraph(edge);

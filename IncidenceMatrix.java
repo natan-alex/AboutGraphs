@@ -59,7 +59,7 @@ public class IncidenceMatrix extends BaseMatrix implements GraphRepresentation {
     }
 
     private void showCurrentLineItems(int currentLine) {
-        if (relatedGraph.isPondered)
+        if (relatedGraph.type.isPondered)
             showMatrixForPonderedGraph(currentLine);
         else
             showMatrixForUnponderedGraph(currentLine);
