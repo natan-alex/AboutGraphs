@@ -20,20 +20,20 @@ public class GraphValidator {
         private static Matcher matcherForUndirectedAndUnponderedPattern;
 
         public static boolean isGraphRepresentationValid(String graphRepresentation) {
-                return whichTypeOfGraphRepresentationIs(graphRepresentation) != null;
+                return whichTypeOfGraphIs(graphRepresentation) != null;
         }
 
-        public static GraphRepresentationTypes whichTypeOfGraphRepresentationIs(String graphRepresentation) {
-                GraphRepresentationTypes graphRepresentationType;
+        public static GraphTypes whichTypeOfGraphIs(String graphRepresentation) {
+                GraphTypes graphRepresentationType;
 
                 if (matcherForDirectedAndUnponderedPattern.matches()) {
-                        graphRepresentationType = GraphRepresentationTypes.DIRECTED_AND_UNPONDERED;
+                        graphRepresentationType = GraphTypes.DIRECTED_AND_UNPONDERED;
                 } else if (matcherForDirectedAndPonderedPattern.matches()) {
-                        graphRepresentationType = GraphRepresentationTypes.DIRECTED_AND_PONDERED;
+                        graphRepresentationType = GraphTypes.DIRECTED_AND_PONDERED;
                 } else if (matcherForUndirectedAndPonderedPattern.matches()) {
-                        graphRepresentationType = GraphRepresentationTypes.UNDIRECTED_AND_PONDERED;
+                        graphRepresentationType = GraphTypes.UNDIRECTED_AND_PONDERED;
                 } else if (matcherForUndirectedAndUnponderedPattern.matches()) {
-                        graphRepresentationType = GraphRepresentationTypes.UNDIRECTED_AND_UNPONDERED;
+                        graphRepresentationType = GraphTypes.UNDIRECTED_AND_UNPONDERED;
                 } else {
                         graphRepresentationType = null;
                 }

@@ -4,8 +4,7 @@ import java.util.List;
 
 public class Graph {
     public final String stringRepresentation;
-    public final boolean isPondered;
-    public final boolean isDirected;
+    public final GraphTypes type;
     public List<Edge> edges;
     public List<Vertice> vertices;
     public int numberOfVertices;
@@ -22,13 +21,11 @@ public class Graph {
             + "\n" + EXAMPLES_OF_VALID_GRAPHS_MESSAGE;
 
     public Graph(String graphRepresentation) throws IllegalArgumentException {
-        GraphRepresentationTypes graphType = GraphValidator.whichTypeOfGraphRepresentationIs(graphRepresentation);
+        GraphTypes graphType = GraphValidator.whichTypeOfGraphIs(graphRepresentation);
 
         throwExceptionIfGraphIsInvalid(graphType);
 
-        isPondered = graphType.isGraphPondered();
-        isDirected = graphType.isGraphDirected();
-
+        type = graphType;
         stringRepresentation = graphRepresentation;
         edges = new ArrayList<>();
         vertices = new ArrayList<>();
@@ -40,7 +37,7 @@ public class Graph {
         numberOfVertices = vertices.size();
     }
 
-    private void throwExceptionIfGraphIsInvalid(GraphRepresentationTypes graphType) throws IllegalArgumentException {
+    private void throwExceptionIfGraphIsInvalid(GraphTypes graphType) throws IllegalArgumentException {
         if (graphType == null) {
             throw new IllegalArgumentException(INFORMATIVE_EXCEPTION_MESSAGE);
         }

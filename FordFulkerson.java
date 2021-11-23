@@ -112,7 +112,7 @@ public class FordFulkerson {
     }
 
     private void throwExceptionIfGraphIsInvalid() throws IllegalArgumentException {
-        if (!relatedGraph.isPondered && !relatedGraph.isDirected) {
+        if (relatedGraph.type != GraphTypes.DIRECTED_AND_PONDERED) {
             throw new IllegalArgumentException(
                     "Can not execute ford fulkerson algorithm in an unpondered or undirected graph.");
         }
