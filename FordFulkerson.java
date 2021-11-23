@@ -3,21 +3,21 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public class FordFulkerson {
-    private final Graph relatedGraph;
+    private final FlowNetwork relatedGraphNetwork;
     private final Vertice source;
     private final Vertice sink;
-    private Graph residualGraph;
+    private FlowNetwork residualGraphNetwork;
     private List<List<Vertice>> disjointPaths;
     private DeepFirstSearch deepFirstSearch;
 
     public FordFulkerson(Graph graph, String source, String sink) throws IllegalArgumentException {
-        relatedGraph = graph;
+        relatedGraphNetwork = new FlowNetwork(graph.stringRepresentation);
 
         throwExceptionIfSourceAndSinkAreEquals(source, sink);
         throwExceptionIfGraphIsInvalid();
 
-        this.source = relatedGraph.getVerticeByName(source);
-        this.sink = relatedGraph.getVerticeByName(sink);
+        this.source = relatedGraphNetwork.getVerticeByName(source);
+        this.sink = relatedGraphNetwork.getVerticeByName(sink);
 
         throwExceptionIfVerticeIsNull(this.source, source);
         throwExceptionIfVerticeIsNull(this.sink, sink);
@@ -28,7 +28,7 @@ public class FordFulkerson {
     }
 
     public FordFulkerson(Graph graph, Vertice source, Vertice sink) throws IllegalArgumentException {
-        relatedGraph = graph;
+        relatedGraphNetwork = new FlowNetwork(graph.stringRepresentation);
 
         throwExceptionIfSourceAndSinkAreEquals(source, sink);
         throwExceptionIfGraphIsInvalid();
@@ -44,18 +44,20 @@ public class FordFulkerson {
 
     private void computeMaximumFlow() {
         // set edge values to 0 in residual graph
-        String stringRepresentationForZeroEdgeValues = relatedGraph.stringRepresentation.replaceAll(",\\s*\\d+", ",0");
-        residualGraph = new Graph(stringRepresentationForZeroEdgeValues);
+        String stringRepresentationForZeroEdgeValues = relatedGraphNetwork.stringRepresentation.replaceAll(",\\s*\\d+",
+                ",0");
+        residualGraphNetwork = new FlowNetwork(stringRepresentationForZeroEdgeValues);
         disjointPaths = new ArrayList<>();
-        deepFirstSearch = new DeepFirstSearch(residualGraph);
+        deepFirstSearch = new DeepFirstSearch(residualGraphNetwork);
         List<Vertice> path = deepFirstSearch.getPathBetweenVertices(source, sink);
-        List<Edge> edgesInThePath;
+        List<FlowEdge> edgesInThePath;
         int maximumFlowBetweenEdges;
+        System.out.println("network edges: " + residualGraphNetwork.flowEdges);
 
         while (path != null && !path.isEmpty()) {
             edgesInThePath = getEdgesInThePath(path);
             System.out.println("edges: " + edgesInThePath);
-            maximumFlowBetweenEdges = edgesInThePath.stream().mapToInt(edge -> edge.value).min().getAsInt();
+            maximumFlowBetweenEdges = edgesInThePath.stream().mapToInt(edge -> edge.maximumCapacity).min().getAsInt();
             System.out.println("max flow: " + maximumFlowBetweenEdges);
             disjointPaths.add(path);
             System.out.println("path: " + path);
@@ -63,16 +65,18 @@ public class FordFulkerson {
         }
     }
 
-    private List<Edge> getEdgesInThePath(List<Vertice> path) {
-        List<Edge> edges = new ArrayList<>();
+    private List<FlowEdge> getEdgesInThePath(List<Vertice> path) {
+        List<FlowEdge> edges = new ArrayList<>();
         Vertice[] pathArray = new Vertice[path.size()];
         int currentVerticeIndex = 0;
+        Edge edgeFound;
 
         path.toArray(pathArray);
 
         while (currentVerticeIndex + 1 < pathArray.length) {
-            edges.add(relatedGraph.getDirectedEdgeWithThisVertices(pathArray[currentVerticeIndex],
-                    pathArray[currentVerticeIndex + 1]));
+            edgeFound = relatedGraphNetwork.getDirectedEdgeWithThisVertices(pathArray[currentVerticeIndex],
+                    pathArray[currentVerticeIndex + 1]);
+            edges.add(new FlowEdge(edgeFound.stringRepresentation, edgeFound.value));
             currentVerticeIndex++;
         }
 
@@ -92,27 +96,27 @@ public class FordFulkerson {
     }
 
     private void checkIfSourceAndSinkAreValid() throws IllegalArgumentException {
-        if (Pattern.compile(",\\s*" + source.name).matcher(relatedGraph.stringRepresentation).find()) {
+        if (Pattern.compile(",\\s*" + source.name).matcher(relatedGraphNetwork.stringRepresentation).find()) {
             throw new IllegalArgumentException("The source can not have edges coming to it.");
         }
 
-        if (Pattern.compile("\\(" + sink.name).matcher(relatedGraph.stringRepresentation).find()) {
+        if (Pattern.compile("\\(" + sink.name).matcher(relatedGraphNetwork.stringRepresentation).find()) {
             throw new IllegalArgumentException("The sink can not have edges leaving from it.");
         }
     }
 
     private void checkIfSourceAndSinkAreInVerticeSet() {
-        if (!relatedGraph.vertices.contains(source)) {
+        if (!relatedGraphNetwork.vertices.contains(source)) {
             throw new IllegalArgumentException(getNotFoundExceptionMessage(source.name));
         }
 
-        if (!relatedGraph.vertices.contains(sink)) {
+        if (!relatedGraphNetwork.vertices.contains(sink)) {
             throw new IllegalArgumentException(getNotFoundExceptionMessage(sink.name));
         }
     }
 
     private void throwExceptionIfGraphIsInvalid() throws IllegalArgumentException {
-        if (relatedGraph.type != GraphTypes.DIRECTED_AND_PONDERED) {
+        if (relatedGraphNetwork.type != GraphTypes.DIRECTED_AND_PONDERED) {
             throw new IllegalArgumentException(
                     "Can not execute ford fulkerson algorithm in an unpondered or undirected graph.");
         }
@@ -127,7 +131,7 @@ public class FordFulkerson {
 
     private String getNotFoundExceptionMessage(String verticeName) {
         return "The vertice " + verticeName + " is not in the vertice set." + "\nThe vertice set is: "
-                + relatedGraph.vertices;
+                + relatedGraphNetwork.vertices;
     }
 
 }
