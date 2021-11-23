@@ -24,6 +24,8 @@ public class GraphValidator {
         }
 
         public static GraphTypes whichTypeOfGraphIs(String graphRepresentation) {
+                fillMatchersForGraphRepresentation(graphRepresentation);
+
                 GraphTypes graphRepresentationType;
 
                 if (matcherForDirectedAndUnponderedPattern.matches()) {
@@ -39,5 +41,16 @@ public class GraphValidator {
                 }
 
                 return graphRepresentationType;
+        }
+
+        private static void fillMatchersForGraphRepresentation(String graphRepresentation) {
+                matcherForDirectedAndPonderedPattern = PATTERN_TO_VALIDATE_A_DIRECTED_PONDERED_GRAPH
+                                .matcher(graphRepresentation);
+                matcherForDirectedAndUnponderedPattern = PATTERN_TO_VALIDATE_A_DIRECTED_UNPONDERED_GRAPH
+                                .matcher(graphRepresentation);
+                matcherForUndirectedAndPonderedPattern = PATTERN_TO_VALIDATE_AN_UNDIRECTED_PONDERED_GRAPH
+                                .matcher(graphRepresentation);
+                matcherForUndirectedAndUnponderedPattern = PATTERN_TO_VALIDATE_AN_UNDIRECTED_UNPONDERED_GRAPH
+                                .matcher(graphRepresentation);
         }
 }
