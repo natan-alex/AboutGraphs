@@ -55,16 +55,16 @@ public class FordFulkerson {
 
     private void addFlowToEdges(List<FlowEdge> flowEdges, int flow) {
         for (FlowEdge flowEdge : flowEdges) {
-            flowEdge.currentCapacity += flow;
+            flowEdge.currentFlow += flow;
 
-            if (flowEdge.currentCapacity > flowEdge.maximumCapacity) {
-                flowEdge.currentCapacity = flowEdge.maximumCapacity;
+            if (flowEdge.currentFlow > flowEdge.maximumCapacity) {
+                flowEdge.currentFlow = flowEdge.maximumCapacity;
             }
 
-            flowEdge.currentCapacityInReversedDirection += flow;
+            flowEdge.currentFlowInReversedDirection += flow;
 
-            if (flowEdge.currentCapacityInReversedDirection > flowEdge.maximumCapacity) {
-                flowEdge.currentCapacityInReversedDirection = flowEdge.maximumCapacity;
+            if (flowEdge.currentFlowInReversedDirection > flowEdge.maximumCapacity) {
+                flowEdge.currentFlowInReversedDirection = flowEdge.maximumCapacity;
             }
         }
     }
