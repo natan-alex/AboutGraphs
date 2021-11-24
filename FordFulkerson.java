@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -34,43 +35,52 @@ public class FordFulkerson {
         deepFirstSearch = new DeepFirstSearch(residualGraphNetwork);
         List<Vertice> path = deepFirstSearch.getPathBetweenVertices(source, sink);
         List<FlowEdge> flowEdgesInThePath;
-        int minimumFlowBetweenEdges;
+        int minimumCapacityBetweenEdges;
 
-        while (path != null && !path.isEmpty()) {
+        while (path != null && !path.isEmpty() && !disjointPaths.contains(path)) {
             flowEdgesInThePath = getFlowEdgesInThePath(path);
-            minimumFlowBetweenEdges = getMinimumFlowInFlowEdgeList(flowEdgesInThePath);
+            minimumCapacityBetweenEdges = getMinimumCapacityInFlowEdgeList(flowEdgesInThePath);
 
-            addFlowToEdges(flowEdgesInThePath, minimumFlowBetweenEdges);
+            addFlowToResidualNetworkFlowEdges(minimumCapacityBetweenEdges);
 
             disjointPaths.add(path);
 
             System.out.println("edges: " + flowEdgesInThePath);
-            System.out.println("min flow: " + minimumFlowBetweenEdges);
+            System.out.println("min flow: " + minimumCapacityBetweenEdges);
             System.out.println("path: " + path);
 
             path = deepFirstSearch.getPathBetweenVertices(source, sink);
         }
         System.out.println("residual g: " + residualGraphNetwork.flowEdges);
+        System.out.println("residual g rev: " + residualGraphNetwork.flowEdgesInReversedDirection);
     }
 
-    private void addFlowToEdges(List<FlowEdge> flowEdges, int flow) {
-        for (FlowEdge flowEdge : flowEdges) {
-            flowEdge.currentFlow += flow;
+    private void addFlowToResidualNetworkFlowEdges(int flow) {
+        Iterator<FlowEdge> flowEdgesIterator = residualGraphNetwork.flowEdges.iterator();
+        Iterator<FlowEdge> reversedFlowEdgesIterator = residualGraphNetwork.flowEdgesInReversedDirection.iterator();
+        FlowEdge currentFlowEdge;
+        FlowEdge currentReversedFlowEdge;
 
-            if (flowEdge.currentFlow > flowEdge.maximumCapacity) {
-                flowEdge.currentFlow = flowEdge.maximumCapacity;
+        for (int i = 0; i < residualGraphNetwork.flowEdges.size(); i++) {
+            currentFlowEdge = flowEdgesIterator.next();
+            currentReversedFlowEdge = reversedFlowEdgesIterator.next();
+
+            currentFlowEdge.currentFlow = currentFlowEdge.maximumCapacity - flow - currentFlowEdge.currentFlow;
+
+            if (currentFlowEdge.currentFlow < 0) {
+                currentFlowEdge.currentFlow = 0;
             }
 
-            flowEdge.currentFlowInReversedDirection += flow;
+            currentReversedFlowEdge.currentFlow += flow;
 
-            if (flowEdge.currentFlowInReversedDirection > flowEdge.maximumCapacity) {
-                flowEdge.currentFlowInReversedDirection = flowEdge.maximumCapacity;
+            if (currentReversedFlowEdge.currentFlow > currentReversedFlowEdge.maximumCapacity) {
+                currentReversedFlowEdge.currentFlow = currentReversedFlowEdge.maximumCapacity;
             }
         }
     }
 
-    private int getMinimumFlowInFlowEdgeList(List<FlowEdge> edges) {
-        return edges.stream().mapToInt(edge -> edge.maximumCapacity).min().getAsInt();
+    private int getMinimumCapacityInFlowEdgeList(List<FlowEdge> flowEdges) {
+        return flowEdges.stream().mapToInt(edge -> edge.maximumCapacity).min().getAsInt();
     }
 
     private List<FlowEdge> getFlowEdgesInThePath(List<Vertice> path) {
