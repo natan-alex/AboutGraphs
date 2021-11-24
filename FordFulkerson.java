@@ -41,11 +41,12 @@ public class FordFulkerson {
             flowEdgesInThePath = getFlowEdgesInThePath(path);
             minimumCapacityBetweenEdges = getMinimumCapacityInFlowEdgeList(flowEdgesInThePath);
 
-            addFlowToResidualNetworkFlowEdges(minimumCapacityBetweenEdges);
+            addFlowAndAdjustFlowsInResidualNetworkFlowEdges(minimumCapacityBetweenEdges);
 
             disjointPaths.add(path);
+            removeFromResidualGraphTheEdgesInThePathThatHaveNoFlowGoing(flowEdgesInThePath);
 
-            System.out.println("edges: " + flowEdgesInThePath);
+            System.out.println("edges in the path: " + flowEdgesInThePath);
             System.out.println("min flow: " + minimumCapacityBetweenEdges);
             System.out.println("path: " + path);
 
@@ -55,7 +56,17 @@ public class FordFulkerson {
         System.out.println("residual g rev: " + residualGraphNetwork.flowEdgesInReversedDirection);
     }
 
-    private void addFlowToResidualNetworkFlowEdges(int flow) {
+    private void removeFromResidualGraphTheEdgesInThePathThatHaveNoFlowGoing(List<FlowEdge> path) {
+        List<FlowEdge> currentFlowEdges = new ArrayList<>(residualGraphNetwork.flowEdges);
+
+        for (FlowEdge flowEdge : currentFlowEdges) {
+            if (path.contains(flowEdge) && flowEdge.currentFlow == 0) {
+                residualGraphNetwork.flowEdges.remove(flowEdge);
+            }
+        }
+    }
+
+    private void addFlowAndAdjustFlowsInResidualNetworkFlowEdges(int flow) {
         Iterator<FlowEdge> flowEdgesIterator = residualGraphNetwork.flowEdges.iterator();
         Iterator<FlowEdge> reversedFlowEdgesIterator = residualGraphNetwork.flowEdgesInReversedDirection.iterator();
         FlowEdge currentFlowEdge;
