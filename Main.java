@@ -16,8 +16,8 @@ public class Main {
         AStarSearch aStarSearch = null;
         GraphHeuristics graphHeuristics = null;
 
-        graph = new Graph("{(a,b,1), (a,c,1), (b,c,2)}");
-        FordFulkerson fordFulkerson = new FordFulkerson(graph, "a", "c");
+        graph = new Graph("{(s,u,20), (u,v,30), (s,v,10), (u,t,10), (v,t,20)}");
+        FordFulkerson fordFulkerson = new FordFulkerson(graph, "s", "t");
 
         // while ((fileLine = bufferedReader.readLine()) != null) {
         // graph = new Graph(fileLine);
