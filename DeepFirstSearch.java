@@ -35,6 +35,7 @@ public class DeepFirstSearch extends BaseSearchStructure {
     }
 
     public List<Vertice> getPathBetweenVertices(Vertice startVertice, Vertice endVertice) {
+        initializeTimeArrays();
         int timeNumber = 1, verticeIndexInVerticeSet;
         Vertice currentVertice;
         List<Vertice> pathBetweenVertices = new ArrayList<>();

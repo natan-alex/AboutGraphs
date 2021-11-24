@@ -10,11 +10,11 @@ public abstract class BaseSearchStructure {
         endTimes = new int[graph.numberOfVertices];
         edgeClassifications = new EdgeClassifications[graph.numberOfEdges];
 
-        initializeTimeArrays(graph.numberOfVertices);
+        initializeTimeArrays();
     }
 
-    private void initializeTimeArrays(int numberOfVertices) {
-        for (int i = 0; i < numberOfVertices; i++) {
+    protected void initializeTimeArrays() {
+        for (int i = 0; i < relatedGraph.numberOfVertices; i++) {
             discoveryTimes[i] = -1;
             endTimes[i] = -1;
         }
