@@ -18,6 +18,7 @@ public class Main {
 
         graph = new Graph("{(s,u,20), (u,v,30), (s,v,10), (u,t,10), (v,t,20)}");
         FordFulkerson fordFulkerson = new FordFulkerson(graph, "s", "t");
+        System.out.println(fordFulkerson.computeMaximumFlowAndGetDisjointPaths());
 
         // while ((fileLine = bufferedReader.readLine()) != null) {
         // graph = new Graph(fileLine);
