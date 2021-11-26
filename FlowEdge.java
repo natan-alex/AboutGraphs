@@ -1,15 +1,15 @@
 public class FlowEdge extends Edge {
-    public int currentFlow;
+    public int howMuchFlowCanPass;
     public int maximumCapacity;
 
     public FlowEdge(String edgeRepresentation, int maximumCapacity) throws IllegalArgumentException {
         super(edgeRepresentation);
         this.maximumCapacity = maximumCapacity;
-        currentFlow = 0;
+        howMuchFlowCanPass = 0;
     }
 
     @Override
     public String toString() {
-        return stringRepresentation + ": " + currentFlow + ", " + maximumCapacity;
+        return stringRepresentation + ": " + howMuchFlowCanPass + ", " + maximumCapacity;
     }
 }
