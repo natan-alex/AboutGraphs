@@ -12,7 +12,8 @@ public class FlowNetwork extends Graph {
 
         for (Edge edge : edges) {
             flowEdges.add(new FlowEdge(edge.stringRepresentation, edge.value));
-            flowEdgesInReversedDirection.add(new FlowEdge(createEdgeRepresentationWithVerticesReversed(edge), edge.value));
+            flowEdgesInReversedDirection
+                    .add(new FlowEdge(createEdgeRepresentationWithVerticesReversed(edge), edge.value));
         }
     }
 
@@ -39,4 +40,13 @@ public class FlowNetwork extends Graph {
         return null;
     }
 
+    public FlowEdge getDirectedEdgeInReversedDirectionWithThisVertices(Vertice firstVertice, Vertice secondVertice) {
+        for (FlowEdge flowEdge : flowEdgesInReversedDirection) {
+            if (flowEdge.firstVertice.equals(firstVertice) && flowEdge.secondVertice.equals(secondVertice)) {
+                return flowEdge;
+            }
+        }
+
+        return null;
+    }
 }
