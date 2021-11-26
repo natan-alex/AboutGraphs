@@ -9,6 +9,10 @@ public class FordFulkerson {
     private FlowNetwork residualGraphNetwork;
     private List<List<Vertice>> disjointPaths;
     private DeepFirstSearch deepFirstSearch;
+    private List<Vertice> pathFound;
+    private List<FlowEdge> flowEdgesInThePath;
+    private List<FlowEdge> flowEdgesInReversedDirectionInThePath;
+    private int minimumCapacityBetweenEdges;
 
     public FordFulkerson(Graph graph, String source, String sink) throws IllegalArgumentException {
         relatedGraph = graph;
@@ -29,37 +33,24 @@ public class FordFulkerson {
         residualGraphNetwork = new FlowNetwork(relatedGraph.stringRepresentation);
         disjointPaths = new ArrayList<>();
         deepFirstSearch = new DeepFirstSearch(residualGraphNetwork);
-        List<Vertice> path = deepFirstSearch.getPathBetweenVertices(source, sink);
-        List<FlowEdge> flowEdgesInThePath;
-        List<FlowEdge> flowEdgesInReversedDirectionInThePath;
-        int minimumCapacityBetweenEdges;
+        pathFound = deepFirstSearch.getPathBetweenVertices(source, sink);
 
-        while (path != null && !path.isEmpty() && !disjointPaths.contains(path)) {
-            System.out.println("path: " + path);
-
-            flowEdgesInThePath = getFlowEdgesInThePath(path);
+        while (pathFound != null && !pathFound.isEmpty() && !disjointPaths.contains(pathFound)) {
+            flowEdgesInThePath = getFlowEdgesInThePath(pathFound);
             flowEdgesInReversedDirectionInThePath = getCorrespondingFlowEdgesInReversedDirectionAccordingToFlowEdgeList(
                     flowEdgesInThePath);
-            System.out.println("edges in the path: " + flowEdgesInThePath);
-            System.out.println("rev edges in the path: " + flowEdgesInReversedDirectionInThePath);
 
             minimumCapacityBetweenEdges = getMinimumCapacityInFlowEdgeList(flowEdgesInThePath);
-            System.out.println("min flow: " + minimumCapacityBetweenEdges);
 
             addFlowAndAdjustFlowsInFlowEdgesList(minimumCapacityBetweenEdges, flowEdgesInThePath);
             addFlowAndAdjustFlowsInFlowEdgesInReversedDirectionList(minimumCapacityBetweenEdges,
                     flowEdgesInReversedDirectionInThePath);
 
-            System.out.println("edges in the path with new flow: " + flowEdgesInThePath);
-            System.out.println("rev edges in the path with new flow: " + flowEdgesInReversedDirectionInThePath);
-
-            disjointPaths.add(path);
+            disjointPaths.add(pathFound);
             removeFromResidualGraphTheEdgesInThePathThatHaveNoFlowGoing(flowEdgesInThePath);
 
-            path = deepFirstSearch.getPathBetweenVertices(source, sink);
+            pathFound = deepFirstSearch.getPathBetweenVertices(source, sink);
         }
-        System.out.println("residual g: " + residualGraphNetwork.flowEdges);
-        System.out.println("residual g rev: " + residualGraphNetwork.flowEdgesInReversedDirection);
 
         return disjointPaths;
     }
