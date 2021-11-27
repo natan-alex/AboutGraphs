@@ -1,35 +1,26 @@
+package aboutGraphs.searches;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import aboutGraphs.core.*;
 
 public class GraphHeuristics {
     private final Graph relatedGraph;
     private final String heuristicsStringRepresentation;
     public final Map<Vertice, Integer> verticesAndTheirHeuristics;
 
-    public GraphHeuristics(Graph graph, String heuristicsRepresentation) {
+    public GraphHeuristics(Graph graph, String heuristicsRepresentation) throws IllegalArgumentException {
         relatedGraph = graph;
 
         verticesAndTheirHeuristics = new LinkedHashMap<>(relatedGraph.numberOfVertices);
         heuristicsStringRepresentation = heuristicsRepresentation;
 
-        checkIfHeuristicsRepresentationIsValid(heuristicsRepresentation);
+        GraphHeuristicsValidator.validateHeuristicsRepresentation(heuristicsRepresentation);
 
         fillHeuristicsForEachVertice();
-    }
-
-    private static Pattern PATTERN_TO_VALIDATE_THE_HEURISTICS = Pattern
-            .compile("^\\s*\\[\\s*(?:\\s*\\w+\\s*:\\s*\\d+\\s*,)*\\s*\\w+\\s*:\\s*\\d+\\s*\\]\\s*", Pattern.MULTILINE);
-
-    private void checkIfHeuristicsRepresentationIsValid(String heuristicsRepresentation)
-            throws IllegalArgumentException {
-        Matcher matcher = PATTERN_TO_VALIDATE_THE_HEURISTICS.matcher(heuristicsRepresentation);
-
-        if (!matcher.matches())
-            throw new IllegalArgumentException("The heuristic " + heuristicsRepresentation
-                    + " is not a valid heuristic. A valid heuristic is something like [ a: 1, b: 2.3, c: 3.0 ]"
-                    + " where the vertice is on the left of the : and the heuristic value is on the rigth.");
     }
 
     private String[] splitHeuristicRepresentation() {

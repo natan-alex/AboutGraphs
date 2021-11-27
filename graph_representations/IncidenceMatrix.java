@@ -1,3 +1,7 @@
+package aboutGraphs.representations;
+
+import aboutGraphs.core.*;
+
 public class IncidenceMatrix extends BaseMatrix {
     private Graph relatedGraph;
 

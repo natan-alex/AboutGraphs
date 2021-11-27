@@ -1,5 +1,9 @@
+package aboutGraphs.representations;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import aboutGraphs.core.*;
 
 public class PredecessorAdjacencyList extends BaseAdjacencyList {
     public PredecessorAdjacencyList(Graph graph) {

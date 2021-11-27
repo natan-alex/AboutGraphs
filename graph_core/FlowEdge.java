@@ -1,3 +1,5 @@
+package aboutGraphs.core;
+
 public class FlowEdge extends Edge {
     public int howMuchFlowCanStillPass;
     public int maximumCapacity;

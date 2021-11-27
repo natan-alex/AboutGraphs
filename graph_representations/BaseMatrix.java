@@ -1,3 +1,7 @@
+package aboutGraphs.representations;
+
+import aboutGraphs.core.*;
+
 public abstract class BaseMatrix {
     public final int[][] matrix;
     public final int numberOfLines;

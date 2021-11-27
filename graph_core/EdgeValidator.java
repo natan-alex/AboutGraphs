@@ -1,3 +1,5 @@
+package aboutGraphs.core;
+
 import java.util.regex.*;
 
 public class EdgeValidator {

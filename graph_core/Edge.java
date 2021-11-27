@@ -1,3 +1,5 @@
+package aboutGraphs.core;
+
 public class Edge {
     public final String stringRepresentation;
     public final Vertice firstVertice;

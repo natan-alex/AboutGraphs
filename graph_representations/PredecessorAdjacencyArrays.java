@@ -1,3 +1,7 @@
+package aboutGraphs.representations;
+
+import aboutGraphs.core.*;
+
 public class PredecessorAdjacencyArrays extends BaseAdjacencyArrays {
     public PredecessorAdjacencyArrays(Graph graph) {
         super(graph);

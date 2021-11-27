@@ -1,3 +1,5 @@
+package aboutGraphs.core;
+
 import java.util.regex.*;
 import java.util.ArrayList;
 import java.util.List;

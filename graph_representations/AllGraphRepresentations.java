@@ -1,3 +1,7 @@
+package aboutGraphs.representations;
+
+import aboutGraphs.core.*;
+
 public class AllGraphRepresentations {
     public final AdjacencyMatrix adjacencyMatrix;
     public final IncidenceMatrix incidenceMatrix;

@@ -1,4 +1,8 @@
+package aboutGraphs.searches;
+
 import java.util.Comparator;
+
+import aboutGraphs.core.*;
 
 public final class VerticeComparatorInBFS implements Comparator<Vertice> {
     Vertice startingPointVertice;

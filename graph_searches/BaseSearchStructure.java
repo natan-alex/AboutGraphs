@@ -1,3 +1,7 @@
+package aboutGraphs.searches;
+
+import aboutGraphs.core.*;
+
 public abstract class BaseSearchStructure {
     protected final int[] discoveryTimes;
     protected final int[] endTimes;

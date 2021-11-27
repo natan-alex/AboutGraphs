@@ -2,6 +2,11 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.Scanner;
 
+import aboutGraphs.core.*;
+import aboutGraphs.representations.*;
+import aboutGraphs.searches.*;
+import aboutGraphs.fordFulkerson.*;
+
 public class Main {
     public static void main(String[] args) throws Exception {
         double start = System.currentTimeMillis();

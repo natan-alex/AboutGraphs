@@ -1,8 +1,13 @@
+package aboutGraphs.searches;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+
+import aboutGraphs.core.*;
+import aboutGraphs.representations.SuccessorAdjacencyList;
 
 public class DeepFirstSearch extends BaseSearchStructure {
     private final Map<Vertice, List<Vertice>> successorAdjacencyList;

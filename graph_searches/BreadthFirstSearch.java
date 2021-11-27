@@ -1,8 +1,13 @@
+package aboutGraphs.searches;
+
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import aboutGraphs.core.*;
+import aboutGraphs.representations.SuccessorAdjacencyList;
 
 public class BreadthFirstSearch extends BaseSearchStructure {
     private final Map<Vertice, List<Vertice>> successorAdjacencyList;

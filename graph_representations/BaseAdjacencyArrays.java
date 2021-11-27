@@ -1,3 +1,7 @@
+package aboutGraphs.representations;
+
+import aboutGraphs.core.*;
+
 public abstract class BaseAdjacencyArrays {
     public int[] verticesWhereTheEdgeComesFrom;
     public int[] verticesWhereTheEdgeIsIncident;

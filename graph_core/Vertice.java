@@ -1,3 +1,5 @@
+package aboutGraphs.core;
+
 public class Vertice {
     public final String name;
 

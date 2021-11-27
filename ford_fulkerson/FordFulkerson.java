@@ -1,5 +1,10 @@
+package aboutGraphs.fordFulkerson;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import aboutGraphs.searches.DeepFirstSearch;
+import aboutGraphs.core.*;
 
 public class FordFulkerson {
     private final Graph relatedGraph;

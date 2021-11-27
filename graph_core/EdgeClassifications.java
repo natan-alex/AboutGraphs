@@ -1,3 +1,5 @@
+package aboutGraphs.core;
+
 public enum EdgeClassifications {
     TREE("Tree"), CROSSING("Crossing"), RETURN("Return"), ADVANCE("Advance");
 
