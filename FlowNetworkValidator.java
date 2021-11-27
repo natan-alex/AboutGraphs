@@ -23,7 +23,7 @@ public class FlowNetworkValidator {
 
         throwExceptionIfVerticeIsNull(source, sourceName);
         throwExceptionIfVerticeIsNull(sink, sinkName);
-        throwExceptionIfSourceAndSinkAreEquals(source.name, sink.name);
+        throwExceptionIfSourceAndSinkAreEquals(sourceName, sinkName);
         checkIfSourceAndSinkAreValid();
     }
 

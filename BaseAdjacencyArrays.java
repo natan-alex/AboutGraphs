@@ -51,7 +51,7 @@ public abstract class BaseAdjacencyArrays {
         return -1;
     }
 
-    public void showAdjacencyArraysIncreasingTheirValuesByOne() {
+    protected void showAdjacencyArraysIncreasingTheirValuesByOne() {
         System.out.print("First array of indices: [ ");
 
         for (int index : verticesWhereTheEdgeComesFrom)

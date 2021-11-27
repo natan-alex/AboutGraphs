@@ -1,4 +1,4 @@
-public class AdjacencyMatrix extends BaseMatrix implements GraphRepresentation {
+public class AdjacencyMatrix extends BaseMatrix {
     private Graph relatedGraph;
 
     public AdjacencyMatrix(Graph graph) {
@@ -36,8 +36,7 @@ public class AdjacencyMatrix extends BaseMatrix implements GraphRepresentation {
         }
     }
 
-    @Override
-    public void show() {
+    public void showAdjacencyMatrix() {
         System.out.println("\n\tADJACENCY MATRIX\n");
         int currentLine = 0;
 

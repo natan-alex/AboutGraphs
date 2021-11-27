@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class SuccessorAdjacencyList extends BaseAdjacencyList implements GraphRepresentation {
+public class SuccessorAdjacencyList extends BaseAdjacencyList {
 
     public SuccessorAdjacencyList(Graph graph) {
         super();
@@ -22,8 +22,7 @@ public class SuccessorAdjacencyList extends BaseAdjacencyList implements GraphRe
         return verticeChildren;
     }
 
-    @Override
-    public void show() {
+    public void showSuccessorAdjacencyList() {
         System.out.println("\n\tSUCCESSOR ADJACENCY LIST\n");
         super.showAdjacencyList();
     }

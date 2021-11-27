@@ -19,11 +19,11 @@ public class AllGraphRepresentations {
 
     public void showAllRepresentations() {
         System.out.println("\n\tREPRESENTATIONS FOR GRAPH: " + graphStringRepresentation);
-        adjacencyMatrix.show();
-        incidenceMatrix.show();
-        successorAdjacencyList.show();
-        predecessorAdjacencyList.show();
-        successorAdjacencyArrays.show();
-        predecessorAdjacencyArrays.show();
+        adjacencyMatrix.showAdjacencyMatrix();
+        incidenceMatrix.showIncidenceMatrix();
+        successorAdjacencyList.showSuccessorAdjacencyList();
+        predecessorAdjacencyList.showPredecessorAdjacencyList();
+        successorAdjacencyArrays.showSuccessorAdjacencyArrays();
+        predecessorAdjacencyArrays.showPredecessorAdjacencyArrays();
     }
 }

@@ -1,4 +1,4 @@
-public class SuccessorAdjacencyArrays extends BaseAdjacencyArrays implements GraphRepresentation {
+public class SuccessorAdjacencyArrays extends BaseAdjacencyArrays {
     public SuccessorAdjacencyArrays(Graph graph) {
         super(graph);
 
@@ -28,7 +28,7 @@ public class SuccessorAdjacencyArrays extends BaseAdjacencyArrays implements Gra
         return reorderedArray;
     }
 
-    public void show() {
+    public void showSuccessorAdjacencyArrays() {
         System.out.println("\n\tSUCCESSOR ADJACENCY ARRAYS\n");
         super.showAdjacencyArraysIncreasingTheirValuesByOne();
     }

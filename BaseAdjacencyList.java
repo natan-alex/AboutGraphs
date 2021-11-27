@@ -9,7 +9,7 @@ public abstract class BaseAdjacencyList {
         adjacencyList = new HashMap<>();
     }
 
-    public void showAdjacencyList() {
+    protected void showAdjacencyList() {
         for (Map.Entry<Vertice, List<Vertice>> entry : adjacencyList.entrySet()) {
             System.out.print(entry.getKey().name + " -> ");
 

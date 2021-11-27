@@ -1,4 +1,4 @@
-public class IncidenceMatrix extends BaseMatrix implements GraphRepresentation {
+public class IncidenceMatrix extends BaseMatrix {
     private Graph relatedGraph;
 
     public IncidenceMatrix(Graph graph) {
@@ -31,8 +31,7 @@ public class IncidenceMatrix extends BaseMatrix implements GraphRepresentation {
         }
     }
 
-    @Override
-    public void show() {
+    public void showIncidenceMatrix() {
         System.out.println("\n\tINCIDENCE MATRIX\n");
         int currentLine = 0;
 
