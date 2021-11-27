@@ -10,20 +10,8 @@ public class Graph {
     public int numberOfVertices;
     public int numberOfEdges;
 
-    public static final String EXAMPLES_OF_VALID_GRAPHS_MESSAGE = "Examples of valid graphs:"
-            + "\n  { (a, b) } for a directed and unpondered graph"
-            + "\n  { {hello, world} } for a undirected and unpondered graph"
-            + "\n  { (foo, bar, 10) } for a directed and pondered graph"
-            + "\n  { {hey, man, 1} } for a undirected and pondered graph";
-
-    public static final String INFORMATIVE_EXCEPTION_MESSAGE = "A valid graph must be enclosed with {} and contains multiple edges inside curly braces."
-            + "\nAn edge must be enclosed with () if it is part of a directed graph or {} if it is part of an undirected graph."
-            + "\n" + EXAMPLES_OF_VALID_GRAPHS_MESSAGE;
-
     public Graph(String graphRepresentation) throws IllegalArgumentException {
         GraphTypes graphType = GraphValidator.whichTypeOfGraphIs(graphRepresentation);
-
-        throwExceptionIfGraphIsInvalid(graphType);
 
         type = graphType;
         stringRepresentation = graphRepresentation;
@@ -35,12 +23,6 @@ public class Graph {
 
         numberOfEdges = edges.size();
         numberOfVertices = vertices.size();
-    }
-
-    private void throwExceptionIfGraphIsInvalid(GraphTypes graphType) throws IllegalArgumentException {
-        if (graphType == null) {
-            throw new IllegalArgumentException(INFORMATIVE_EXCEPTION_MESSAGE);
-        }
     }
 
     private void fillEdgeList() {
