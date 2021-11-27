@@ -37,9 +37,8 @@ public class FordFulkerson {
 
             minimumCapacityBetweenEdges = getMinimumCapacityInFlowEdgeList(flowEdgesInThePath);
 
-            addFlowAndAdjustFlowsInFlowEdgesList(minimumCapacityBetweenEdges, flowEdgesInThePath);
-            addFlowAndAdjustFlowsInFlowEdgesInReversedDirectionList(minimumCapacityBetweenEdges,
-                    flowEdgesInReversedDirectionInThePath);
+            adjustFlowThatCanStillPassInFlowEdgesInTheList(minimumCapacityBetweenEdges, flowEdgesInThePath);
+            addFlowToFlowEdgesInTheList(minimumCapacityBetweenEdges, flowEdgesInReversedDirectionInThePath);
 
             disjointPaths.add(pathFound);
             removeFromResidualGraphTheEdgesInThePathThatCannotReceiveMoreFlow(flowEdgesInThePath);
@@ -69,14 +68,15 @@ public class FordFulkerson {
     }
     
     private List<FlowEdge> getCorrespondingFlowEdgesInReversedDirectionAccordingToFlowEdgeList(List<FlowEdge> list) {
-        List<FlowEdge> reversedFlowEdgesList = new ArrayList<>();
+        List<FlowEdge> flowEdgesInReversedDirectionList = new ArrayList<>();
+        FlowEdge flowEdgeContainingTheVertices;
 
         for (FlowEdge flowEdge : list) {
-            reversedFlowEdgesList.add(residualGraphNetwork
-                    .getDirectedEdgeInReversedDirectionWithThisVertices(flowEdge.secondVertice, flowEdge.firstVertice));
+            flowEdgeContainingTheVertices = residualGraphNetwork.getDirectedEdgeInReversedDirectionWithThisVertices(flowEdge.secondVertice, flowEdge.firstVertice);
+            flowEdgesInReversedDirectionList.add(flowEdgeContainingTheVertices);
         }
 
-        return reversedFlowEdgesList;
+        return flowEdgesInReversedDirectionList;
     }
 
     private int getMinimumCapacityInFlowEdgeList(List<FlowEdge> flowEdges) {
@@ -93,7 +93,7 @@ public class FordFulkerson {
         }
     }
     
-    private void addFlowAndAdjustFlowsInFlowEdgesList(int flow, List<FlowEdge> list) {
+    private void adjustFlowThatCanStillPassInFlowEdgesInTheList(int flow, List<FlowEdge> list) {
         for (FlowEdge flowEdge : list) {
             flowEdge.howMuchFlowCanStillPass = flowEdge.maximumCapacity - flow - flowEdge.howMuchFlowCanStillPass;
 
@@ -103,7 +103,7 @@ public class FordFulkerson {
         }
     }
 
-    private void addFlowAndAdjustFlowsInFlowEdgesInReversedDirectionList(int flow, List<FlowEdge> list) {
+    private void addFlowToFlowEdgesInTheList(int flow, List<FlowEdge> list) {
         for (FlowEdge flowEdge : list) {
             flowEdge.howMuchFlowCanStillPass += flow;
 
