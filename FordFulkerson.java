@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class FordFulkerson {
     private final Graph relatedGraph;
@@ -15,55 +14,15 @@ public class FordFulkerson {
     private int minimumCapacityBetweenEdges;
 
     public FordFulkerson(Graph graph, String source, String sink) throws IllegalArgumentException {
+        FlowNetworkValidator.validateGraphAsFlowNetwork(graph);
+
+        this.source = graph.getVerticeByName(source);
+        this.sink = graph.getVerticeByName(sink);
+
+        FlowNetworkValidator.validateSourceAndSinkVertices(this.source, source, this.sink, sink);
+
         relatedGraph = graph;
-
-        throwExceptionIfSourceAndSinkAreEquals(source, sink);
-        throwExceptionIfGraphIsInvalid();
-
-        this.source = relatedGraph.getVerticeByName(source);
-        this.sink = relatedGraph.getVerticeByName(sink);
-
-        throwExceptionIfVerticeIsNull(this.source, source);
-        throwExceptionIfVerticeIsNull(this.sink, sink);
-
-        checkIfSourceAndSinkAreValid();
     }
-
-    private void throwExceptionIfSourceAndSinkAreEquals(String first, String second) {
-        if (first.compareToIgnoreCase(second) == 0) {
-            throw new IllegalArgumentException("Source and sink vertices can not be the same vertice.");
-        }
-    }
-
-    private void checkIfSourceAndSinkAreValid() throws IllegalArgumentException {
-        if (Pattern.compile(",\\s*" + source.name).matcher(relatedGraph.stringRepresentation).find()) {
-            throw new IllegalArgumentException("The source can not have edges coming to it.");
-        }
-
-        if (Pattern.compile("\\(" + sink.name).matcher(relatedGraph.stringRepresentation).find()) {
-            throw new IllegalArgumentException("The sink can not have edges leaving from it.");
-        }
-    }
-
-    private void throwExceptionIfGraphIsInvalid() throws IllegalArgumentException {
-        if (relatedGraph.type != GraphTypes.DIRECTED_AND_PONDERED) {
-            throw new IllegalArgumentException(
-                    "Can not execute ford fulkerson algorithm in an unpondered or undirected graph.");
-        }
-    }
-
-    private void throwExceptionIfVerticeIsNull(Vertice verticeFound, String verticeName)
-            throws IllegalArgumentException {
-        if (verticeFound == null) {
-            throw new IllegalArgumentException(getNotFoundExceptionMessage(verticeName));
-        }
-    }
-
-    private String getNotFoundExceptionMessage(String verticeName) {
-        return "The vertice " + verticeName + " is not in the vertice set." + "\nThe vertice set is: "
-                + relatedGraph.vertices;
-    }
-
 
     public List<List<Vertice>> computeMaximumFlowAndGetDisjointPaths() {
         residualGraphNetwork = new FlowNetwork(relatedGraph.stringRepresentation);
@@ -112,9 +71,9 @@ public class FordFulkerson {
     private List<FlowEdge> getCorrespondingFlowEdgesInReversedDirectionAccordingToFlowEdgeList(List<FlowEdge> list) {
         List<FlowEdge> reversedFlowEdgesList = new ArrayList<>();
 
-        for (FlowEdge edge : list) {
+        for (FlowEdge flowEdge : list) {
             reversedFlowEdgesList.add(residualGraphNetwork
-                    .getDirectedEdgeInReversedDirectionWithThisVertices(edge.secondVertice, edge.firstVertice));
+                    .getDirectedEdgeInReversedDirectionWithThisVertices(flowEdge.secondVertice, flowEdge.firstVertice));
         }
 
         return reversedFlowEdgesList;
@@ -135,23 +94,22 @@ public class FordFulkerson {
     }
     
     private void addFlowAndAdjustFlowsInFlowEdgesList(int flow, List<FlowEdge> list) {
-        for (FlowEdge edge : list) {
-            edge.howMuchFlowCanStillPass = edge.maximumCapacity - flow - edge.howMuchFlowCanStillPass;
+        for (FlowEdge flowEdge : list) {
+            flowEdge.howMuchFlowCanStillPass = flowEdge.maximumCapacity - flow - flowEdge.howMuchFlowCanStillPass;
 
-            if (edge.howMuchFlowCanStillPass < 0) {
-                edge.howMuchFlowCanStillPass = 0;
+            if (flowEdge.howMuchFlowCanStillPass < 0) {
+                flowEdge.howMuchFlowCanStillPass = 0;
             }
         }
     }
 
     private void addFlowAndAdjustFlowsInFlowEdgesInReversedDirectionList(int flow, List<FlowEdge> list) {
-        for (FlowEdge edge : list) {
-            edge.howMuchFlowCanStillPass += flow;
+        for (FlowEdge flowEdge : list) {
+            flowEdge.howMuchFlowCanStillPass += flow;
 
-            if (edge.howMuchFlowCanStillPass > edge.maximumCapacity) {
-                edge.howMuchFlowCanStillPass = edge.maximumCapacity;
+            if (flowEdge.howMuchFlowCanStillPass > flowEdge.maximumCapacity) {
+                flowEdge.howMuchFlowCanStillPass = flowEdge.maximumCapacity;
             }
         }
     }
-
 }

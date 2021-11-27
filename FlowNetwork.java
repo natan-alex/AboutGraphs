@@ -6,10 +6,13 @@ public class FlowNetwork extends Graph {
     public final List<FlowEdge> flowEdgesInReversedDirection;
 
     public FlowNetwork(String graphRepresentation) throws IllegalArgumentException {
+        // on super call the edge list and vertice set will be filled
         super(graphRepresentation);
+
         flowEdges = new ArrayList<>(numberOfEdges);
         flowEdgesInReversedDirection = new ArrayList<>(numberOfEdges);
 
+        // use the edge values as their maximum capacity
         for (Edge edge : edges) {
             flowEdges.add(new FlowEdge(edge.stringRepresentation, edge.value));
             flowEdgesInReversedDirection
