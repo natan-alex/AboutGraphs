@@ -1,56 +1,60 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.util.Scanner;
 
 import aboutGraphs.core.*;
-import aboutGraphs.representations.*;
 import aboutGraphs.searches.*;
+import aboutGraphs.representations.*;
 import aboutGraphs.fordFulkerson.*;
 
 public class Main {
+    private static Scanner scanner = new Scanner(System.in);
+    private static String sourceVertice;
+    private static String sinkVertice;
+    private static Graph graph;
+    private static double start;
+    private static double end;
+    private static FordFulkerson fordFulkerson;
+    private static int option;
+
     public static void main(String[] args) throws Exception {
-        double start = System.currentTimeMillis();
-        Scanner scanner = new Scanner(System.in);
+        do {
+            System.out.println("MENU");
+            System.out.println("[0] -- leave program");
+            System.out.println("[1] -- read graph from input");
+            System.out.print("Enter the option: ");
+            option = Integer.parseInt(scanner.nextLine());
 
-        BufferedReader bufferedReader = new BufferedReader(new FileReader("graphs.txt"));
-        String fileLine;
-        Graph graph = null;
-        AllGraphRepresentations allGraphRepresentations;
-        DeepFirstSearch deepSearch = null;
-        BreadthFirstSearch breadthSearch = null;
-        AStarSearch aStarSearch = null;
-        GraphHeuristics graphHeuristics = null;
+            switch (option) {
+                case 0:
+                    scanner.close();
+                    break;
+                case 1:
+                    System.out.print("Enter the graph: ");
+                    graph = new Graph(scanner.nextLine());
+                    System.out.print("Source vertice: ");
+                    sourceVertice = scanner.nextLine();
+                    System.out.print("Sink vertice: ");
+                    sinkVertice = scanner.nextLine();
+                    doOperationsInGraph();
+                    break;
+                default:
+                    System.out.println("Invalid operation");
+                    break;
+            }
 
-        graph = new Graph("{(s,u,20), (u,v,30), (s,v,10), (u,t,10), (v,t,20)}");
-        FordFulkerson fordFulkerson = new FordFulkerson(graph, "s", "t");
-        System.out.println(fordFulkerson.computeMaximumFlowAndGetDisjointPaths());
+        } while (option != 0);
 
-        // while ((fileLine = bufferedReader.readLine()) != null) {
-        // graph = new Graph(fileLine);
-        // allGraphRepresentations = new AllGraphRepresentations(graph);
-        // System.out.println("\nGraph: " + graph.stringRepresentation);
-        // graph.showVertices();
-        // deepSearch = new DeepFirstSearch(graph,
-        // allGraphRepresentations.successorAdjacencyList.adjacencyList);
-        // System.out.println("path: " + deepSearch.getPathBetweenVertices("a", "c"));
-        // deepSearch.showTimes();
-        // graphHeuristics = new GraphHeuristics(graph, "[a: 1]");
-        // breadthSearch = new BreadthFirstSearch(graph,
-        // allGraphRepresentations.successorAdjacencyList.adjacencyList);
-        // System.out.println("path: " + breadthSearch.getPathBetweenVertices("a",
-        // "c"));
-        // // breadthSearch.computeTimes();
-        // breadthSearch.showTimes();
-        // aStarSearch = new AStarSearch(graph,
-        // allGraphRepresentations.successorAdjacencyList.adjacencyList
-        // , graphHeuristics);
-        // aStarSearch.showTimes();
-        // }
+    }
 
-        bufferedReader.close();
-        scanner.close();
-        double end = System.currentTimeMillis();
+    private static void doOperationsInGraph() {
+        start = System.currentTimeMillis();
 
-        System.out.println("Duration: " + (end - start) + "ms\n");
+        System.out.println("\nGraph: " + graph.stringRepresentation);
+        graph.showVertices();
+        graph.showEdges();
+        fordFulkerson = new FordFulkerson(graph, sourceVertice, sinkVertice);
+        System.out.println("\nDisjoint paths: " + fordFulkerson.computeMaximumFlowAndGetDisjointPaths());
+
+        end = System.currentTimeMillis();
+        System.out.println("\nDuration: " + (end - start) + "ms\n");
     }
 }
