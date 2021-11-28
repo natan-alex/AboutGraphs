@@ -1,9 +1,5 @@
-public abstract class AbstractVertice implements IRepresentable {
-    private String representation;
-
-    public AbstractVertice(String verticeRepresentation) {
-        this.representation = verticeRepresentation;
-    }
+public abstract class AbstractVertice {
+    public abstract String getRepresentation();
 
     @Override
     public boolean equals(Object obj) {

@@ -1,12 +1,7 @@
-public abstract class AbstractEdge implements IRepresentable {
-    private String representation;
-    
-    public AbstractEdge(String edgeRepresentation) {
-        this.representation = edgeRepresentation;
-    }
-
+public abstract class AbstractEdge {
     public abstract AbstractVertice getFirstVertice();
     public abstract AbstractVertice getSecondVertice();
+    public abstract String getRepresentation();
 
     @Override
     public boolean equals(Object obj) {
