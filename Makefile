@@ -11,5 +11,9 @@ compile:
 	javac Main.java
 
 clean: 
+<<<<<<< HEAD
 	rm -rf AboutGraphs
 	rm *.class
+=======
+	rm -rf AboutGraphs
+>>>>>>> 1b387950559dd2ef737390340f12853d43947502
