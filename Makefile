@@ -4,11 +4,12 @@ run:
 	java Main
 
 compile: 
-	javac -d . graph_core/*.java
-	javac -d . graph_representations/*.java
-	javac -d . graph_searches/*.java
-	javac -d . ford_fulkerson/*.java
+	javac -d . core/*.java
+	javac -d . representations/*.java
+	javac -d . searches/*.java
+	javac -d . fordFulkerson/*.java
 	javac Main.java
 
 clean: 
-	rm -rf aboutGraphs
+	rm -rf AboutGraphs
+	rm *.class
