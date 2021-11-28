@@ -18,9 +18,16 @@ public class SuccessorAdjacencyList extends BaseAdjacencyList {
     private List<Vertice> getVerticeChildren(Vertice vertice, Graph graph) {
         List<Vertice> verticeChildren = new ArrayList<>();
 
-        for (Edge edge : graph.edges) {
-            if (vertice.equals(edge.firstVertice))
-                verticeChildren.add(edge.secondVertice);
+        if (graph instanceof FlowNetwork) {
+            for (FlowEdge flowEdge : ((FlowNetwork) graph).flowEdges) {
+                if (vertice.equals(flowEdge.firstVertice))
+                    verticeChildren.add(flowEdge.secondVertice);
+            }
+        } else {
+            for (Edge edge : graph.edges) {
+                if (vertice.equals(edge.firstVertice))
+                    verticeChildren.add(edge.secondVertice);
+            }
         }
 
         return verticeChildren;
