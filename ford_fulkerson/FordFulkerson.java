@@ -5,6 +5,7 @@ import java.util.List;
 
 import aboutGraphs.searches.DeepFirstSearch;
 import aboutGraphs.core.*;
+import aboutGraphs.representations.SuccessorAdjacencyList;
 
 public class FordFulkerson {
     private final Graph relatedGraph;
@@ -42,12 +43,14 @@ public class FordFulkerson {
 
             minimumCapacityBetweenEdges = getMinimumCapacityInFlowEdgeList(flowEdgesInThePath);
 
-            adjustFlowThatCanStillPassInFlowEdgesInTheList(minimumCapacityBetweenEdges, flowEdgesInThePath);
+            addFlowToFlowEdgesInTheList(minimumCapacityBetweenEdges, flowEdgesInThePath);
             addFlowToFlowEdgesInTheList(minimumCapacityBetweenEdges, flowEdgesInReversedDirectionInThePath);
 
             disjointPaths.add(pathFound);
             removeFromResidualGraphTheEdgesInThePathThatCannotReceiveMoreFlow(flowEdgesInThePath);
 
+            deepFirstSearch = new DeepFirstSearch(residualGraphNetwork,
+                    new SuccessorAdjacencyList(residualGraphNetwork));
             pathFound = deepFirstSearch.getPathBetweenVertices(source, sink);
         }
 
@@ -71,13 +74,14 @@ public class FordFulkerson {
 
         return flowEdges;
     }
-    
+
     private List<FlowEdge> getCorrespondingFlowEdgesInReversedDirectionAccordingToFlowEdgeList(List<FlowEdge> list) {
         List<FlowEdge> flowEdgesInReversedDirectionList = new ArrayList<>();
         FlowEdge flowEdgeContainingTheVertices;
 
         for (FlowEdge flowEdge : list) {
-            flowEdgeContainingTheVertices = residualGraphNetwork.getDirectedEdgeInReversedDirectionWithThisVertices(flowEdge.secondVertice, flowEdge.firstVertice);
+            flowEdgeContainingTheVertices = residualGraphNetwork
+                    .getDirectedEdgeInReversedDirectionWithThisVertices(flowEdge.secondVertice, flowEdge.firstVertice);
             flowEdgesInReversedDirectionList.add(flowEdgeContainingTheVertices);
         }
 
@@ -92,28 +96,18 @@ public class FordFulkerson {
         List<FlowEdge> currentFlowEdges = new ArrayList<>(residualGraphNetwork.flowEdges);
 
         for (FlowEdge flowEdge : currentFlowEdges) {
-            if (path.contains(flowEdge) && flowEdge.howMuchFlowCanStillPass == 0) {
+            if (path.contains(flowEdge) && flowEdge.currentFlowPassing == flowEdge.maximumCapacity) {
                 residualGraphNetwork.flowEdges.remove(flowEdge);
-            }
-        }
-    }
-    
-    private void adjustFlowThatCanStillPassInFlowEdgesInTheList(int flow, List<FlowEdge> list) {
-        for (FlowEdge flowEdge : list) {
-            flowEdge.howMuchFlowCanStillPass = flowEdge.maximumCapacity - flow - flowEdge.howMuchFlowCanStillPass;
-
-            if (flowEdge.howMuchFlowCanStillPass < 0) {
-                flowEdge.howMuchFlowCanStillPass = 0;
             }
         }
     }
 
     private void addFlowToFlowEdgesInTheList(int flow, List<FlowEdge> list) {
         for (FlowEdge flowEdge : list) {
-            flowEdge.howMuchFlowCanStillPass += flow;
+            flowEdge.currentFlowPassing += flow;
 
-            if (flowEdge.howMuchFlowCanStillPass > flowEdge.maximumCapacity) {
-                flowEdge.howMuchFlowCanStillPass = flowEdge.maximumCapacity;
+            if (flowEdge.currentFlowPassing > flowEdge.maximumCapacity) {
+                flowEdge.currentFlowPassing = flowEdge.maximumCapacity;
             }
         }
     }
