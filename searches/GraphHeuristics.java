@@ -1,11 +1,11 @@
-package aboutGraphs.searches;
+package AboutGraphs.searches;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import aboutGraphs.core.*;
+import AboutGraphs.core.*;
 
 public class GraphHeuristics {
     private final Graph relatedGraph;

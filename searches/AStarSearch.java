@@ -1,4 +1,4 @@
-package aboutGraphs.searches;
+package AboutGraphs.searches;
 
 import java.util.ArrayDeque;
 import java.util.List;
@@ -6,8 +6,8 @@ import java.util.Map;
 import java.util.Collections;
 import java.util.Queue;
 
-import aboutGraphs.core.*;
-import aboutGraphs.representations.SuccessorAdjacencyList;
+import AboutGraphs.core.*;
+import AboutGraphs.representations.SuccessorAdjacencyList;
 
 public class AStarSearch extends BaseSearchStructure {
     private final Map<Vertice, List<Vertice>> successorAdjacencyList;

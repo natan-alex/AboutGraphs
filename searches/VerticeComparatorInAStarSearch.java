@@ -1,8 +1,8 @@
-package aboutGraphs.searches;
+package AboutGraphs.searches;
 
 import java.util.Comparator;
 
-import aboutGraphs.core.*;
+import AboutGraphs.core.*;
 
 public final class VerticeComparatorInAStarSearch implements Comparator<Vertice> {
     Vertice startingPointVertice;

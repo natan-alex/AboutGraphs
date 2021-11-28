@@ -1,4 +1,4 @@
-package aboutGraphs.core;
+package AboutGraphs.core;
 
 import java.util.regex.Pattern;
 
@@ -11,7 +11,7 @@ public class FlowNetworkValidator {
         relatedGraph = graph;
         throwExceptionIfGraphIsNotAValidFlowNetwork();
     }
-    
+
     private static void throwExceptionIfGraphIsNotAValidFlowNetwork() throws IllegalArgumentException {
         if (relatedGraph.type != GraphTypes.DIRECTED_AND_PONDERED) {
             throw new IllegalArgumentException(
@@ -29,7 +29,8 @@ public class FlowNetworkValidator {
         checkIfSourceAndSinkAreValid();
     }
 
-    private static void throwExceptionIfVerticeIsNull(Vertice verticeFound, String verticeName) throws IllegalArgumentException {
+    private static void throwExceptionIfVerticeIsNull(Vertice verticeFound, String verticeName)
+            throws IllegalArgumentException {
         if (verticeFound == null) {
             throw new IllegalArgumentException(getNotFoundExceptionMessage(verticeName));
         }

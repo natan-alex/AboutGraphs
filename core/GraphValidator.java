@@ -1,17 +1,17 @@
-package aboutGraphs.core;
+package AboutGraphs.core;
 
 import java.util.regex.*;
 
 public class GraphValidator {
         public static final String EXAMPLES_OF_VALID_GRAPHS_MESSAGE = "Examples of valid graphs:"
-            + "\n  { (a, b) } for a directed and unpondered graph"
-            + "\n  { {hello, world} } for a undirected and unpondered graph"
-            + "\n  { (foo, bar, 10) } for a directed and pondered graph"
-            + "\n  { {hey, man, 1} } for a undirected and pondered graph";
+                        + "\n  { (a, b) } for a directed and unpondered graph"
+                        + "\n  { {hello, world} } for a undirected and unpondered graph"
+                        + "\n  { (foo, bar, 10) } for a directed and pondered graph"
+                        + "\n  { {hey, man, 1} } for a undirected and pondered graph";
 
         public static final String INFORMATIVE_VALID_GRAPH_EXCEPTION_MESSAGE = "A valid graph must be enclosed with {} and contains multiple edges inside curly braces."
-            + "\nAn edge must be enclosed with () if it is part of a directed graph or {} if it is part of an undirected graph."
-            + "\n" + EXAMPLES_OF_VALID_GRAPHS_MESSAGE;
+                        + "\nAn edge must be enclosed with () if it is part of a directed graph or {} if it is part of an undirected graph."
+                        + "\n" + EXAMPLES_OF_VALID_GRAPHS_MESSAGE;
 
         public static final Pattern PATTERN_TO_VALIDATE_A_DIRECTED_UNPONDERED_GRAPH = Pattern.compile(
                         "^\\s*\\{\\s*(?:\\{\\s*\\w+\\s*,\\s*\\w+\\s*\\}\\s*,\\s*)*\\{\\s*\\w+\\s*,\\s*\\w+\\s*\\}\\s*\\}\\s*$",

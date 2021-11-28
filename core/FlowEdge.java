@@ -1,4 +1,4 @@
-package aboutGraphs.core;
+package AboutGraphs.core;
 
 public class FlowEdge extends Edge {
     public int currentFlowPassing;

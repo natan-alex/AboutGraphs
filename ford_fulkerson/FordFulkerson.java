@@ -1,11 +1,11 @@
-package aboutGraphs.fordFulkerson;
+package AboutGraphs.fordFulkerson;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import aboutGraphs.searches.DeepFirstSearch;
-import aboutGraphs.core.*;
-import aboutGraphs.representations.SuccessorAdjacencyList;
+import AboutGraphs.searches.DeepFirstSearch;
+import AboutGraphs.core.*;
+import AboutGraphs.representations.SuccessorAdjacencyList;
 
 public class FordFulkerson {
     private final Graph relatedGraph;

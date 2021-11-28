@@ -1,4 +1,4 @@
-package aboutGraphs.core;
+package AboutGraphs.core;
 
 import java.util.regex.*;
 
