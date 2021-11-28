@@ -20,6 +20,12 @@ public class DeepFirstSearch extends BaseSearchStructure {
         relatedGraph = graph;
     }
 
+    public DeepFirstSearch(Graph graph, SuccessorAdjacencyList successorAdjacencyList) {
+        super(graph);
+        this.successorAdjacencyList = successorAdjacencyList.adjacencyList;
+        relatedGraph = graph;
+    }
+
     public List<Vertice> getPathBetweenVertices(String startVerticeName, String endVerticeName)
             throws IllegalArgumentException {
 
