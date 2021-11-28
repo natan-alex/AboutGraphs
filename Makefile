@@ -12,4 +12,3 @@ compile:
 
 clean: 
 	rm -rf AboutGraphs
-	rm *.class
