@@ -1,9 +1,9 @@
-package AboutGraphs.representations;
+package representations;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import AboutGraphs.core.*;
+import core.*;
 
 public class SuccessorAdjacencyList extends BaseAdjacencyList {
 

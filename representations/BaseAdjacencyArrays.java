@@ -1,6 +1,6 @@
-package AboutGraphs.representations;
+package representations;
 
-import AboutGraphs.core.*;
+import core.*;
 
 public abstract class BaseAdjacencyArrays {
     public int[] verticesWhereTheEdgeComesFrom;

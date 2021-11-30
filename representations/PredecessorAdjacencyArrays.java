@@ -1,6 +1,6 @@
-package AboutGraphs.representations;
+package representations;
 
-import AboutGraphs.core.*;
+import core.*;
 
 public class PredecessorAdjacencyArrays extends BaseAdjacencyArrays {
     public PredecessorAdjacencyArrays(Graph graph) {

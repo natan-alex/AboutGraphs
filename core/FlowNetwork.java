@@ -1,43 +1,88 @@
-package AboutGraphs.core;
+package core;
+
+import core.abstractions.AbstractEdge;
+import core.abstractions.AbstractGraph;
+import core.abstractions.AbstractVertice;
+import core.validators.FlowEdgeValidator;
+import core.validators.FlowNetworkValidator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 
-public class FlowNetwork extends Graph {
-    public final List<FlowEdge> flowEdges;
-    public final List<FlowEdge> flowEdgesInReversedDirection;
+public class FlowNetwork extends AbstractGraph {
+    private List<FlowEdge> flowEdgesInReversedDirection;
+    private final AbstractVertice source;
+    private final AbstractVertice sink;
 
-    public FlowNetwork(String graphRepresentation) throws IllegalArgumentException {
-        // on super call the edge list and vertice set will be filled
+    @Override
+    protected void validateGraphRepresentation() {
+        FlowNetworkValidator.validateFlowNetworkRepresentation(getRepresentation());
+    }
+
+    @Override
+    protected void fillEdgeList() {
+        Matcher matcher = FlowEdgeValidator.PATTERN_TO_VALIDATE_A_FLOW_EDGE.matcher(getRepresentation());
+        List<AbstractEdge> edges = new ArrayList<>();
+
+        while (matcher.find()) {
+            edges.add(new FlowEdge(matcher.group()));
+        }
+
+        setEdges(edges);
+    }
+
+    public FlowNetwork(String graphRepresentation,
+        String sourceVerticeRepresentation,
+        String sinkVerticeRepresentation) throws IllegalArgumentException {
+
         super(graphRepresentation);
 
-        flowEdges = new ArrayList<>(numberOfEdges);
-        flowEdgesInReversedDirection = new ArrayList<>(numberOfEdges);
+        source = getVerticeByRepresentation(sourceVerticeRepresentation);
+        sink = getVerticeByRepresentation(sinkVerticeRepresentation);
+        FlowNetworkValidator.validateSourceAndSinkVertices(getRepresentation(), source, sink);
 
-        // use the edge values as their maximum capacity
-        for (Edge edge : edges) {
-            flowEdges.add(new FlowEdge(edge.stringRepresentation, edge.value));
-            flowEdgesInReversedDirection
-                    .add(new FlowEdge(createEdgeRepresentationWithVerticesReversed(edge), edge.value));
+        fillFlowEdgesReversed();
+    }
+
+    public FlowNetwork(String graphRepresentation,
+                       AbstractVertice sourceVertice,
+                       AbstractVertice sinkVertice) throws IllegalArgumentException {
+
+        super(graphRepresentation);
+
+        source = sourceVertice;
+        sink = sinkVertice;
+        FlowNetworkValidator.validateSourceAndSinkVertices(getRepresentation(), source, sink);
+
+        fillFlowEdgesReversed();
+    }
+
+    private void fillFlowEdgesReversed() {
+        flowEdgesInReversedDirection = new ArrayList<>(getNumberOfEdges());
+        FlowEdge newFlowEdge;
+
+        for (AbstractEdge edge : getEdges()) {
+            newFlowEdge = new FlowEdge(createEdgeRepresentationWithVerticesReversed((FlowEdge) edge));
+            flowEdgesInReversedDirection.add(newFlowEdge);
         }
     }
 
-    private String createEdgeRepresentationWithVerticesReversed(Edge edge) {
-        StringBuffer newRepresentation = new StringBuffer();
+    private String createEdgeRepresentationWithVerticesReversed(FlowEdge edge) {
+        StringBuilder newRepresentation = new StringBuilder();
         newRepresentation.append("(");
-        newRepresentation.append(edge.secondVertice.name);
+        newRepresentation.append(edge.getSecondVertice().getRepresentation());
         newRepresentation.append(",");
-        newRepresentation.append(edge.firstVertice.name);
+        newRepresentation.append(edge.getFirstVertice().getRepresentation());
         newRepresentation.append(",");
-        newRepresentation.append(edge.value);
+        newRepresentation.append(edge.getMaximumCapacity());
         newRepresentation.append(")");
         return newRepresentation.toString();
     }
 
-    @Override
-    public FlowEdge getDirectedEdgeWithThisVertices(Vertice firstVertice, Vertice secondVertice) {
-        for (FlowEdge flowEdge : flowEdges) {
-            if (flowEdge.firstVertice.equals(firstVertice) && flowEdge.secondVertice.equals(secondVertice)) {
+    public FlowEdge getDirectedReversedEdgeWithTheseVertices(AbstractVertice firstVertice, AbstractVertice secondVertice) {
+        for (FlowEdge flowEdge : flowEdgesInReversedDirection) {
+            if (flowEdge.getFirstVertice().equals(firstVertice) && flowEdge.getSecondVertice().equals(secondVertice)) {
                 return flowEdge;
             }
         }
@@ -45,13 +90,11 @@ public class FlowNetwork extends Graph {
         return null;
     }
 
-    public FlowEdge getDirectedEdgeInReversedDirectionWithThisVertices(Vertice firstVertice, Vertice secondVertice) {
-        for (FlowEdge flowEdge : flowEdgesInReversedDirection) {
-            if (flowEdge.firstVertice.equals(firstVertice) && flowEdge.secondVertice.equals(secondVertice)) {
-                return flowEdge;
-            }
-        }
+    public AbstractVertice getSourceVertice() {
+        return source;
+    }
 
-        return null;
+    public AbstractVertice getSinkVertice() {
+        return sink;
     }
 }

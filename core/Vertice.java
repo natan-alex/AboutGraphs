@@ -1,15 +1,10 @@
-package AboutGraphs.core;
+package core;
 
-public class Vertice {
-    public final String name;
+import core.abstractions.AbstractVertice;
 
-    public Vertice(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return name.compareToIgnoreCase(((Vertice) obj).name) == 0;
+public class Vertice extends AbstractVertice {
+    public Vertice(String verticeRepresentation) {
+        super(verticeRepresentation);
     }
 
     @Override
@@ -19,6 +14,6 @@ public class Vertice {
 
     @Override
     public String toString() {
-        return name;
+        return getRepresentation();
     }
 }

@@ -1,4 +1,4 @@
-package AboutGraphs.core.abstractions;
+package core.abstractions;
 
 public abstract class AbstractEdge {
     private String representation;
@@ -40,5 +40,10 @@ public abstract class AbstractEdge {
     public boolean equals(Object obj) {
         AbstractEdge edge = (AbstractEdge) obj;
         return getRepresentation().compareToIgnoreCase(edge.getRepresentation()) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return 0;
     }
 }

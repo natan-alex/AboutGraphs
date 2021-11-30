@@ -1,8 +1,9 @@
-package AboutGraphs.searches;
+package searches;
 
 import java.util.Comparator;
 
-import AboutGraphs.core.*;
+import core.*;
+import core.abstractions.AbstractEdge;
 
 public final class VerticeComparatorInAStarSearch implements Comparator<Vertice> {
     Vertice startingPointVertice;
@@ -24,7 +25,7 @@ public final class VerticeComparatorInAStarSearch implements Comparator<Vertice>
     }
 
     private int getEvaluationFunctionValueForVertices(Vertice firstVertice, Vertice secondVertice) {
-        Edge edgeThatContainsTheVertices = graph.getDirectedEdgeWithThisVertices(firstVertice, secondVertice);
+        AbstractEdge edgeThatContainsTheVertices = graph.getDirectedEdgeWithTheseVertices(firstVertice, secondVertice);
         int evaluationFunctionValue = Integer.MAX_VALUE;
 
         if (edgeThatContainsTheVertices != null) {

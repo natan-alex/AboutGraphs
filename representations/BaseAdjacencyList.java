@@ -1,10 +1,10 @@
-package AboutGraphs.representations;
+package representations;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import AboutGraphs.core.*;
+import core.*;
 
 public abstract class BaseAdjacencyList {
     public final Map<Vertice, List<Vertice>> adjacencyList;

@@ -1,9 +1,9 @@
 import java.util.Scanner;
 
-import AboutGraphs.core.*;
-import AboutGraphs.searches.*;
-import AboutGraphs.representations.*;
-import AboutGraphs.fordFulkerson.*;
+import core.*;
+import searches.*;
+import representations.*;
+import fordFulkerson.*;
 
 public class Main {
     private static Scanner scanner = new Scanner(System.in);

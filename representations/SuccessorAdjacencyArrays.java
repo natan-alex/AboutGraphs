@@ -1,6 +1,6 @@
-package AboutGraphs.representations;
+package representations;
 
-import AboutGraphs.core.*;
+import core.*;
 
 public class SuccessorAdjacencyArrays extends BaseAdjacencyArrays {
     public SuccessorAdjacencyArrays(Graph graph) {

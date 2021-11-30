@@ -1,6 +1,6 @@
-package AboutGraphs.representations;
+package representations;
 
-import AboutGraphs.core.*;
+import core.*;
 
 public class AdjacencyMatrix extends BaseMatrix {
     private Graph relatedGraph;

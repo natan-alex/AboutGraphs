@@ -1,6 +1,7 @@
-package AboutGraphs.searches;
+package searches;
 
-import AboutGraphs.core.*;
+import core.*;
+import core.abstractions.AbstractEdge;
 
 public abstract class BaseSearchStructure {
     protected final int[] discoveryTimes;
@@ -48,7 +49,7 @@ public abstract class BaseSearchStructure {
         return null;
     }
 
-    protected void classifyTheEdge(Edge edge) {
+    protected void classifyTheEdge(AbstractEdge edge) {
         if (edge == null) {
             return;
         }
@@ -60,7 +61,7 @@ public abstract class BaseSearchStructure {
         }
     }
 
-    private void classifyTheEdgeForUndirectedGraph(Edge edge) {
+    private void classifyTheEdgeForUndirectedGraph(AbstractEdge edge) {
         int indexOfFirstVerticeInVerticeSet = relatedGraph.vertices.indexOf(edge.firstVertice);
         int indexOfSecondVerticeInVerticeSet = relatedGraph.vertices.indexOf(edge.secondVertice);
         int edgeIndex = relatedGraph.edges.indexOf(edge);
@@ -73,7 +74,7 @@ public abstract class BaseSearchStructure {
         }
     }
 
-    private void classifyTheEdgeForDirectedGraph(Edge edge) {
+    private void classifyTheEdgeForDirectedGraph(AbstractEdge edge) {
         int indexOfFirstVerticeInVerticeSet = relatedGraph.vertices.indexOf(edge.firstVertice);
         int indexOfSecondVerticeInVerticeSet = relatedGraph.vertices.indexOf(edge.secondVertice);
         int edgeIndex = relatedGraph.edges.indexOf(edge);

@@ -1,19 +1,23 @@
-package AboutGraphs.core;
+package core;
 
-public class Edge {
-    public final String stringRepresentation;
-    public final Vertice firstVertice;
-    public final Vertice secondVertice;
+import core.abstractions.*;
+import core.validators.*;
+
+public class Edge extends AbstractEdge {
     public final int value;
 
-    public Edge(String edgeRepresentation) throws IllegalArgumentException {
-        EdgeValidator.checkIfEdgeRepresentationIsValid(edgeRepresentation);
+    @Override
+    protected void validateEdgeRepresentation() throws IllegalArgumentException {
+        EdgeValidator.checkIfEdgeRepresentationIsValid(getRepresentation());
+    }
 
-        stringRepresentation = removeSpacesFromEdgeRepresentation(edgeRepresentation);
+    public Edge(String edgeRepresentation) throws IllegalArgumentException {
+        super(edgeRepresentation);
+        setRepresentation(removeSpacesFromEdgeRepresentation(edgeRepresentation));
         String[] partsOfStringRepresentation = splitStringRepresentation();
 
-        firstVertice = new Vertice(partsOfStringRepresentation[0]);
-        secondVertice = new Vertice(partsOfStringRepresentation[1]);
+        setFirstVertice(new Vertice(partsOfStringRepresentation[0]));
+        setSecondVertice(new Vertice(partsOfStringRepresentation[1]));
 
         if (partsOfStringRepresentation.length == 3) {
             value = Integer.parseInt(partsOfStringRepresentation[2]);
@@ -23,20 +27,19 @@ public class Edge {
     }
 
     private String[] splitStringRepresentation() {
-        String withoutParenthesisOrCurlyBraces = stringRepresentation.substring(1, stringRepresentation.length() - 1);
-        String[] partsOfStringRepresentation = withoutParenthesisOrCurlyBraces.split(",");
-        return partsOfStringRepresentation;
+        String withoutParenthesisOrCurlyBraces = getRepresentation().substring(1, getRepresentation().length() - 1);
+        return withoutParenthesisOrCurlyBraces.split(",");
     }
 
     private String removeSpacesFromEdgeRepresentation(String edgeRepresentation) {
-        edgeRepresentation = edgeRepresentation.trim();
-        edgeRepresentation = edgeRepresentation.replaceAll("\\s*,\\s*", ",");
-        return edgeRepresentation;
+        String newRepresentation = edgeRepresentation.trim();
+        newRepresentation = newRepresentation.replaceAll("\\s*,\\s*", ",");
+        return newRepresentation;
     }
 
     @Override
     public boolean equals(Object obj) {
-        return stringRepresentation.compareToIgnoreCase(((Edge) obj).stringRepresentation) == 0;
+        return getRepresentation().compareToIgnoreCase(((Edge) obj).getRepresentation()) == 0;
     }
 
     @Override
@@ -46,6 +49,6 @@ public class Edge {
 
     @Override
     public String toString() {
-        return stringRepresentation;
+        return getRepresentation();
     }
 }

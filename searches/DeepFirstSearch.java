@@ -1,4 +1,4 @@
-package AboutGraphs.searches;
+package searches;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,8 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import AboutGraphs.core.*;
-import AboutGraphs.representations.SuccessorAdjacencyList;
+import core.*;
+import core.abstractions.AbstractVertice;
+import representations.SuccessorAdjacencyList;
 
 public class DeepFirstSearch extends BaseSearchStructure {
     private final Map<Vertice, List<Vertice>> successorAdjacencyList;
@@ -29,8 +30,8 @@ public class DeepFirstSearch extends BaseSearchStructure {
     public List<Vertice> getPathBetweenVertices(String startVerticeName, String endVerticeName)
             throws IllegalArgumentException {
 
-        Vertice startVertice = relatedGraph.getVerticeByName(startVerticeName);
-        Vertice endVertice = relatedGraph.getVerticeByName(endVerticeName);
+        AbstractVertice startVertice = relatedGraph.getVerticeByRepresentation(startVerticeName);
+        AbstractVertice endVertice = relatedGraph.getVerticeByRepresentation(endVerticeName);
 
         throwExceptionIfVerticeIsNull(startVertice, startVerticeName);
         throwExceptionIfVerticeIsNull(endVertice, endVerticeName);
@@ -38,14 +39,14 @@ public class DeepFirstSearch extends BaseSearchStructure {
         return getPathBetweenVertices(startVertice, endVertice);
     }
 
-    private void throwExceptionIfVerticeIsNull(Vertice vertice, String verticeName) throws IllegalArgumentException {
+    private void throwExceptionIfVerticeIsNull(AbstractVertice vertice, String verticeName) throws IllegalArgumentException {
         if (vertice == null) {
             throw new IllegalArgumentException("The vertice  " + verticeName + "  is not in the vertice set."
                     + "\nThe vertice set is: " + relatedGraph.vertices);
         }
     }
 
-    public List<Vertice> getPathBetweenVertices(Vertice startVertice, Vertice endVertice) {
+    public List<Vertice> getPathBetweenVertices(AbstractVertice startVertice, AbstractVertice endVertice) {
         initializeTimeArrays();
         int timeNumber = 1, verticeIndexInVerticeSet;
         Vertice currentVertice;
@@ -123,7 +124,7 @@ public class DeepFirstSearch extends BaseSearchStructure {
             if (canAddVerticeToNotExploredVertices(v))
                 verticesToBeExplored.add(v);
 
-            classifyTheEdge(relatedGraph.getDirectedEdgeWithThisVertices(vertice, v));
+            classifyTheEdge(relatedGraph.getDirectedEdgeWithTheseVertices(vertice, v));
         }
     }
 
