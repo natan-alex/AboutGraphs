@@ -1,4 +1,4 @@
-package AboutGraphs.core;
+package core.validators;
 
 import java.util.regex.*;
 
