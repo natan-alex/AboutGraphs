@@ -4,3 +4,6 @@
 *.json
 exec
 *.class
+out
+.idea
+*.iml
