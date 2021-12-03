@@ -49,19 +49,6 @@ public class FlowNetwork extends AbstractFlowNetwork {
     }
 
     @Override
-    protected AbstractVertice[] getVerticesFromEdgesArray() {
-        Set<AbstractVertice> vertices = new LinkedHashSet<>();
-
-        for (AbstractFlowEdge edge : getEdges()) {
-            vertices.add(edge.getFirstVertice());
-            vertices.add(edge.getSecondVertice());
-        }
-
-        AbstractVertice[] verticesArray = new AbstractVertice[vertices.size()];
-        return vertices.toArray(verticesArray);
-    }
-
-    @Override
     protected AbstractFlowEdge[] getReversedEdgesFromEdgesArray() {
         List<FlowEdge> reversedEdges = new ArrayList<>(getNumberOfEdges());
         FlowEdge newFlowEdge;

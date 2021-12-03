@@ -1,31 +1,30 @@
 package core.abstractions;
 
-import core.Vertice;
-
 public abstract class AbstractEdge {
     private final String representation;
     private final AbstractVertice firstVertice;
     private final AbstractVertice secondVertice;
 
     protected abstract void validateEdgeRepresentation();
+    protected abstract AbstractVertice createVerticeFromRepresentation(String representation);
 
     public AbstractEdge(String edgeRepresentation) {
         representation = edgeRepresentation.trim();
         validateEdgeRepresentation();
-        firstVertice = getFirstVerticeFromRepresentation();
-        secondVertice = getSecondVerticeFromRepresentation();
+        firstVertice = createVerticeFromRepresentation(getFirstVerticeRepresentation());
+        secondVertice = createVerticeFromRepresentation(getSecondVerticeRepresentation());
     }
 
-    protected AbstractVertice getFirstVerticeFromRepresentation() {
+    protected String getFirstVerticeRepresentation() {
         int indexOfOpeningParenthesis = representation.indexOf('(');
         int indexOfFirstComma = representation.indexOf(',', indexOfOpeningParenthesis + 1);
-        return new Vertice(representation.substring(indexOfOpeningParenthesis + 1, indexOfFirstComma).trim());
+        return representation.substring(indexOfOpeningParenthesis + 1, indexOfFirstComma).trim();
     }
 
-    protected AbstractVertice getSecondVerticeFromRepresentation() {
+    protected String getSecondVerticeRepresentation() {
         int indexOfFirstComma = representation.indexOf(',');
         int indexOfSecondComma = representation.indexOf(',', indexOfFirstComma + 1);
-        return new Vertice(representation.substring(indexOfFirstComma + 1, indexOfSecondComma).trim());
+        return representation.substring(indexOfFirstComma + 1, indexOfSecondComma).trim();
     }
 
     public String getRepresentation() {

@@ -41,19 +41,6 @@ public class TypedGraph extends AbstractTypedGraph {
         return edges.toArray(edgesArray);
     }
 
-    @Override
-    protected AbstractVertice[] getVerticesFromEdgesArray() {
-        Set<AbstractVertice> vertices = new LinkedHashSet<>();
-
-        for (AbstractEdge edge : getEdges()) {
-            vertices.add(edge.getFirstVertice());
-            vertices.add(edge.getSecondVertice());
-        }
-
-        AbstractVertice[] verticesArray = new AbstractVertice[vertices.size()];
-        return vertices.toArray(verticesArray);
-    }
-
     public TypedGraph(String graphRepresentation, GraphTypes type) throws IllegalArgumentException {
         super(graphRepresentation, type);
     }
