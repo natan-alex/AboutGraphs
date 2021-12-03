@@ -4,7 +4,7 @@ public abstract class AbstractVertice {
     private final String representation;
 
     public AbstractVertice(String verticeRepresentation) {
-        representation = verticeRepresentation;
+        representation = verticeRepresentation.trim();
     }
 
     public String getRepresentation() {
