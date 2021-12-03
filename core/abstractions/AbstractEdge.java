@@ -1,39 +1,31 @@
 package core.abstractions;
 
 public abstract class AbstractEdge {
-    private String representation;
-    private AbstractVertice firstVertice;
-    private AbstractVertice secondVertice;
+    private final String representation;
+    private final AbstractVertice firstVertice;
+    private final AbstractVertice secondVertice;
 
     protected abstract void validateEdgeRepresentation();
+    protected abstract AbstractVertice getFirstVerticeFromRepresentation();
+    protected abstract AbstractVertice getSecondVerticeFromRepresentation();
 
     public AbstractEdge(String edgeRepresentation) {
         representation = edgeRepresentation;
         validateEdgeRepresentation();
+        firstVertice = getFirstVerticeFromRepresentation();
+        secondVertice = getSecondVerticeFromRepresentation();
     }
 
     public String getRepresentation() {
         return representation;
     }
 
-    protected void setRepresentation(String newRepresentation) {
-        representation = newRepresentation;
-    }
-
     public AbstractVertice getFirstVertice() {
         return firstVertice;
     }
 
-    protected void setFirstVertice(AbstractVertice newVertice) {
-        firstVertice = newVertice;
-    }
-
     public AbstractVertice getSecondVertice() {
         return secondVertice;
-    }
-
-    protected void setSecondVertice(AbstractVertice newVertice) {
-        secondVertice = newVertice;
     }
 
     @Override

@@ -1,7 +1,7 @@
 package core.abstractions;
 
 public abstract class AbstractVertice {
-    private String representation;
+    private final String representation;
 
     public AbstractVertice(String verticeRepresentation) {
         representation = verticeRepresentation;
@@ -9,10 +9,6 @@ public abstract class AbstractVertice {
 
     public String getRepresentation() {
         return representation;
-    }
-
-    protected void setRepresentation(String newRepresentation) {
-        representation = newRepresentation;
     }
 
     @Override
