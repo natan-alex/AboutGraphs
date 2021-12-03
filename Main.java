@@ -1,25 +1,20 @@
 import java.util.Scanner;
 
 import core.*;
-import searches.*;
-import representations.*;
+import core.abstractions.AbstractFlowNetwork;
 import fordFulkerson.*;
+import representations.AllGraphRepresentations;
 
 public class Main {
-    private static Scanner scanner = new Scanner(System.in);
-    private static String sourceVertice;
-    private static String sinkVertice;
-    private static Graph graph;
-    private static double start;
-    private static double end;
-    private static FordFulkerson fordFulkerson;
-    private static int option;
+    private static final Scanner scanner = new Scanner(System.in);
+    private static AbstractFlowNetwork flowNetwork;
 
     public static void main(String[] args) throws Exception {
+        int option;
         do {
             System.out.println("MENU");
             System.out.println("[0] -- leave program");
-            System.out.println("[1] -- read graph from input");
+            System.out.println("[1] -- read flow network from input");
             System.out.print("Enter the option: ");
             option = Integer.parseInt(scanner.nextLine());
 
@@ -29,11 +24,12 @@ public class Main {
                     break;
                 case 1:
                     System.out.print("Enter the graph: ");
-                    graph = new Graph(scanner.nextLine());
+                    String graphRepresentation = scanner.nextLine();
                     System.out.print("Source vertice: ");
-                    sourceVertice = scanner.nextLine();
+                    String sourceVertice = scanner.nextLine();
                     System.out.print("Sink vertice: ");
-                    sinkVertice = scanner.nextLine();
+                    String sinkVertice = scanner.nextLine();
+                    flowNetwork = new FlowNetwork(graphRepresentation, sourceVertice, sinkVertice);
                     doOperationsInGraph();
                     break;
                 default:
@@ -46,15 +42,17 @@ public class Main {
     }
 
     private static void doOperationsInGraph() {
-        start = System.currentTimeMillis();
+        double start = System.currentTimeMillis();
 
-        System.out.println("\nGraph: " + graph.stringRepresentation);
-        graph.showVertices();
-        graph.showEdges();
-        fordFulkerson = new FordFulkerson(graph, sourceVertice, sinkVertice);
+        System.out.println("\nGraph: " + flowNetwork.getRepresentation());
+        flowNetwork.showVertices();
+        flowNetwork.showEdges();
+        AllGraphRepresentations allGraphRepresentations = new AllGraphRepresentations(flowNetwork);
+        allGraphRepresentations.showAllRepresentations();
+        FordFulkerson fordFulkerson = new FordFulkerson(flowNetwork);
         System.out.println("\nDisjoint paths: " + fordFulkerson.computeMaximumFlowAndGetDisjointPaths());
 
-        end = System.currentTimeMillis();
+        double end = System.currentTimeMillis();
         System.out.println("\nDuration: " + (end - start) + "ms\n");
     }
 }
