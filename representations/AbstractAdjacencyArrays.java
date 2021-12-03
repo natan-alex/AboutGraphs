@@ -1,24 +1,25 @@
 package representations;
 
-import core.*;
+import core.abstractions.AbstractEdge;
+import core.abstractions.AbstractGraph;
 
-public abstract class BaseAdjacencyArrays {
-    public int[] verticesWhereTheEdgeComesFrom;
-    public int[] verticesWhereTheEdgeIsIncident;
+public abstract class AbstractAdjacencyArrays {
+    protected int[] edgeStartVertices;
+    protected int[] edgeEndVertices;
 
-    protected BaseAdjacencyArrays(Graph graph) {
+    protected AbstractAdjacencyArrays(AbstractGraph graph) {
         int insertionIndex = 0;
         int indexOfFirstVertice, indexOfSecondVertice;
 
-        verticesWhereTheEdgeComesFrom = new int[graph.numberOfEdges];
-        verticesWhereTheEdgeIsIncident = new int[graph.numberOfEdges];
+        edgeStartVertices = new int[graph.getNumberOfEdges()];
+        edgeEndVertices = new int[graph.getNumberOfEdges()];
 
-        for (Edge edge : graph.edges) {
-            indexOfFirstVertice = graph.vertices.indexOf(edge.firstVertice);
-            indexOfSecondVertice = graph.vertices.indexOf(edge.secondVertice);
+        for (AbstractEdge edge : graph.getEdges()) {
+            indexOfFirstVertice = graph.indexOfVertice(edge.getFirstVertice());
+            indexOfSecondVertice = graph.indexOfVertice(edge.getSecondVertice());
 
-            verticesWhereTheEdgeComesFrom[insertionIndex] = indexOfFirstVertice;
-            verticesWhereTheEdgeIsIncident[insertionIndex] = indexOfSecondVertice;
+            edgeStartVertices[insertionIndex] = indexOfFirstVertice;
+            edgeEndVertices[insertionIndex] = indexOfSecondVertice;
 
             insertionIndex++;
         }
@@ -58,14 +59,14 @@ public abstract class BaseAdjacencyArrays {
     protected void showAdjacencyArraysIncreasingTheirValuesByOne() {
         System.out.print("First array of indices: [ ");
 
-        for (int index : verticesWhereTheEdgeComesFrom)
+        for (int index : edgeStartVertices)
             System.out.print((index + 1) + " ");
 
         System.out.println("]");
 
         System.out.print("Second array of indices: [ ");
 
-        for (int index : verticesWhereTheEdgeIsIncident)
+        for (int index : edgeEndVertices)
             System.out.print((index + 1) + " ");
 
         System.out.println("]");
