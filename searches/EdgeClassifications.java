@@ -1,4 +1,4 @@
-package core;
+package searches;
 
 public enum EdgeClassifications {
     TREE("Tree"), CROSSING("Crossing"), RETURN("Return"), ADVANCE("Advance");
