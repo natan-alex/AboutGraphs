@@ -1,8 +1,4 @@
 package core.abstractions;
-//
-//import java.util.LinkedHashSet;
-//import java.util.List;
-//import java.util.Set;
 
 public abstract class AbstractGraph {
     private final String representation;
@@ -14,7 +10,7 @@ public abstract class AbstractGraph {
     protected abstract AbstractVertice[] getVerticesFromEdgesArray();
 
     public AbstractGraph(String graphRepresentation) {
-        representation = graphRepresentation;
+        representation = graphRepresentation.trim();
         validateGraphRepresentation();
         edges = getEdgesFromRepresentation();
         vertices = getVerticesFromEdgesArray();
@@ -88,5 +84,23 @@ public abstract class AbstractGraph {
         }
 
         return null;
+    }
+
+    public int indexOfEdge(AbstractEdge edge) {
+        for (int i = 0; i < edges.length; i++) {
+            if (edges[i].equals(edge))
+                return i;
+        }
+
+        return -1;
+    }
+
+    public int indexOfVertice(AbstractVertice vertice) {
+        for (int i = 0; i < vertices.length; i++) {
+            if (vertices[i].equals(vertice))
+                return i;
+        }
+
+        return -1;
     }
 }
