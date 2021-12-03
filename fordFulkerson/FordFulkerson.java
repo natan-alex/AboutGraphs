@@ -62,7 +62,7 @@ public class FordFulkerson {
         path.toArray(pathArray);
 
         while (currentVerticeIndex + 1 < pathArray.length) {
-            flowEdgeFound = (AbstractFlowEdge) residualGraphNetwork.getEdge(pathArray[currentVerticeIndex],
+            flowEdgeFound = residualGraphNetwork.getEdge(pathArray[currentVerticeIndex],
                     pathArray[currentVerticeIndex + 1]);
             flowEdges.add(flowEdgeFound);
             currentVerticeIndex++;
