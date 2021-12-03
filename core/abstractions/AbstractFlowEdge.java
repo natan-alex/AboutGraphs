@@ -4,12 +4,16 @@ public abstract class AbstractFlowEdge extends AbstractEdge {
     private final int maximumCapacity;
     private int currentFlowPassing;
 
-    protected abstract int getMaximumCapacityFromRepresentation();
-
     public AbstractFlowEdge(String edgeRepresentation) {
         super(edgeRepresentation);
         maximumCapacity = getMaximumCapacityFromRepresentation();
         currentFlowPassing = 0;
+    }
+
+    protected int getMaximumCapacityFromRepresentation() {
+        int indexOfLastComma = getRepresentation().lastIndexOf(',');
+        int indexOfClosingParenthesis = getRepresentation().lastIndexOf(')');
+        return Integer.parseInt(getRepresentation().substring(indexOfLastComma + 1, indexOfClosingParenthesis).trim());
     }
 
     public int getCurrentFlowPassing() {
