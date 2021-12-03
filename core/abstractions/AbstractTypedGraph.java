@@ -1,5 +1,7 @@
 package core.abstractions;
 
+import core.GraphTypes;
+
 public abstract class AbstractTypedGraph extends AbstractGraph {
     private final GraphTypes type;
 
