@@ -1,12 +1,14 @@
 package representations;
 
-import core.*;
+import core.abstractions.AbstractEdge;
+import core.abstractions.AbstractGraph;
+import core.abstractions.AbstractVertice;
 
-public class AdjacencyMatrix extends BaseMatrix {
-    private Graph relatedGraph;
+public class AdjacencyMatrix extends AbstractMatrix {
+    private final AbstractGraph relatedGraph;
 
-    public AdjacencyMatrix(Graph graph) {
-        super(graph.numberOfVertices, graph.numberOfVertices);
+    public AdjacencyMatrix(AbstractGraph graph) {
+        super(graph.getNumberOfVertices(), graph.getNumberOfVertices());
         relatedGraph = graph;
 
         fillAdjacencyMatrix();
@@ -15,7 +17,7 @@ public class AdjacencyMatrix extends BaseMatrix {
     private void fillAdjacencyMatrix() {
         int currentLine = 0;
 
-        for (Vertice vertice : relatedGraph.vertices) {
+        for (AbstractVertice vertice : relatedGraph.getVertices()) {
             initializeTheItemsOfTheMatrixLine(currentLine);
 
             fillMatrixLineGivenTheCurrentVertice(currentLine, vertice);
@@ -29,12 +31,12 @@ public class AdjacencyMatrix extends BaseMatrix {
             matrix[line][currentColumn] = 0;
     }
 
-    private void fillMatrixLineGivenTheCurrentVertice(int currentLine, Vertice currentVertice) {
+    private void fillMatrixLineGivenTheCurrentVertice(int currentLine, AbstractVertice currentVertice) {
         int indexOfSecondVertice = 0;
 
-        for (Edge edge : relatedGraph.edges) {
-            if (currentVertice.equals(edge.firstVertice)) {
-                indexOfSecondVertice = relatedGraph.vertices.indexOf(edge.secondVertice);
+        for (AbstractEdge valuedEdge : relatedGraph.getEdges()) {
+            if (currentVertice.equals(valuedEdge.getFirstVertice())) {
+                indexOfSecondVertice = relatedGraph.indexOfVertice(valuedEdge.getSecondVertice());
                 matrix[currentLine][indexOfSecondVertice] = 1;
             }
         }
@@ -46,8 +48,8 @@ public class AdjacencyMatrix extends BaseMatrix {
 
         showVerticesSeparatedByTabs();
 
-        for (Vertice vertice : relatedGraph.vertices) {
-            System.out.print(vertice.name + "\t");
+        for (AbstractVertice vertice : relatedGraph.getVertices()) {
+            System.out.print(vertice.getRepresentation() + "\t");
 
             showMatrixLineItemsSeparatedByTabs(currentLine);
 
@@ -59,8 +61,8 @@ public class AdjacencyMatrix extends BaseMatrix {
     private void showVerticesSeparatedByTabs() {
         System.out.print("\t");
 
-        for (Vertice vertice : relatedGraph.vertices) {
-            System.out.print(vertice.name + "\t");
+        for (AbstractVertice vertice : relatedGraph.getVertices()) {
+            System.out.print(vertice.getRepresentation() + "\t");
         }
 
         System.out.println();

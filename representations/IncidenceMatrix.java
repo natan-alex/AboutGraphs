@@ -1,30 +1,32 @@
 package representations;
 
-import core.*;
+import core.abstractions.AbstractEdge;
+import core.abstractions.AbstractGraph;
+import core.abstractions.AbstractVertice;
 
-public class IncidenceMatrix extends BaseMatrix {
-    private Graph relatedGraph;
+public class IncidenceMatrix extends AbstractMatrix {
+    private final AbstractGraph relatedGraph;
 
-    public IncidenceMatrix(Graph graph) {
-        super(graph.numberOfVertices, graph.numberOfEdges);
+    public IncidenceMatrix(AbstractGraph graph) {
+        super(graph.getNumberOfVertices(), graph.getNumberOfEdges());
         relatedGraph = graph;
 
         int currentLine = 0;
 
-        for (Vertice vertice : relatedGraph.vertices) {
+        for (AbstractVertice vertice : relatedGraph.getVertices()) {
             fillMatrixLineGivenTheCurrentVertice(currentLine, vertice);
 
             currentLine++;
         }
     }
 
-    private void fillMatrixLineGivenTheCurrentVertice(int currentLine, Vertice currentVertice) {
+    private void fillMatrixLineGivenTheCurrentVertice(int currentLine, AbstractVertice currentVertice) {
         int currentColumn = 0;
         int indexOfSecondVertice;
 
-        for (Edge edge : relatedGraph.edges) {
-            if (currentVertice.equals(edge.firstVertice)) {
-                indexOfSecondVertice = relatedGraph.vertices.indexOf(edge.secondVertice);
+        for (AbstractEdge edge : relatedGraph.getEdges()) {
+            if (currentVertice.equals(edge.getFirstVertice())) {
+                indexOfSecondVertice = relatedGraph.indexOfVertice(edge.getSecondVertice());
                 matrix[currentLine][currentColumn] = 1;
                 matrix[indexOfSecondVertice][currentColumn] = -1;
             } else if (matrix[currentLine][currentColumn] != -1) {
@@ -39,10 +41,10 @@ public class IncidenceMatrix extends BaseMatrix {
         System.out.println("\n\tINCIDENCE MATRIX\n");
         int currentLine = 0;
 
-        showEdgesSeparatedByTabs();
+        showEdgeNumbersSeparatedByTabs();
 
-        for (Vertice vertice : relatedGraph.vertices) {
-            System.out.print(vertice.name + "\t");
+        for (AbstractVertice vertice : relatedGraph.getVertices()) {
+            System.out.print(vertice.getRepresentation() + "\t");
 
             showCurrentLineItems(currentLine);
 
@@ -52,49 +54,27 @@ public class IncidenceMatrix extends BaseMatrix {
         }
     }
 
-    private void showEdgesSeparatedByTabs() {
+    private void showEdgeNumbersSeparatedByTabs() {
         System.out.print("\t");
 
-        for (Edge edge : relatedGraph.edges)
-            System.out.print(edge.stringRepresentation + "\t");
+        for (int i = 1; i <= relatedGraph.getNumberOfEdges(); i++)
+            System.out.print("edge" + i + "\t");
 
         System.out.println();
     }
 
     private void showCurrentLineItems(int currentLine) {
-        if (relatedGraph.type.isPondered)
-            showMatrixForPonderedGraph(currentLine);
-        else
-            showMatrixForUnponderedGraph(currentLine);
-    }
+        int item;
 
-    private void showMatrixForPonderedGraph(int currentLine) {
-        int currentColumn = 0;
-
-        for (Edge edge : relatedGraph.edges) {
-            showMatrixItem(matrix[currentLine][currentColumn]);
-
-            System.out.print(" | " + edge.value);
-
-            System.out.print("\t");
-            currentColumn++;
-        }
-    }
-
-    private void showMatrixForUnponderedGraph(int currentLine) {
         for (int currentColumn = 0; currentColumn < numberOfColumns; currentColumn++) {
-            showMatrixItem(matrix[currentLine][currentColumn]);
+            item = matrix[currentLine][currentColumn];
 
-            System.out.print("\t");
+            if (item == 1)
+                System.out.print("+");
+            else if (item == 0)
+                System.out.print(" ");
+
+            System.out.print(item + "\t\t");
         }
-    }
-
-    private void showMatrixItem(int item) {
-        if (item == 1)
-            System.out.print("+");
-        else if (item == 0)
-            System.out.print(" ");
-
-        System.out.print(item);
     }
 }

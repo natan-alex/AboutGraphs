@@ -3,23 +3,25 @@ package representations;
 import java.util.ArrayList;
 import java.util.List;
 
-import core.*;
+import core.abstractions.AbstractEdge;
+import core.abstractions.AbstractGraph;
+import core.abstractions.AbstractVertice;
 
-public class PredecessorAdjacencyList extends BaseAdjacencyList {
-    public PredecessorAdjacencyList(Graph graph) {
+public class PredecessorAdjacencyList extends AbstractAdjacencyList {
+    public PredecessorAdjacencyList(AbstractGraph graph) {
         super();
 
-        for (Vertice vertice : graph.vertices) {
+        for (AbstractVertice vertice : graph.getVertices()) {
             adjacencyList.put(vertice, getVerticeChildren(vertice, graph));
         }
     }
 
-    private List<Vertice> getVerticeChildren(Vertice vertice, Graph graph) {
-        List<Vertice> verticeChildren = new ArrayList<>();
+    private List<AbstractVertice> getVerticeChildren(AbstractVertice vertice, AbstractGraph graph) {
+        List<AbstractVertice> verticeChildren = new ArrayList<>();
 
-        for (Edge edge : graph.edges) {
-            if (vertice.equals(edge.secondVertice))
-                verticeChildren.add(edge.firstVertice);
+        for (AbstractEdge edge : graph.getEdges()) {
+            if (vertice.equals(edge.getSecondVertice()))
+                verticeChildren.add(edge.getFirstVertice());
         }
 
         return verticeChildren;

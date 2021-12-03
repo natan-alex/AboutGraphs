@@ -1,6 +1,6 @@
 package representations;
 
-import core.*;
+import core.abstractions.AbstractGraph;
 
 public class AllGraphRepresentations {
     public final AdjacencyMatrix adjacencyMatrix;
@@ -9,10 +9,10 @@ public class AllGraphRepresentations {
     public final PredecessorAdjacencyList predecessorAdjacencyList;
     public final SuccessorAdjacencyArrays successorAdjacencyArrays;
     public final PredecessorAdjacencyArrays predecessorAdjacencyArrays;
-    private String graphStringRepresentation;
+    private final String graphStringRepresentation;
 
-    public AllGraphRepresentations(Graph graph) {
-        graphStringRepresentation = graph.stringRepresentation;
+    public AllGraphRepresentations(AbstractGraph graph) {
+        graphStringRepresentation = graph.getRepresentation();
         adjacencyMatrix = new AdjacencyMatrix(graph);
         incidenceMatrix = new IncidenceMatrix(graph);
         successorAdjacencyList = new SuccessorAdjacencyList(graph);
@@ -22,7 +22,7 @@ public class AllGraphRepresentations {
     }
 
     public void showAllRepresentations() {
-        System.out.println("\n\tREPRESENTATIONS FOR GRAPH: " + graphStringRepresentation);
+        System.out.println("\n\tREPRESENTATIONS FOR graph: " + graphStringRepresentation);
         adjacencyMatrix.showAdjacencyMatrix();
         incidenceMatrix.showIncidenceMatrix();
         successorAdjacencyList.showSuccessorAdjacencyList();

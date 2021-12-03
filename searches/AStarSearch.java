@@ -3,39 +3,41 @@ package searches;
 import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Map;
-import java.util.Collections;
 import java.util.Queue;
 
-import core.*;
+import core.abstractions.AbstractTypedGraph;
+import core.abstractions.AbstractVertice;
 import representations.SuccessorAdjacencyList;
 
-public class AStarSearch extends BaseSearchStructure {
-    private final Map<Vertice, List<Vertice>> successorAdjacencyList;
-    private final Queue<Vertice> verticesToBeExplored;
+public class AStarSearch extends AbstractSearch {
+    private final AbstractTypedGraph relatedGraph;
+    private final Map<AbstractVertice, List<AbstractVertice>> successorAdjacencyList;
+    private final Queue<AbstractVertice> verticesToBeExplored;
     private final GraphHeuristics relatedGraphHeuristics;
 
-    protected AStarSearch(Graph graph, String heuristicsRepresentation) {
-        super(graph);
+    protected AStarSearch(AbstractTypedGraph typedGraph, String heuristicsRepresentation) {
+        super(typedGraph);
+        relatedGraph = typedGraph;
 
-        successorAdjacencyList = new SuccessorAdjacencyList(graph).adjacencyList;
+        successorAdjacencyList = new SuccessorAdjacencyList(typedGraph).adjacencyList;
 
-        verticesToBeExplored = new ArrayDeque<>(graph.numberOfVertices);
-        relatedGraphHeuristics = new GraphHeuristics(graph, heuristicsRepresentation);
+        verticesToBeExplored = new ArrayDeque<>(typedGraph.getNumberOfVertices());
+        relatedGraphHeuristics = new GraphHeuristics(typedGraph, heuristicsRepresentation);
 
         performAStarSearchAndComputeTimesInArrays();
     }
 
     private void performAStarSearchAndComputeTimesInArrays() {
-        Vertice currentVertice;
+        AbstractVertice currentVertice;
         int verticeIndexInVerticeSet;
 
-        for (int timeNumber = 1; timeNumber <= 2 * relatedGraph.numberOfVertices; timeNumber++) {
+        for (int timeNumber = 1; timeNumber <= 2 * relatedGraph.getNumberOfVertices(); timeNumber++) {
             if (verticesToBeExplored.isEmpty())
-                currentVertice = getNextNotDiscoveredVerticeBasedOnVerticeSet();
+                currentVertice = getNextNotDiscoveredVertice();
             else
                 currentVertice = verticesToBeExplored.poll();
 
-            verticeIndexInVerticeSet = relatedGraph.vertices.indexOf(currentVertice);
+            verticeIndexInVerticeSet = relatedGraph.indexOfVertice(currentVertice);
 
             if (discoveryTimes[verticeIndexInVerticeSet] == -1) {
                 discoveryTimes[verticeIndexInVerticeSet] = timeNumber;
@@ -49,14 +51,14 @@ public class AStarSearch extends BaseSearchStructure {
         }
     }
 
-    private void addVerticeChildrenToNotExploredVertices(Vertice vertice) {
+    private void addVerticeChildrenToNotExploredVertices(AbstractVertice vertice) {
         VerticeComparatorInAStarSearch verticeComparator = new VerticeComparatorInAStarSearch(vertice, relatedGraph,
                 relatedGraphHeuristics);
         var currentVerticeChildren = successorAdjacencyList.get(vertice);
-        Collections.sort(currentVerticeChildren, verticeComparator);
+        currentVerticeChildren.sort(verticeComparator);
 
-        for (Vertice v : currentVerticeChildren) {
-            if (!verticesToBeExplored.contains(v) && discoveryTimes[relatedGraph.vertices.indexOf(v)] == -1) {
+        for (AbstractVertice v : currentVerticeChildren) {
+            if (!verticesToBeExplored.contains(v) && discoveryTimes[relatedGraph.indexOfVertice(v)] == -1) {
                 verticesToBeExplored.add(v);
             }
         }

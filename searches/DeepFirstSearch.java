@@ -1,33 +1,34 @@
 package searches;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.util.ArrayList;
+import java.util.Collections;
 
-import core.*;
+import core.abstractions.AbstractGraph;
 import core.abstractions.AbstractVertice;
 import representations.SuccessorAdjacencyList;
 
-public class DeepFirstSearch extends BaseSearchStructure {
-    private final Map<Vertice, List<Vertice>> successorAdjacencyList;
-    private final Graph relatedGraph;
-    private Stack<Vertice> verticesToBeExplored;
+public class DeepFirstSearch extends AbstractSearch {
+    private final Map<AbstractVertice, List<AbstractVertice>> successorAdjacencyList;
+    private final AbstractGraph relatedGraph;
+    private Stack<AbstractVertice> verticesToBeExplored;
 
-    public DeepFirstSearch(Graph graph) {
+    public DeepFirstSearch(AbstractGraph graph) {
         super(graph);
         successorAdjacencyList = new SuccessorAdjacencyList(graph).adjacencyList;
         relatedGraph = graph;
     }
 
-    public DeepFirstSearch(Graph graph, SuccessorAdjacencyList successorAdjacencyList) {
+    public DeepFirstSearch(AbstractGraph graph, SuccessorAdjacencyList successorAdjacencyList) {
         super(graph);
         this.successorAdjacencyList = successorAdjacencyList.adjacencyList;
         relatedGraph = graph;
     }
 
-    public List<Vertice> getPathBetweenVertices(String startVerticeName, String endVerticeName)
+    public List<AbstractVertice> getPathBetweenVertices(String startVerticeName, String endVerticeName)
             throws IllegalArgumentException {
 
         AbstractVertice startVertice = relatedGraph.getVerticeByRepresentation(startVerticeName);
@@ -42,22 +43,25 @@ public class DeepFirstSearch extends BaseSearchStructure {
     private void throwExceptionIfVerticeIsNull(AbstractVertice vertice, String verticeName) throws IllegalArgumentException {
         if (vertice == null) {
             throw new IllegalArgumentException("The vertice  " + verticeName + "  is not in the vertice set."
-                    + "\nThe vertice set is: " + relatedGraph.vertices);
+                    + "\nThe vertice set is: " + Arrays.toString(relatedGraph.getVertices()));
         }
     }
 
-    public List<Vertice> getPathBetweenVertices(AbstractVertice startVertice, AbstractVertice endVertice) {
+    public List<AbstractVertice> getPathBetweenVertices(AbstractVertice startVertice, AbstractVertice endVertice) {
         initializeTimeArrays();
         int timeNumber = 1, verticeIndexInVerticeSet;
-        Vertice currentVertice;
-        List<Vertice> pathBetweenVertices = new ArrayList<>();
+        AbstractVertice currentVertice;
+        List<AbstractVertice> pathBetweenVertices = new ArrayList<>();
 
         verticesToBeExplored = new Stack<>();
         verticesToBeExplored.add(startVertice);
 
         do {
             currentVertice = verticesToBeExplored.pop();
-            verticeIndexInVerticeSet = relatedGraph.vertices.indexOf(currentVertice);
+            verticeIndexInVerticeSet = relatedGraph.indexOfVertice(currentVertice);
+
+            if (verticeIndexInVerticeSet == -1)
+                return pathBetweenVertices;
 
             if (discoveryTimes[verticeIndexInVerticeSet] == -1) {
                 discoveryTimes[verticeIndexInVerticeSet] = timeNumber++;
@@ -75,82 +79,55 @@ public class DeepFirstSearch extends BaseSearchStructure {
     }
 
     public void computeTimes() {
-        Vertice currentVertice;
+        AbstractVertice currentVertice;
         int verticeIndexInVerticeSet;
 
         verticesToBeExplored = new Stack<>();
 
-        for (int timeNumber = 1; timeNumber <= 2 * relatedGraph.numberOfVertices; timeNumber++) {
+        for (int timeNumber = 1; timeNumber <= 2 * relatedGraph.getNumberOfVertices(); timeNumber++) {
             currentVertice = getNextVerticeToBeExplored();
-            verticeIndexInVerticeSet = relatedGraph.vertices.indexOf(currentVertice);
+            verticeIndexInVerticeSet = relatedGraph.indexOfVertice(currentVertice);
 
             if (discoveryTimes[verticeIndexInVerticeSet] == -1) {
                 discoveryTimes[verticeIndexInVerticeSet] = timeNumber;
 
                 verticesToBeExplored.add(currentVertice);
-                addVerticeChildrenToNotExploredVerticesAndClassifyEdgesAlongTheWay(currentVertice);
+                addVerticeChildrenToNotExploredVertices(currentVertice);
             } else {
                 endTimes[verticeIndexInVerticeSet] = timeNumber;
             }
         }
     }
 
-    private Vertice getNextVerticeToBeExplored() {
+    private AbstractVertice getNextVerticeToBeExplored() {
         if (verticesToBeExplored.isEmpty())
-            return getNextNotDiscoveredVerticeBasedOnVerticeSet();
+            return getNextNotDiscoveredVertice();
         else
             return verticesToBeExplored.pop();
     }
 
-    private void addVerticeChildrenToNotExploredVertices(Vertice vertice) {
-        List<Vertice> verticeChildren = getReversedVerticeChildren(vertice);
+    private void addVerticeChildrenToNotExploredVertices(AbstractVertice vertice) {
+        List<AbstractVertice> verticeChildren = getReversedVerticeChildren(vertice);
 
-        for (Vertice v : verticeChildren) {
+        for (AbstractVertice v : verticeChildren) {
             if (canAddVerticeToNotExploredVertices(v))
                 verticesToBeExplored.add(v);
         }
     }
 
-    private List<Vertice> getReversedVerticeChildren(Vertice vertice) {
+    private boolean canAddVerticeToNotExploredVertices(AbstractVertice vertice) {
+        return discoveryTimes[relatedGraph.indexOfVertice(vertice)] == -1 && !verticesToBeExplored.contains(vertice);
+    }
+
+    private List<AbstractVertice> getReversedVerticeChildren(AbstractVertice vertice) {
         var verticeChildren = successorAdjacencyList.get(vertice);
         Collections.reverse(verticeChildren);
         return verticeChildren;
-    }
-
-    private void addVerticeChildrenToNotExploredVerticesAndClassifyEdgesAlongTheWay(Vertice vertice) {
-        List<Vertice> verticeChildren = getReversedVerticeChildren(vertice);
-
-        for (Vertice v : verticeChildren) {
-            if (canAddVerticeToNotExploredVertices(v))
-                verticesToBeExplored.add(v);
-
-            classifyTheEdge(relatedGraph.getDirectedEdgeWithTheseVertices(vertice, v));
-        }
-    }
-
-    private boolean canAddVerticeToNotExploredVertices(Vertice vertice) {
-        return discoveryTimes[relatedGraph.vertices.indexOf(vertice)] == -1 && !verticesToBeExplored.contains(vertice);
-    }
-
-    public boolean containsCycle() {
-        for (var edgeClassification : edgeClassifications) {
-            if (edgeClassification == EdgeClassifications.RETURN) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     @Override
     public void showTimes() {
         System.out.println("\n\tDEEP SEARCH TIMES");
         super.showTimes();
-    }
-
-    @Override
-    public void showEdgeClassifications() {
-        System.out.println("\n\tDEEP SEARCH EDGE CLASSIFICATIONS\n");
-        super.showEdgeClassifications();
     }
 }

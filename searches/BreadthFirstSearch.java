@@ -7,26 +7,30 @@ import java.util.List;
 import java.util.Map;
 
 import core.*;
+import core.abstractions.AbstractTypedGraph;
+import core.abstractions.AbstractVertice;
 import representations.SuccessorAdjacencyList;
 
-public class BreadthFirstSearch extends BaseSearchStructure {
-    private final Map<Vertice, List<Vertice>> successorAdjacencyList;
-    private Queue<Vertice> verticesToBeExplored;
+public class BreadthFirstSearch extends AbstractSearch {
+    private final AbstractTypedGraph relatedGraph;
+    private final Map<AbstractVertice, List<AbstractVertice>> successorAdjacencyList;
+    private Queue<AbstractVertice> verticesToBeExplored;
 
-    protected BreadthFirstSearch(Graph graph) {
-        super(graph);
-        successorAdjacencyList = new SuccessorAdjacencyList(graph).adjacencyList;
+    protected BreadthFirstSearch(TypedGraph typedGraph) {
+        super(typedGraph);
+        relatedGraph = typedGraph;
+        successorAdjacencyList = new SuccessorAdjacencyList(typedGraph).adjacencyList;
     }
 
     public void computeTimes() {
-        Vertice currentVertice;
+        AbstractVertice currentVertice;
         int verticeIndexInVerticeSet;
 
-        verticesToBeExplored = new ArrayDeque<>(relatedGraph.numberOfVertices);
+        verticesToBeExplored = new ArrayDeque<>(relatedGraph.getNumberOfVertices());
 
-        for (int timeNumber = 1; timeNumber <= 2 * relatedGraph.numberOfVertices; timeNumber++) {
+        for (int timeNumber = 1; timeNumber <= 2 * relatedGraph.getNumberOfVertices(); timeNumber++) {
             currentVertice = getNextNotExploredVertice();
-            verticeIndexInVerticeSet = relatedGraph.vertices.indexOf(currentVertice);
+            verticeIndexInVerticeSet = relatedGraph.indexOfVertice(currentVertice);
 
             if (discoveryTimes[verticeIndexInVerticeSet] == -1) {
                 discoveryTimes[verticeIndexInVerticeSet] = timeNumber;
@@ -67,12 +71,12 @@ public class BreadthFirstSearch extends BaseSearchStructure {
     // Vertice currentVertice;
     // List<Vertice> pathBetweenVertices = new ArrayList<>();
 
-    // verticesToBeExplored = new ArrayDeque<>(relatedGraph.numberOfVertices);
+    // verticesToBeExplored = new ArrayDeque<>(relatedGraph.getNumberOfVertices());
     // verticesToBeExplored.add(startVertice);
 
     // do {
     // currentVertice = verticesToBeExplored.poll();
-    // verticeIndexInVerticeSet = relatedGraph.vertices.indexOf(currentVertice);
+    // verticeIndexInVerticeSet = relatedGraph.indexOfVertice(currentVertice);
 
     // if (discoveryTimes[verticeIndexInVerticeSet] == -1) {
     // discoveryTimes[verticeIndexInVerticeSet] = timeNumber++;
@@ -90,27 +94,27 @@ public class BreadthFirstSearch extends BaseSearchStructure {
     // return pathBetweenVertices;
     // }
 
-    private Vertice getNextNotExploredVertice() {
+    private AbstractVertice getNextNotExploredVertice() {
         if (verticesToBeExplored.isEmpty())
-            return getNextNotDiscoveredVerticeBasedOnVerticeSet();
+            return getNextNotDiscoveredVertice();
         else
             return verticesToBeExplored.poll();
     }
 
-    private void addVerticeChildrenToNotExploredVertices(Vertice vertice) {
+    private void addVerticeChildrenToNotExploredVertices(AbstractVertice vertice) {
         VerticeComparatorInBFS verticeComparator = new VerticeComparatorInBFS(vertice, relatedGraph);
         var currentVerticeChildren = successorAdjacencyList.get(vertice);
         Collections.sort(currentVerticeChildren, verticeComparator);
 
-        for (Vertice v : currentVerticeChildren) {
+        for (AbstractVertice v : currentVerticeChildren) {
             if (canAddVerticeToNotExploredVertices(v)) {
                 verticesToBeExplored.add(v);
             }
         }
     }
 
-    private boolean canAddVerticeToNotExploredVertices(Vertice vertice) {
-        return discoveryTimes[relatedGraph.vertices.indexOf(vertice)] == -1 && !verticesToBeExplored.contains(vertice);
+    private boolean canAddVerticeToNotExploredVertices(AbstractVertice vertice) {
+        return discoveryTimes[relatedGraph.indexOfVertice(vertice)] == -1 && !verticesToBeExplored.contains(vertice);
     }
 
     @Override

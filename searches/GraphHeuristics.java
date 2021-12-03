@@ -1,20 +1,22 @@
 package searches;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import core.*;
+import core.abstractions.AbstractTypedGraph;
 import core.abstractions.AbstractVertice;
 
 public class GraphHeuristics {
-    private final Graph relatedGraph;
+    private final AbstractTypedGraph relatedGraph;
     private final String heuristicsStringRepresentation;
     public final Map<AbstractVertice, Integer> verticesAndTheirHeuristics;
 
-    public GraphHeuristics(Graph graph, String heuristicsRepresentation) throws IllegalArgumentException {
-        relatedGraph = graph;
+    public GraphHeuristics(AbstractTypedGraph typedGraph, String heuristicsRepresentation) throws IllegalArgumentException {
+        relatedGraph = typedGraph;
 
-        verticesAndTheirHeuristics = new LinkedHashMap<core.abstractions.AbstractVertice, Integer>(relatedGraph.numberOfVertices);
+        verticesAndTheirHeuristics = new LinkedHashMap<>(relatedGraph.getNumberOfVertices());
         heuristicsStringRepresentation = heuristicsRepresentation;
 
         GraphHeuristicsValidator.validateHeuristicsRepresentation(heuristicsRepresentation);
@@ -43,7 +45,7 @@ public class GraphHeuristics {
             verticesAndTheirHeuristics.put(verticeFound, Integer.parseInt(verticeNameAndHeuristicValue[1]));
         }
 
-        for (Vertice vertice : relatedGraph.vertices) {
+        for (AbstractVertice vertice : relatedGraph.getVertices()) {
             verticesAndTheirHeuristics.putIfAbsent(vertice, 0);
         }
     }
@@ -59,7 +61,7 @@ public class GraphHeuristics {
             throws IllegalArgumentException {
         if (verticeFound == null) {
             throw new IllegalArgumentException("The vertice " + verticeName + " is not in the vertice set."
-                    + " The vertice set is: " + relatedGraph.vertices);
+                    + " The vertice set is: " + Arrays.toString(relatedGraph.getVertices()));
         }
     }
 }

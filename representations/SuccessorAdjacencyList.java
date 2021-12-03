@@ -3,31 +3,25 @@ package representations;
 import java.util.ArrayList;
 import java.util.List;
 
-import core.*;
+import core.abstractions.AbstractEdge;
+import core.abstractions.AbstractGraph;
+import core.abstractions.AbstractVertice;
 
-public class SuccessorAdjacencyList extends BaseAdjacencyList {
-
-    public SuccessorAdjacencyList(Graph graph) {
+public class SuccessorAdjacencyList extends AbstractAdjacencyList {
+    public SuccessorAdjacencyList(AbstractGraph graph) {
         super();
 
-        for (Vertice vertice : graph.vertices) {
+        for (AbstractVertice vertice : graph.getVertices()) {
             adjacencyList.put(vertice, getVerticeChildren(vertice, graph));
         }
     }
 
-    private List<Vertice> getVerticeChildren(Vertice vertice, Graph graph) {
-        List<Vertice> verticeChildren = new ArrayList<>();
+    private List<AbstractVertice> getVerticeChildren(AbstractVertice vertice, AbstractGraph graph) {
+        List<AbstractVertice> verticeChildren = new ArrayList<>();
 
-        if (graph instanceof FlowNetwork) {
-            for (FlowEdge flowEdge : ((FlowNetwork) graph).flowEdges) {
-                if (vertice.equals(flowEdge.firstVertice))
-                    verticeChildren.add(flowEdge.secondVertice);
-            }
-        } else {
-            for (Edge edge : graph.edges) {
-                if (vertice.equals(edge.firstVertice))
-                    verticeChildren.add(edge.secondVertice);
-            }
+        for (AbstractEdge edge : graph.getEdges()) {
+            if (vertice.equals(edge.getFirstVertice()))
+                verticeChildren.add(edge.getSecondVertice());
         }
 
         return verticeChildren;

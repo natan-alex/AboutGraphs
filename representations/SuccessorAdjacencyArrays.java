@@ -1,26 +1,26 @@
 package representations;
 
-import core.*;
+import core.abstractions.AbstractGraph;
 
-public class SuccessorAdjacencyArrays extends BaseAdjacencyArrays {
-    public SuccessorAdjacencyArrays(Graph graph) {
+public class SuccessorAdjacencyArrays extends AbstractAdjacencyArrays {
+    public SuccessorAdjacencyArrays(AbstractGraph graph) {
         super(graph);
 
-        orderAdjacencyArrays(verticesWhereTheEdgeComesFrom, verticesWhereTheEdgeIsIncident);
-        verticesWhereTheEdgeComesFrom = getReorderedSortedArray(graph);
+        orderAdjacencyArrays(edgeStartVertices, edgeEndVertices);
+        edgeStartVertices = getReorderedSortedArray(graph);
     }
 
-    private int[] getReorderedSortedArray(Graph graph) {
-        int[] reorderedArray = new int[graph.numberOfEdges + 1];
-        int indexOfFirstOcurrenceOfAVerticeIndex = graph.numberOfEdges;
+    private int[] getReorderedSortedArray(AbstractGraph graph) {
+        int[] reorderedArray = new int[graph.getNumberOfEdges() + 1];
+        int indexOfFirstOcurrenceOfAVerticeIndex = graph.getNumberOfEdges();
         int indexOfItemInStartWhereEdgesComesFromArray;
 
-        reorderedArray[graph.numberOfVertices] = graph.numberOfEdges;
+        reorderedArray[graph.getNumberOfVertices()] = graph.getNumberOfEdges();
         reorderedArray[0] = 0;
 
-        for (int insertionIndex = graph.numberOfVertices - 1; insertionIndex > 0; insertionIndex--) {
+        for (int insertionIndex = graph.getNumberOfVertices() - 1; insertionIndex > 0; insertionIndex--) {
             indexOfItemInStartWhereEdgesComesFromArray = getIndexOfItemInToBeSortedArray(insertionIndex,
-                    verticesWhereTheEdgeComesFrom);
+                    edgeStartVertices);
 
             if (indexOfItemInStartWhereEdgesComesFromArray != -1) {
                 indexOfFirstOcurrenceOfAVerticeIndex = indexOfItemInStartWhereEdgesComesFromArray;
