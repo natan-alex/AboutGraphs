@@ -15,6 +15,7 @@ public class DeepFirstSearch extends AbstractSearch {
     private final Map<AbstractVertice, List<AbstractVertice>> successorAdjacencyList;
     private final AbstractGraph relatedGraph;
     private Stack<AbstractVertice> verticesToBeExplored;
+    private List<AbstractVertice> pathBetweenVertices;
 
     public DeepFirstSearch(AbstractGraph graph) {
         super(graph);
@@ -49,11 +50,13 @@ public class DeepFirstSearch extends AbstractSearch {
 
     public List<AbstractVertice> getPathBetweenVertices(AbstractVertice startVertice, AbstractVertice endVertice) {
         initializeTimeArrays();
+
         int timeNumber = 1, verticeIndexInVerticeSet;
         AbstractVertice currentVertice;
-        List<AbstractVertice> pathBetweenVertices = new ArrayList<>();
 
+        pathBetweenVertices = new ArrayList<>();
         verticesToBeExplored = new Stack<>();
+
         verticesToBeExplored.add(startVertice);
 
         do {
@@ -63,19 +66,33 @@ public class DeepFirstSearch extends AbstractSearch {
             if (verticeIndexInVerticeSet == -1)
                 return pathBetweenVertices;
 
-            if (discoveryTimes[verticeIndexInVerticeSet] == -1) {
-                discoveryTimes[verticeIndexInVerticeSet] = timeNumber++;
+            if (discoveryTimes[verticeIndexInVerticeSet] == -1)
+                handleVerticeNotDiscovered(currentVertice, verticeIndexInVerticeSet, timeNumber);
+            else
+                handleVerticeAlreadyDiscovered(currentVertice, verticeIndexInVerticeSet, timeNumber);
 
-                pathBetweenVertices.add(currentVertice);
-                verticesToBeExplored.add(currentVertice);
-                addVerticeChildrenToNotExploredVertices(currentVertice);
-            } else {
-                pathBetweenVertices.remove(currentVertice);
-                endTimes[verticeIndexInVerticeSet] = timeNumber++;
-            }
+            timeNumber++;
         } while (!currentVertice.equals(endVertice) && !verticesToBeExplored.isEmpty());
 
         return pathBetweenVertices;
+    }
+
+    private void handleVerticeNotDiscovered(AbstractVertice vertice, int verticeIndex, int timeNumber) {
+        discoveryTimes[verticeIndex] = timeNumber;
+
+        if (pathBetweenVertices != null)
+            pathBetweenVertices.add(vertice);
+
+        verticesToBeExplored.add(vertice);
+
+        addVerticeChildrenToNotExploredVertices(vertice);
+    }
+
+    private void handleVerticeAlreadyDiscovered(AbstractVertice vertice, int verticeIndex, int timeNumber) {
+        if (pathBetweenVertices != null)
+            pathBetweenVertices.remove(vertice);
+
+        endTimes[verticeIndex] = timeNumber;
     }
 
     @Override
@@ -84,19 +101,16 @@ public class DeepFirstSearch extends AbstractSearch {
         int verticeIndexInVerticeSet;
 
         verticesToBeExplored = new Stack<>();
+        pathBetweenVertices = null;
 
         for (int timeNumber = 1; timeNumber <= 2 * relatedGraph.getNumberOfVertices(); timeNumber++) {
             currentVertice = getNextVerticeToBeExplored();
             verticeIndexInVerticeSet = relatedGraph.indexOfVertice(currentVertice);
 
-            if (discoveryTimes[verticeIndexInVerticeSet] == -1) {
-                discoveryTimes[verticeIndexInVerticeSet] = timeNumber;
-
-                verticesToBeExplored.add(currentVertice);
-                addVerticeChildrenToNotExploredVertices(currentVertice);
-            } else {
-                endTimes[verticeIndexInVerticeSet] = timeNumber;
-            }
+            if (discoveryTimes[verticeIndexInVerticeSet] == -1)
+                handleVerticeNotDiscovered(currentVertice, verticeIndexInVerticeSet, timeNumber);
+            else
+                handleVerticeAlreadyDiscovered(currentVertice, verticeIndexInVerticeSet, timeNumber);
         }
     }
 
