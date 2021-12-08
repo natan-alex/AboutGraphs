@@ -4,6 +4,7 @@ import core.*;
 import core.abstractions.AbstractFlowNetwork;
 import fordFulkerson.*;
 import representations.AllGraphRepresentations;
+import searches.DeepFirstSearch;
 
 public class Main {
     private static final Scanner scanner = new Scanner(System.in);
@@ -51,6 +52,10 @@ public class Main {
         allGraphRepresentations.showAllRepresentations();
         FordFulkerson fordFulkerson = new FordFulkerson(flowNetwork);
         System.out.println("\nDisjoint paths: " + fordFulkerson.computeMaximumFlowAndGetDisjointPaths());
+        System.out.println();
+        DeepFirstSearch dfs = new DeepFirstSearch(flowNetwork);
+        dfs.computeTimes();
+        dfs.showTimes();
 
         double end = System.currentTimeMillis();
         System.out.println("\nDuration: " + (end - start) + "ms\n");
