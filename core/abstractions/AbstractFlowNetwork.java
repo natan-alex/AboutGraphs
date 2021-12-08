@@ -52,6 +52,11 @@ public abstract class AbstractFlowNetwork extends AbstractGraph {
         return (AbstractFlowEdge[]) super.getEdges();
     }
 
+    @Override
+    public AbstractFlowEdge getEdge(AbstractVertice firstVertice, AbstractVertice secondVertice) {
+        return (AbstractFlowEdge) super.getEdge(firstVertice, secondVertice);
+    }
+
     public AbstractFlowEdge[] getReversedEdges() {
         return reversedEdges;
     }
