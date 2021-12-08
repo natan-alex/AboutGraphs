@@ -1,5 +1,8 @@
 package core.abstractions;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 public abstract class AbstractGraph {
     private final String representation;
     private final AbstractEdge[] edges;
@@ -7,13 +10,24 @@ public abstract class AbstractGraph {
 
     protected abstract void validateGraphRepresentation();
     protected abstract AbstractEdge[] getEdgesFromRepresentation();
-    protected abstract AbstractVertice[] getVerticesFromEdgesArray();
 
     public AbstractGraph(String graphRepresentation) {
         representation = graphRepresentation.trim();
         validateGraphRepresentation();
         edges = getEdgesFromRepresentation();
         vertices = getVerticesFromEdgesArray();
+    }
+
+    protected AbstractVertice[] getVerticesFromEdgesArray() {
+        Set<AbstractVertice> vertices = new LinkedHashSet<>();
+
+        for (AbstractEdge edge : getEdges()) {
+            vertices.add(edge.getFirstVertice());
+            vertices.add(edge.getSecondVertice());
+        }
+
+        AbstractVertice[] verticesArray = new AbstractVertice[vertices.size()];
+        return vertices.toArray(verticesArray);
     }
 
     public String getRepresentation() {
@@ -66,16 +80,6 @@ public abstract class AbstractGraph {
         return null;
     }
 
-    public AbstractEdge getEdgeByRepresentation(String edgeRepresentation) {
-        for (AbstractEdge edge : edges) {
-            if (edge.getRepresentation().compareToIgnoreCase(edgeRepresentation) == 0) {
-                return edge;
-            }
-        }
-
-        return null;
-    }
-
     public AbstractEdge getEdge(AbstractVertice firstVertice, AbstractVertice secondVertice) {
         for (AbstractEdge edge : edges) {
             if (edge.getFirstVertice().equals(firstVertice) && edge.getSecondVertice().equals(secondVertice)) {
@@ -84,15 +88,6 @@ public abstract class AbstractGraph {
         }
 
         return null;
-    }
-
-    public int indexOfEdge(AbstractEdge edge) {
-        for (int i = 0; i < edges.length; i++) {
-            if (edges[i].equals(edge))
-                return i;
-        }
-
-        return -1;
     }
 
     public int indexOfVertice(AbstractVertice vertice) {

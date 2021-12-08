@@ -7,9 +7,7 @@ import core.validators.FlowEdgeValidator;
 import core.validators.FlowNetworkValidator;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 
 public class FlowNetwork extends AbstractFlowNetwork {
@@ -46,19 +44,6 @@ public class FlowNetwork extends AbstractFlowNetwork {
 
         AbstractFlowEdge[] edgesArray = new AbstractFlowEdge[edges.size()];
         return edges.toArray(edgesArray);
-    }
-
-    @Override
-    protected AbstractVertice[] getVerticesFromEdgesArray() {
-        Set<AbstractVertice> vertices = new LinkedHashSet<>();
-
-        for (AbstractFlowEdge edge : getEdges()) {
-            vertices.add(edge.getFirstVertice());
-            vertices.add(edge.getSecondVertice());
-        }
-
-        AbstractVertice[] verticesArray = new AbstractVertice[vertices.size()];
-        return vertices.toArray(verticesArray);
     }
 
     @Override
