@@ -78,6 +78,7 @@ public class DeepFirstSearch extends AbstractSearch {
         return pathBetweenVertices;
     }
 
+    @Override
     public void computeTimes() {
         AbstractVertice currentVertice;
         int verticeIndexInVerticeSet;

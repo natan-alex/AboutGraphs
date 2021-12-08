@@ -7,9 +7,7 @@ import core.validators.FlowEdgeValidator;
 import core.validators.FlowNetworkValidator;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 
 public class FlowNetwork extends AbstractFlowNetwork {
