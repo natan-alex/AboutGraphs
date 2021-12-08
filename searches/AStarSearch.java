@@ -12,7 +12,7 @@ import representations.SuccessorAdjacencyList;
 public class AStarSearch extends AbstractSearch {
     private final AbstractTypedGraph relatedGraph;
     private final Map<AbstractVertice, List<AbstractVertice>> successorAdjacencyList;
-    private final Queue<AbstractVertice> verticesToBeExplored;
+    private Queue<AbstractVertice> verticesToBeExplored;
     private final GraphHeuristics relatedGraphHeuristics;
 
     protected AStarSearch(AbstractTypedGraph typedGraph, String heuristicsRepresentation) {
@@ -20,23 +20,17 @@ public class AStarSearch extends AbstractSearch {
         relatedGraph = typedGraph;
 
         successorAdjacencyList = new SuccessorAdjacencyList(typedGraph).adjacencyList;
-
-        verticesToBeExplored = new ArrayDeque<>(typedGraph.getNumberOfVertices());
         relatedGraphHeuristics = new GraphHeuristics(typedGraph, heuristicsRepresentation);
-
-        performAStarSearchAndComputeTimesInArrays();
     }
 
-    private void performAStarSearchAndComputeTimesInArrays() {
+    @Override
+    public void computeTimes() {
+        verticesToBeExplored = new ArrayDeque<>(relatedGraph.getNumberOfVertices());
         AbstractVertice currentVertice;
         int verticeIndexInVerticeSet;
 
         for (int timeNumber = 1; timeNumber <= 2 * relatedGraph.getNumberOfVertices(); timeNumber++) {
-            if (verticesToBeExplored.isEmpty())
-                currentVertice = getNextNotDiscoveredVertice();
-            else
-                currentVertice = verticesToBeExplored.poll();
-
+            currentVertice = getNextNotExploredVertice();
             verticeIndexInVerticeSet = relatedGraph.indexOfVertice(currentVertice);
 
             if (discoveryTimes[verticeIndexInVerticeSet] == -1) {
@@ -49,6 +43,13 @@ public class AStarSearch extends AbstractSearch {
                 endTimes[verticeIndexInVerticeSet] = timeNumber;
             }
         }
+    }
+
+    private AbstractVertice getNextNotExploredVertice() {
+        if (verticesToBeExplored.isEmpty())
+            return getNextNotDiscoveredVertice();
+        else
+            return verticesToBeExplored.poll();
     }
 
     private void addVerticeChildrenToNotExploredVertices(AbstractVertice vertice) {

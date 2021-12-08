@@ -22,6 +22,7 @@ public class BreadthFirstSearch extends AbstractSearch {
         successorAdjacencyList = new SuccessorAdjacencyList(typedGraph).adjacencyList;
     }
 
+    @Override
     public void computeTimes() {
         AbstractVertice currentVertice;
         int verticeIndexInVerticeSet;
@@ -104,7 +105,7 @@ public class BreadthFirstSearch extends AbstractSearch {
     private void addVerticeChildrenToNotExploredVertices(AbstractVertice vertice) {
         VerticeComparatorInBFS verticeComparator = new VerticeComparatorInBFS(vertice, relatedGraph);
         var currentVerticeChildren = successorAdjacencyList.get(vertice);
-        Collections.sort(currentVerticeChildren, verticeComparator);
+        currentVerticeChildren.sort(verticeComparator);
 
         for (AbstractVertice v : currentVerticeChildren) {
             if (canAddVerticeToNotExploredVertices(v)) {

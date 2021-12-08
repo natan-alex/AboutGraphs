@@ -10,6 +10,8 @@ public abstract class AbstractSearch {
     protected final int[] discoveryTimes;
     protected final int[] endTimes;
 
+    public abstract void computeTimes();
+
     protected AbstractSearch(AbstractGraph graph) {
         relatedGraph = graph;
         discoveryTimes = new int[graph.getNumberOfVertices()];
