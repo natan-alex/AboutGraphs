@@ -11,7 +11,7 @@ public class SuccessorAdjacencyArrays extends AbstractAdjacencyArrays {
     }
 
     private int[] getReorderedSortedArray(AbstractGraph graph) {
-        int[] reorderedArray = new int[graph.getNumberOfEdges() + 1];
+        int[] reorderedArray = new int[graph.getNumberOfVertices() + 1];
         int indexOfFirstOcurrenceOfAVerticeIndex = graph.getNumberOfEdges();
         int indexOfItemInStartWhereEdgesComesFromArray;
 
