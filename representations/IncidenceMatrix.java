@@ -5,12 +5,22 @@ import core.abstractions.AbstractGraph;
 import core.abstractions.AbstractVertice;
 
 public class IncidenceMatrix extends AbstractMatrix {
-    private final AbstractGraph relatedGraph;
-
     public IncidenceMatrix(AbstractGraph graph) {
-        super(graph.getNumberOfVertices(), graph.getNumberOfEdges());
-        relatedGraph = graph;
+        super(graph);
+    }
 
+    @Override
+    protected int getNumberOfColumns() {
+        return relatedGraph.getNumberOfEdges();
+    }
+
+    @Override
+    protected int getNumberOfLines() {
+        return relatedGraph.getNumberOfVertices();
+    }
+
+    @Override
+    protected void fillMatrix() {
         int currentLine = 0;
 
         for (AbstractVertice vertice : relatedGraph.getVertices()) {
@@ -66,7 +76,7 @@ public class IncidenceMatrix extends AbstractMatrix {
     private void showCurrentLineItems(int currentLine) {
         int item;
 
-        for (int currentColumn = 0; currentColumn < numberOfColumns; currentColumn++) {
+        for (int currentColumn = 0; currentColumn < getNumberOfColumns(); currentColumn++) {
             item = matrix[currentLine][currentColumn];
 
             if (item == 1)

@@ -18,15 +18,15 @@ public class SuccessorAdjacencyArrays extends AbstractAdjacencyArrays {
     }
 
     @Override
-    protected void reorderTheMainSortedArray(AbstractGraph graph) {
-        int[] reorderedArray = new int[graph.getNumberOfVertices() + 1];
-        int indexOfFirstOcurrenceOfAVerticeIndex = graph.getNumberOfEdges();
+    protected void reorderTheMainSortedArray(AbstractGraph relatedGraph) {
+        int[] reorderedArray = new int[relatedGraph.getNumberOfVertices() + 1];
+        int indexOfFirstOcurrenceOfAVerticeIndex = relatedGraph.getNumberOfEdges();
         int indexOfItemInSortedArray;
 
-        reorderedArray[graph.getNumberOfVertices()] = graph.getNumberOfEdges();
+        reorderedArray[relatedGraph.getNumberOfVertices()] = relatedGraph.getNumberOfEdges();
         reorderedArray[0] = 0;
 
-        for (int insertionIndex = graph.getNumberOfVertices() - 1; insertionIndex > 0; insertionIndex--) {
+        for (int insertionIndex = relatedGraph.getNumberOfVertices() - 1; insertionIndex > 0; insertionIndex--) {
             indexOfItemInSortedArray = indexOfItemInSortedArray(insertionIndex);
 
             if (indexOfItemInSortedArray != -1)

@@ -8,11 +8,14 @@ import core.abstractions.AbstractGraph;
 import core.abstractions.AbstractVertice;
 
 public class PredecessorAdjacencyList extends AbstractAdjacencyList {
-    public PredecessorAdjacencyList(AbstractGraph graph) {
-        super();
+    public PredecessorAdjacencyList(AbstractGraph relatedGraph) {
+        super(relatedGraph);
+    }
 
-        for (AbstractVertice vertice : graph.getVertices()) {
-            adjacencyList.put(vertice, getVerticeChildren(vertice, graph));
+    @Override
+    protected void fillAdjacencyList(AbstractGraph relatedGraph) {
+        for (AbstractVertice vertice : relatedGraph.getVertices()) {
+            adjacencyList.put(vertice, getVerticeChildren(vertice, relatedGraph));
         }
     }
 

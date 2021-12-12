@@ -8,7 +8,7 @@ public abstract class AbstractAdjacencyArrays {
     private int[] edgeEndVertices;
 
     protected abstract void sortAdjacencyArraysTogether(SortBehaviour sortBehaviour);
-    protected abstract void reorderTheMainSortedArray(AbstractGraph graph);
+    protected abstract void reorderTheMainSortedArray(AbstractGraph relatedGraph);
     protected abstract int[] getSortedArray();
 
     protected AbstractAdjacencyArrays(AbstractGraph graph, SortBehaviour sortBehaviour) {

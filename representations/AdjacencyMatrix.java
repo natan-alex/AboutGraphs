@@ -5,16 +5,23 @@ import core.abstractions.AbstractGraph;
 import core.abstractions.AbstractVertice;
 
 public class AdjacencyMatrix extends AbstractMatrix {
-    private final AbstractGraph relatedGraph;
 
     public AdjacencyMatrix(AbstractGraph graph) {
-        super(graph.getNumberOfVertices(), graph.getNumberOfVertices());
-        relatedGraph = graph;
-
-        fillAdjacencyMatrix();
+        super(graph);
     }
 
-    private void fillAdjacencyMatrix() {
+    @Override
+    protected int getNumberOfColumns() {
+        return relatedGraph.getNumberOfVertices();
+    }
+
+    @Override
+    protected int getNumberOfLines() {
+        return relatedGraph.getNumberOfVertices();
+    }
+
+    @Override
+    protected void fillMatrix() {
         int currentLine = 0;
 
         for (AbstractVertice vertice : relatedGraph.getVertices()) {
@@ -27,7 +34,7 @@ public class AdjacencyMatrix extends AbstractMatrix {
     }
 
     private void initializeTheItemsOfTheMatrixLine(int line) {
-        for (int currentColumn = 0; currentColumn < numberOfColumns; currentColumn++)
+        for (int currentColumn = 0; currentColumn < getNumberOfColumns(); currentColumn++)
             matrix[line][currentColumn] = 0;
     }
 
@@ -69,7 +76,7 @@ public class AdjacencyMatrix extends AbstractMatrix {
     }
 
     private void showMatrixLineItemsSeparatedByTabs(int currentLine) {
-        for (int currentColumn = 0; currentColumn < numberOfColumns; currentColumn++) {
+        for (int currentColumn = 0; currentColumn < getNumberOfColumns(); currentColumn++) {
             System.out.print(matrix[currentLine][currentColumn] + "\t");
         }
     }

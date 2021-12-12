@@ -5,13 +5,21 @@ import java.util.List;
 import java.util.Map;
 
 import core.*;
+import core.abstractions.AbstractGraph;
 import core.abstractions.AbstractVertice;
 
 public abstract class AbstractAdjacencyList {
-    public final Map<AbstractVertice, List<AbstractVertice>> adjacencyList;
+    protected final Map<AbstractVertice, List<AbstractVertice>> adjacencyList;
 
-    protected AbstractAdjacencyList() {
+    protected abstract void fillAdjacencyList(AbstractGraph relatedGraph);
+
+    protected AbstractAdjacencyList(AbstractGraph relatedGraph) {
         adjacencyList = new HashMap<>();
+        fillAdjacencyList(relatedGraph);
+    }
+
+    public Map<AbstractVertice, List<AbstractVertice>> getAdjacencyList() {
+        return adjacencyList;
     }
 
     protected void showAdjacencyList() {
