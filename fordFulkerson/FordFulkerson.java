@@ -16,7 +16,6 @@ public class FordFulkerson {
     private AbstractFlowNetwork residualGraphNetwork;
     private List<List<AbstractVertice>> disjointPaths;
     private DeepFirstSearch deepFirstSearch;
-    private List<AbstractVertice> pathFound;
     private List<AbstractFlowEdge> flowEdgesInThePath;
     private List<AbstractFlowEdge> flowEdgesInReversedDirectionInThePath;
     private int minimumCapacityBetweenEdges;
@@ -26,31 +25,45 @@ public class FordFulkerson {
     }
 
     public List<List<AbstractVertice>> computeMaximumFlowAndGetDisjointPaths() {
-        residualGraphNetwork = new FlowNetwork(relatedFlowNetwork.getRepresentation(),
+        initializeNecessaryFieldsToGetDisjointPaths();
+        List<AbstractVertice> pathFound = deepFirstSearch.getPathBetweenVertices(
                 relatedFlowNetwork.getSourceVertice(), relatedFlowNetwork.getSinkVertice());
-        disjointPaths = new ArrayList<>();
-        deepFirstSearch = new DeepFirstSearch(residualGraphNetwork);
-        pathFound = deepFirstSearch.getPathBetweenVertices(relatedFlowNetwork.getSourceVertice(), relatedFlowNetwork.getSinkVertice());
 
-        while (pathFound != null && !pathFound.isEmpty() && !disjointPaths.contains(pathFound)) {
+        while (pathFound != null && !pathFound.isEmpty()) {
             flowEdgesInThePath = getFlowEdgesInThePath(pathFound);
             flowEdgesInReversedDirectionInThePath = getCorrespondingReversedEdges(
                     flowEdgesInThePath);
 
             minimumCapacityBetweenEdges = getMinimumCapacityInFlowEdgeList(flowEdgesInThePath);
 
-            addFlowToFlowEdgesInTheList(minimumCapacityBetweenEdges, flowEdgesInThePath);
-            addFlowToFlowEdgesInTheList(minimumCapacityBetweenEdges, flowEdgesInReversedDirectionInThePath);
+            addFlowToFlowEdges();
 
             disjointPaths.add(pathFound);
             removeFromResidualGraphTheEdgesInThePathThatCannotReceiveMoreFlow(flowEdgesInThePath);
 
-            deepFirstSearch = new DeepFirstSearch(residualGraphNetwork,
-                    new SuccessorAdjacencyList(residualGraphNetwork));
-            pathFound = deepFirstSearch.getPathBetweenVertices(relatedFlowNetwork.getSourceVertice(), relatedFlowNetwork.getSinkVertice());
+            pathFound = initializeDFSAndGetNextPath();
         }
 
         return disjointPaths;
+    }
+
+    private void initializeNecessaryFieldsToGetDisjointPaths() {
+        residualGraphNetwork = new FlowNetwork(relatedFlowNetwork.getRepresentation(),
+                relatedFlowNetwork.getSourceVertice(), relatedFlowNetwork.getSinkVertice());
+        disjointPaths = new ArrayList<>();
+        deepFirstSearch = new DeepFirstSearch(residualGraphNetwork);
+    }
+
+    private List<AbstractVertice> initializeDFSAndGetNextPath() {
+        deepFirstSearch = new DeepFirstSearch(residualGraphNetwork,
+                new SuccessorAdjacencyList(residualGraphNetwork));
+        return deepFirstSearch.getPathBetweenVertices(
+                relatedFlowNetwork.getSourceVertice(), relatedFlowNetwork.getSinkVertice());
+    }
+
+    private void addFlowToFlowEdges() {
+        addFlowToFlowEdgesInTheList(minimumCapacityBetweenEdges, flowEdgesInThePath);
+        addFlowToFlowEdgesInTheList(minimumCapacityBetweenEdges, flowEdgesInReversedDirectionInThePath);
     }
 
     private List<AbstractFlowEdge> getFlowEdgesInThePath(List<AbstractVertice> path) {
@@ -62,8 +75,8 @@ public class FordFulkerson {
         path.toArray(pathArray);
 
         while (currentVerticeIndex + 1 < pathArray.length) {
-            flowEdgeFound = residualGraphNetwork.getEdge(pathArray[currentVerticeIndex],
-                    pathArray[currentVerticeIndex + 1]);
+            flowEdgeFound = residualGraphNetwork.getEdge(
+                    pathArray[currentVerticeIndex], pathArray[currentVerticeIndex + 1]);
             flowEdges.add(flowEdgeFound);
             currentVerticeIndex++;
         }
@@ -76,8 +89,8 @@ public class FordFulkerson {
         AbstractFlowEdge flowEdgeContainingTheVertices;
 
         for (AbstractFlowEdge flowEdge : list) {
-            flowEdgeContainingTheVertices = residualGraphNetwork
-                    .getReversedEdge(flowEdge.getSecondVertice(), flowEdge.getFirstVertice());
+            flowEdgeContainingTheVertices = residualGraphNetwork.getReversedEdge(
+                    flowEdge.getSecondVertice(), flowEdge.getFirstVertice());
             flowEdgesInReversedDirectionList.add(flowEdgeContainingTheVertices);
         }
 
