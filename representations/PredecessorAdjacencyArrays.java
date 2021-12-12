@@ -9,12 +9,12 @@ public class PredecessorAdjacencyArrays extends AbstractAdjacencyArrays {
 
     @Override
     protected int[] getSortedArray() {
-        return getEdgeEndVertices();
+        return edgeEndVertices;
     }
 
     @Override
     protected void sortAdjacencyArraysTogether(SortBehaviour sortBehaviour) {
-        sortBehaviour.sortArraysTogether(getEdgeEndVertices(), getEdgeStartVertices());
+        sortBehaviour.sortArraysTogether(edgeEndVertices, edgeStartVertices);
     }
 
     @Override
@@ -35,7 +35,7 @@ public class PredecessorAdjacencyArrays extends AbstractAdjacencyArrays {
             reorderedArray[insertionIndex] = indexOfFirstOcurrenceOfAVerticeIndex;
         }
 
-        setEdgeEndVertices(reorderedArray);
+        edgeEndVertices = reorderedArray;
     }
 
     @Override

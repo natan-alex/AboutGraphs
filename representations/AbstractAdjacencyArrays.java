@@ -4,8 +4,8 @@ import core.abstractions.AbstractEdge;
 import core.abstractions.AbstractGraph;
 
 public abstract class AbstractAdjacencyArrays {
-    private int[] edgeStartVertices;
-    private int[] edgeEndVertices;
+    protected int[] edgeStartVertices;
+    protected int[] edgeEndVertices;
 
     protected abstract void sortAdjacencyArraysTogether(SortBehaviour sortBehaviour);
     protected abstract void reorderTheMainSortedArray(AbstractGraph relatedGraph);
@@ -19,22 +19,6 @@ public abstract class AbstractAdjacencyArrays {
         initializeArrays(graph);
         sortAdjacencyArraysTogether(sortBehaviour);
         reorderTheMainSortedArray(graph);
-    }
-
-    protected int[] getEdgeStartVertices() {
-        return edgeStartVertices;
-    }
-
-    protected void setEdgeStartVertices(int[] edgeStartVertices) {
-        this.edgeStartVertices = edgeStartVertices;
-    }
-
-    protected int[] getEdgeEndVertices() {
-        return edgeEndVertices;
-    }
-
-    protected void setEdgeEndVertices(int[] edgeEndVertices) {
-        this.edgeEndVertices = edgeEndVertices;
     }
 
     private void initializeArrays(AbstractGraph relatedGraph) {
