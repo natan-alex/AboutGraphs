@@ -9,10 +9,12 @@ import core.abstractions.AbstractValuedEdge;
 import core.abstractions.AbstractVertice;
 
 public final class VerticeComparatorInBFS implements Comparator<AbstractVertice> {
-    AbstractVertice startingPointVertice;
-    AbstractTypedGraph typedGraph;
+    private final AbstractVertice startingPointVertice;
+    private final AbstractTypedGraph typedGraph;
 
-    public VerticeComparatorInBFS(AbstractVertice startingPointVertice, AbstractTypedGraph typedGraph) {
+    public VerticeComparatorInBFS(
+            AbstractVertice startingPointVertice, AbstractTypedGraph typedGraph
+    ) {
         this.startingPointVertice = startingPointVertice;
         this.typedGraph = typedGraph;
     }
@@ -26,7 +28,8 @@ public final class VerticeComparatorInBFS implements Comparator<AbstractVertice>
     }
 
     private int getEvaluationFunctionValueForVertices(AbstractVertice firstVertice, AbstractVertice secondVertice) {
-        AbstractValuedEdge edgeThatContainsTheVertices = (AbstractValuedEdge) typedGraph.getEdge(firstVertice, secondVertice);
+        AbstractValuedEdge edgeThatContainsTheVertices =
+                (AbstractValuedEdge) typedGraph.getEdge(firstVertice, secondVertice);
         int evaluationFunctionValue = Integer.MAX_VALUE;
 
         if (edgeThatContainsTheVertices != null) {

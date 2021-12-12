@@ -9,11 +9,15 @@ import core.abstractions.AbstractValuedEdge;
 import core.abstractions.AbstractVertice;
 
 public final class VerticeComparatorInAStarSearch implements Comparator<AbstractVertice> {
-    AbstractVertice startingPointVertice;
-    AbstractTypedGraph typedGraph;
-    GraphHeuristics graphHeuristics;
+    private final AbstractVertice startingPointVertice;
+    private final AbstractTypedGraph typedGraph;
+    private final GraphHeuristics graphHeuristics;
 
-    public VerticeComparatorInAStarSearch(AbstractVertice startingPointVertice, AbstractTypedGraph typedGraph, GraphHeuristics graphHeuristics) {
+    public VerticeComparatorInAStarSearch(
+            AbstractVertice startingPointVertice,
+            AbstractTypedGraph typedGraph,
+            GraphHeuristics graphHeuristics
+    ) {
         this.startingPointVertice = startingPointVertice;
         this.typedGraph = typedGraph;
         this.graphHeuristics = graphHeuristics;
@@ -27,13 +31,17 @@ public final class VerticeComparatorInAStarSearch implements Comparator<Abstract
         return Integer.compare(evaluationFunctionValueForArg0, evaluationFunctionValueForArg1);
     }
 
-    private int getEvaluationFunctionValueForVertices(AbstractVertice firstVertice, AbstractVertice secondVertice) {
-        AbstractValuedEdge edgeThatContainsTheVertices = (AbstractValuedEdge) typedGraph.getEdge(firstVertice, secondVertice);
+    private int getEvaluationFunctionValueForVertices(
+            AbstractVertice firstVertice, AbstractVertice secondVertice
+    ) {
+        AbstractValuedEdge edgeThatContainsTheVertices =
+                (AbstractValuedEdge) typedGraph.getEdge(firstVertice, secondVertice);
         int evaluationFunctionValue = Integer.MAX_VALUE;
 
         if (edgeThatContainsTheVertices != null) {
-            evaluationFunctionValue = edgeThatContainsTheVertices.getValue()
-                    + graphHeuristics.verticesAndTheirHeuristics.get(secondVertice);
+            evaluationFunctionValue =
+                    edgeThatContainsTheVertices.getValue() +
+                    graphHeuristics.getVerticesAndTheirHeuristics().get(secondVertice);
         }
 
         return evaluationFunctionValue;

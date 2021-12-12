@@ -11,7 +11,11 @@ import core.abstractions.AbstractVertice;
 public class GraphHeuristics {
     private final AbstractTypedGraph relatedGraph;
     private final String heuristicsStringRepresentation;
-    public final Map<AbstractVertice, Integer> verticesAndTheirHeuristics;
+    private final Map<AbstractVertice, Integer> verticesAndTheirHeuristics;
+
+    public Map<AbstractVertice, Integer> getVerticesAndTheirHeuristics() {
+        return verticesAndTheirHeuristics;
+    }
 
     public GraphHeuristics(AbstractTypedGraph typedGraph, String heuristicsRepresentation) throws IllegalArgumentException {
         relatedGraph = typedGraph;
