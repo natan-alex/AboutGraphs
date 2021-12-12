@@ -19,7 +19,7 @@ public class BreadthFirstSearch extends AbstractSearch {
     protected BreadthFirstSearch(TypedGraph typedGraph) {
         super(typedGraph);
         relatedGraph = typedGraph;
-        successorAdjacencyList = new SuccessorAdjacencyList(typedGraph).adjacencyList;
+        successorAdjacencyList = new SuccessorAdjacencyList(typedGraph).getAdjacencyList();
     }
 
     @Override

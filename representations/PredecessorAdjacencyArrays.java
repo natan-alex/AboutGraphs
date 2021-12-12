@@ -38,7 +38,8 @@ public class PredecessorAdjacencyArrays extends AbstractAdjacencyArrays {
         setEdgeEndVertices(reorderedArray);
     }
 
-    public void showPredecessorAdjacencyArrays() {
+    @Override
+    public void showArrays() {
         System.out.println("\n\tPREDECESSOR ADJACENCY ARRAYS\n");
         super.showAdjacencyArraysIncreasingTheirValuesByOne();
     }

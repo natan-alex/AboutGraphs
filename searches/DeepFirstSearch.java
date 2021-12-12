@@ -19,13 +19,13 @@ public class DeepFirstSearch extends AbstractSearch {
 
     public DeepFirstSearch(AbstractGraph graph) {
         super(graph);
-        successorAdjacencyList = new SuccessorAdjacencyList(graph).adjacencyList;
+        successorAdjacencyList = new SuccessorAdjacencyList(graph).getAdjacencyList();
         relatedGraph = graph;
     }
 
     public DeepFirstSearch(AbstractGraph graph, SuccessorAdjacencyList successorAdjacencyList) {
         super(graph);
-        this.successorAdjacencyList = successorAdjacencyList.adjacencyList;
+        this.successorAdjacencyList = successorAdjacencyList.getAdjacencyList();
         relatedGraph = graph;
     }
 

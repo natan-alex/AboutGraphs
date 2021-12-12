@@ -10,6 +10,7 @@ public abstract class AbstractAdjacencyArrays {
     protected abstract void sortAdjacencyArraysTogether(SortBehaviour sortBehaviour);
     protected abstract void reorderTheMainSortedArray(AbstractGraph relatedGraph);
     protected abstract int[] getSortedArray();
+    public abstract void showArrays();
 
     protected AbstractAdjacencyArrays(AbstractGraph graph, SortBehaviour sortBehaviour) {
         edgeStartVertices = new int[graph.getNumberOfEdges()];

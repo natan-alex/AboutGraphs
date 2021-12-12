@@ -19,7 +19,7 @@ public class AStarSearch extends AbstractSearch {
         super(typedGraph);
         relatedGraph = typedGraph;
 
-        successorAdjacencyList = new SuccessorAdjacencyList(typedGraph).adjacencyList;
+        successorAdjacencyList = new SuccessorAdjacencyList(typedGraph).getAdjacencyList();
         relatedGraphHeuristics = new GraphHeuristics(typedGraph, heuristicsRepresentation);
     }
 

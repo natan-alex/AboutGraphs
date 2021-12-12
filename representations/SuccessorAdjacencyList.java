@@ -30,8 +30,9 @@ public class SuccessorAdjacencyList extends AbstractAdjacencyList {
         return verticeChildren;
     }
 
-    public void showSuccessorAdjacencyList() {
+    @Override
+    public void showAdjacencyList() {
         System.out.println("\n\tSUCCESSOR ADJACENCY LIST\n");
-        super.showAdjacencyList();
+        super.simpleShowAdjacencyList();
     }
 }

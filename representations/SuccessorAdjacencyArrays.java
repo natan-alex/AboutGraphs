@@ -38,7 +38,8 @@ public class SuccessorAdjacencyArrays extends AbstractAdjacencyArrays {
         setEdgeStartVertices(reorderedArray);
     }
 
-    public void showSuccessorAdjacencyArrays() {
+    @Override
+    public void showArrays() {
         System.out.println("\n\tSUCCESSOR ADJACENCY ARRAYS\n");
         super.showAdjacencyArraysIncreasingTheirValuesByOne();
     }

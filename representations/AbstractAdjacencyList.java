@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import core.*;
 import core.abstractions.AbstractGraph;
 import core.abstractions.AbstractVertice;
 
@@ -12,6 +11,7 @@ public abstract class AbstractAdjacencyList {
     protected final Map<AbstractVertice, List<AbstractVertice>> adjacencyList;
 
     protected abstract void fillAdjacencyList(AbstractGraph relatedGraph);
+    public abstract void showAdjacencyList();
 
     protected AbstractAdjacencyList(AbstractGraph relatedGraph) {
         adjacencyList = new HashMap<>();
@@ -22,7 +22,7 @@ public abstract class AbstractAdjacencyList {
         return adjacencyList;
     }
 
-    protected void showAdjacencyList() {
+    protected void simpleShowAdjacencyList() {
         for (Map.Entry<AbstractVertice, List<AbstractVertice>> entry : adjacencyList.entrySet()) {
             System.out.print(entry.getKey().getRepresentation() + " -> ");
 

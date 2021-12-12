@@ -23,11 +23,11 @@ public class AllGraphRepresentations {
 
     public void showAllRepresentations() {
         System.out.println("\n\tREPRESENTATIONS FOR graph: " + graphStringRepresentation);
-        adjacencyMatrix.showAdjacencyMatrix();
-        incidenceMatrix.showIncidenceMatrix();
-        successorAdjacencyList.showSuccessorAdjacencyList();
-        predecessorAdjacencyList.showPredecessorAdjacencyList();
-        successorAdjacencyArrays.showSuccessorAdjacencyArrays();
-        predecessorAdjacencyArrays.showPredecessorAdjacencyArrays();
+        adjacencyMatrix.showMatrix();
+        incidenceMatrix.showMatrix();
+        successorAdjacencyList.showAdjacencyList();
+        predecessorAdjacencyList.showAdjacencyList();
+        successorAdjacencyArrays.showArrays();
+        predecessorAdjacencyArrays.showArrays();
     }
 }

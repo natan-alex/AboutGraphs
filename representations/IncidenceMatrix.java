@@ -46,8 +46,8 @@ public class IncidenceMatrix extends AbstractMatrix {
             currentColumn++;
         }
     }
-
-    public void showIncidenceMatrix() {
+    @Override
+    public void showMatrix() {
         System.out.println("\n\tINCIDENCE MATRIX\n");
         int currentLine = 0;
 

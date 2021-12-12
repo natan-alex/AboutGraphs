@@ -49,7 +49,8 @@ public class AdjacencyMatrix extends AbstractMatrix {
         }
     }
 
-    public void showAdjacencyMatrix() {
+    @Override
+    public void showMatrix() {
         System.out.println("\n\tADJACENCY MATRIX\n");
         int currentLine = 0;
 
