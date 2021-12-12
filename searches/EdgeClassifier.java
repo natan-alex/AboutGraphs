@@ -4,19 +4,23 @@ import core.abstractions.AbstractEdge;
 import core.abstractions.AbstractTypedGraph;
 
 public class EdgeClassifier {
-    public static EdgeClassifications classifyTheEdge(AbstractEdge edge, AbstractTypedGraph graph, AbstractSearch search) {
+    public static EdgeClassifications classifyEdge(
+            AbstractEdge edge, AbstractTypedGraph graph, AbstractSearch search
+    ) {
         if (edge == null) {
             return null;
         }
 
         if (graph.getType().isDirected()) {
-            return classifyTheEdgeForDirectedGraph(edge, graph, search);
+            return classifyEdgeForDirectedGraph(edge, graph, search);
         } else {
-            return classifyTheEdgeForUndirectedGraph(edge, graph, search);
+            return classifyEdgeForUndirectedGraph(edge, graph, search);
         }
     }
 
-    private static EdgeClassifications classifyTheEdgeForUndirectedGraph(AbstractEdge edge, AbstractTypedGraph graph, AbstractSearch search) {
+    private static EdgeClassifications classifyEdgeForUndirectedGraph(
+            AbstractEdge edge, AbstractTypedGraph graph, AbstractSearch search
+    ) {
         int indexOfFirstVerticeInVerticeSet = graph.indexOfVertice(edge.getFirstVertice());
         int indexOfSecondVerticeInVerticeSet = graph.indexOfVertice(edge.getSecondVertice());
 
@@ -28,7 +32,9 @@ public class EdgeClassifier {
         }
     }
 
-    private static EdgeClassifications classifyTheEdgeForDirectedGraph(AbstractEdge edge, AbstractTypedGraph graph, AbstractSearch search) {
+    private static EdgeClassifications classifyEdgeForDirectedGraph(
+            AbstractEdge edge, AbstractTypedGraph graph, AbstractSearch search
+    ) {
         int indexOfFirstVerticeInVerticeSet = graph.indexOfVertice(edge.getFirstVertice());
         int indexOfSecondVerticeInVerticeSet = graph.indexOfVertice(edge.getSecondVertice());
 
