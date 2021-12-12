@@ -5,7 +5,7 @@ public enum EdgeClassifications {
 
     String name;
 
-    private EdgeClassifications(String name) {
+    EdgeClassifications(String name) {
         this.name = name;
     }
 

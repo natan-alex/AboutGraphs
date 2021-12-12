@@ -10,7 +10,7 @@ public enum GraphTypes {
     private final boolean isPondered;
     private final String representation;
 
-    private GraphTypes(boolean isDirected, boolean isPondered, String representation) {
+    GraphTypes(boolean isDirected, boolean isPondered, String representation) {
         this.isDirected = isDirected;
         this.isPondered = isPondered;
         this.representation = representation;
