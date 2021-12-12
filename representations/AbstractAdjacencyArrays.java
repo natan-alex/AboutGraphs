@@ -4,19 +4,45 @@ import core.abstractions.AbstractEdge;
 import core.abstractions.AbstractGraph;
 
 public abstract class AbstractAdjacencyArrays {
-    protected int[] edgeStartVertices;
-    protected int[] edgeEndVertices;
+    private int[] edgeStartVertices;
+    private int[] edgeEndVertices;
 
-    protected AbstractAdjacencyArrays(AbstractGraph graph) {
-        int insertionIndex = 0;
-        int indexOfFirstVertice, indexOfSecondVertice;
+    protected abstract void sortAdjacencyArraysTogether(SortBehaviour sortBehaviour);
+    protected abstract void reorderTheMainSortedArray(AbstractGraph graph);
+    protected abstract int[] getSortedArray();
 
+    protected AbstractAdjacencyArrays(AbstractGraph graph, SortBehaviour sortBehaviour) {
         edgeStartVertices = new int[graph.getNumberOfEdges()];
         edgeEndVertices = new int[graph.getNumberOfEdges()];
 
-        for (AbstractEdge edge : graph.getEdges()) {
-            indexOfFirstVertice = graph.indexOfVertice(edge.getFirstVertice());
-            indexOfSecondVertice = graph.indexOfVertice(edge.getSecondVertice());
+        initializeArrays(graph);
+        sortAdjacencyArraysTogether(sortBehaviour);
+        reorderTheMainSortedArray(graph);
+    }
+
+    protected int[] getEdgeStartVertices() {
+        return edgeStartVertices;
+    }
+
+    protected void setEdgeStartVertices(int[] edgeStartVertices) {
+        this.edgeStartVertices = edgeStartVertices;
+    }
+
+    protected int[] getEdgeEndVertices() {
+        return edgeEndVertices;
+    }
+
+    protected void setEdgeEndVertices(int[] edgeEndVertices) {
+        this.edgeEndVertices = edgeEndVertices;
+    }
+
+    private void initializeArrays(AbstractGraph relatedGraph) {
+        int insertionIndex = 0;
+        int indexOfFirstVertice, indexOfSecondVertice;
+
+        for (AbstractEdge edge : relatedGraph.getEdges()) {
+            indexOfFirstVertice = relatedGraph.indexOfVertice(edge.getFirstVertice());
+            indexOfSecondVertice = relatedGraph.indexOfVertice(edge.getSecondVertice());
 
             edgeStartVertices[insertionIndex] = indexOfFirstVertice;
             edgeEndVertices[insertionIndex] = indexOfSecondVertice;
@@ -25,30 +51,11 @@ public abstract class AbstractAdjacencyArrays {
         }
     }
 
-    protected void orderAdjacencyArrays(int[] arrayToBeSorted, int[] otherArray) {
-        int currentItemOfWhichToSortArray;
-        int currentItemOfOtherArray;
-        int auxiliarVariable;
+    protected int indexOfItemInSortedArray(int item) {
+        int[] sortedArray = getSortedArray();
 
-        for (int minimumItemIndex = 1; minimumItemIndex < arrayToBeSorted.length; minimumItemIndex++) {
-            currentItemOfWhichToSortArray = arrayToBeSorted[minimumItemIndex];
-            currentItemOfOtherArray = otherArray[minimumItemIndex];
-            auxiliarVariable = minimumItemIndex - 1;
-
-            while (auxiliarVariable >= 0 && arrayToBeSorted[auxiliarVariable] > currentItemOfWhichToSortArray) {
-                arrayToBeSorted[auxiliarVariable + 1] = arrayToBeSorted[auxiliarVariable];
-                otherArray[auxiliarVariable + 1] = otherArray[auxiliarVariable];
-                auxiliarVariable--;
-            }
-
-            arrayToBeSorted[auxiliarVariable + 1] = currentItemOfWhichToSortArray;
-            otherArray[auxiliarVariable + 1] = currentItemOfOtherArray;
-        }
-    }
-
-    protected int getIndexOfItemInToBeSortedArray(int item, int[] arrayToBeSorted) {
-        for (int i = 0; i < arrayToBeSorted.length; i++) {
-            if (arrayToBeSorted[i] == item) {
+        for (int i = 0; i < sortedArray.length; i++) {
+            if (sortedArray[i] == item) {
                 return i;
             }
         }

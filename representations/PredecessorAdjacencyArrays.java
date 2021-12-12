@@ -4,13 +4,21 @@ import core.abstractions.AbstractGraph;
 
 public class PredecessorAdjacencyArrays extends AbstractAdjacencyArrays {
     public PredecessorAdjacencyArrays(AbstractGraph graph) {
-        super(graph);
-
-        orderAdjacencyArrays(edgeEndVertices, edgeStartVertices);
-        edgeEndVertices = getReorderedSortedArray(graph);
+        super(graph, InsertionSortBehaviour.singletonInstance);
     }
 
-    private int[] getReorderedSortedArray(AbstractGraph graph) {
+    @Override
+    protected int[] getSortedArray() {
+        return getEdgeEndVertices();
+    }
+
+    @Override
+    protected void sortAdjacencyArraysTogether(SortBehaviour sortBehaviour) {
+        sortBehaviour.sortArraysTogether(getEdgeEndVertices(), getEdgeStartVertices());
+    }
+
+    @Override
+    protected void reorderTheMainSortedArray(AbstractGraph graph) {
         int[] reorderedArray = new int[graph.getNumberOfVertices() + 1];
         int indexOfFirstOcurrenceOfAVerticeIndex = graph.getNumberOfEdges();
         int indexOfItemInWhereEdgesAreIncidentArray;
@@ -19,17 +27,15 @@ public class PredecessorAdjacencyArrays extends AbstractAdjacencyArrays {
         reorderedArray[0] = 0;
 
         for (int insertionIndex = 1; insertionIndex < graph.getNumberOfVertices(); insertionIndex++) {
-            indexOfItemInWhereEdgesAreIncidentArray = getIndexOfItemInToBeSortedArray(insertionIndex,
-                    edgeEndVertices);
+            indexOfItemInWhereEdgesAreIncidentArray = indexOfItemInSortedArray(insertionIndex);
 
-            if (indexOfItemInWhereEdgesAreIncidentArray != -1) {
+            if (indexOfItemInWhereEdgesAreIncidentArray != -1)
                 indexOfFirstOcurrenceOfAVerticeIndex = indexOfItemInWhereEdgesAreIncidentArray;
-            }
 
             reorderedArray[insertionIndex] = indexOfFirstOcurrenceOfAVerticeIndex;
         }
 
-        return reorderedArray;
+        setEdgeEndVertices(reorderedArray);
     }
 
     public void showPredecessorAdjacencyArrays() {
